@@ -1,0 +1,31 @@
+{
+  "name": "nextcommerce",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter @nextcommerce/web dev",
+    "dev:api": "pnpm --filter @nextcommerce/api dev",
+    "dev": "pnpm run dev:web & pnpm run dev:api",
+    "build": "pnpm --filter @nextcommerce/web build && pnpm --filter @nextcommerce/api build",
+    "build:web": "pnpm --filter @nextcommerce/web build",
+    "build:api": "pnpm --filter @nextcommerce/api build",
+    "lint": "pnpm --filter @nextcommerce/web lint && pnpm --filter @nextcommerce/api lint && pnpm --filter @nextcommerce/shared lint",
+    "typecheck": "pnpm --filter @nextcommerce/web typecheck && pnpm --filter @nextcommerce/api typecheck && pnpm --filter @nextcommerce/shared typecheck",
+    "test": "pnpm --filter @nextcommerce/web test && pnpm --filter @nextcommerce/api test && pnpm --filter @nextcommerce/shared test",
+    "test:e2e": "pnpm --filter @nextcommerce/web test:e2e",
+    "db:generate": "pnpm --filter @nextcommerce/api db:generate",
+    "db:push": "pnpm --filter @nextcommerce/api db:push",
+    "db:migrate": "pnpm --filter @nextcommerce/api db:migrate",
+    "db:seed": "pnpm --filter @nextcommerce/api db:seed",
+    "db:studio": "pnpm --filter @nextcommerce/api db:studio",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^9.0.0",
+    "pnpm": "^9.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@9.0.0"
+}
