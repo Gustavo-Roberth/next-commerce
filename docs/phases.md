@@ -1,198 +1,269 @@
-# Phases - NextCommerce
-## Fase ativa: FASE 1 — Fundação e MVP Loja
-**Início:** 2026-08-22 | **Fim estimado:** 2026-10-31 | **Status:** Planejada
+# PHASES.md
+
+# 📌 OBJETIVO
+Documento central de governança das fases do projeto NextCommerce.
+Este arquivo define:
+- descoberta da fase ativa;
+- regras de execução;
+- regras de revisão;
+- regras de refinamento;
+- fluxo operacional do agente;
+- limites de escopo;
+- organização das fases.
 
 ---
 
-## Visão geral das fases
+# 📍 FONTE ÚNICA DE VERDADE
+- O fluxo operacional deve seguir `/agents/agent.md`.
+- O controle de fases, regras e escopo deve seguir `/docs/phases.md`.
 
+# 📚 ORDEM DE LEITURA OBRIGATÓRIA
+O agente deve SEMPRE ler nesta ordem:
+1. /agents/agent.md
+2. /docs/context.md
+3. /docs/product.md
+4. /docs/behavior.md
+5. /docs/entities.md
+6. /docs/tech.md
+7. /docs/phases.md
+8. arquivo modular da fase ativa
+
+---
+
+# 📌 HIERARQUIA DOCUMENTAL
+Em caso de conflito entre documentos:
+1. phases.md
+2. behavior.md
+3. tech.md
+4. entities.md
+5. context.md
+6. product.md
+
+O agente deve sempre respeitar a maior prioridade documental.
+
+---
+
+# 🚨 REGRAS DE OURO
+O agente NUNCA deve:
+- implementar fases futuras;
+- antecipar entidades;
+- criar contratos não previstos;
+- quebrar arquitetura;
+- substituir regras documentadas.
+
+Apenas a fase **🟢 EM DESENVOLVIMENTO** é autorizada para:
+- implementação
+- revisão
+- refinamento
+- correções estruturais
+
+Tudo não explicitamente descrito na fase ativa é:
+- fora de escopo | bloqueado | futuro | não autorizado
+
+Fases futuras servem apenas como:
+- referência arquitetural | entendimento contextual | compatibilidade estrutural
+- nunca como autorização de implementação antecipada.
+
+---
+
+# 🚨 FASE ATUAL DO PROJETO
+## FASE ATIVA
+
+🟢 **FASE 1** — Fundação e MVP Loja
+**Status: EM DESENVOLVIMENTO**
+**Início:** 2026-08-22 | **Fim estimado:** 2026-10-31
+
+Arquivo:
+- `/docs/phases/phases_00_10.md`
+
+---
+
+# 📌 DEFINIÇÕES DE STATUS DE FASE
+
+## 🔒 BLOQUEADA
+Fase futura que **não deve ser desenvolvida**.
+- Não implementar, não revisar, não refinar
+- Apenas referência arquitetural/compatibilidade
+- Exemplo: `# 🔒 FASE 3 — Escala e Multi-loja\n**Status: BLOQUEADA**`
+
+## 🟢 EM DESENVOLVIMENTO
+Fase ativa autorizada para:
+- Implementação
+- Revisão
+- Refinamento
+- Correções estruturais
+- Exemplo: `# 🟢 FASE 1 — Fundação e MVP Loja\n**Status: EM DESENVOLVIMENTO**`
+
+## ⚪ CONCLUÍDA
+Fase finalizada — **não reescrever, adaptar, modificar ou apagar**.
+- Código/estrutura consolidados
+- Apenas manutenção corretiva (bugs críticos)
+- Exemplo: `# ⚪ FASE 1 — Fundação e MVP Loja\n**Status: CONCLUÍDA**`
+
+---
+
+## Artefatos de Conclusão de Fase
+Ao concluir uma fase, o desenvolvedor deve registrar manualmente em `docs/phases/phases_mac.md`:
+1. **Marcos Importantes (Milestones)** — Data real, status, comparação planejado vs. realizado
+2. **Riscos e Mitigações** — Riscos materializados, novos riscos descobertos, mitigações aplicadas
+3. **Próximas Ações Imediatas** — Top 5-7 ações prioritárias para a próxima fase
+> O agente de IA **não deve** escrever em `docs/phases/phases_mac.md`. O agente apenas gera conteúdo bruto para revisão; o desenvolvedor inclui manualmente.
+
+## Referência Histórica
+Artefatos detalhados de todas as fases concluídas (marcos, riscos, sprints) estão em: `docs/phases/phases_mac.md`
+
+---
+
+# 🔧 MODOS DE EXECUÇÃO
+## IMPLEMENTAÇÃO
+Quando solicitado implementar:
+- executar apenas a fase ativa;
+- respeitar behavior/entities/tech;
+- usar mocks somente quando permitido;
+- manter separação de responsabilidades.
+
+### Backend
+- regras de negócio fora das rotas;
+- persistência desacoplada;
+- services obrigatórios;
+- validações centralizadas.
+
+### Frontend
+- UI desacoplada da regra de negócio;
+- componentes reutilizáveis;
+- responsividade obrigatória;
+- consistência visual.
+
+---
+
+## REVISÃO
+Quando solicitado revisar:
+- validar aderência à fase;
+- detectar antecipações;
+- revisar arquitetura;
+- revisar contratos;
+- classificar problemas:
+  - 🔴 crítico
+  - 🟡 médio
+  - 🟢 melhoria
+
+---
+
+## REFINAMENTO VISUAL
+Quando solicitado refinamento:
+- melhorar UX/UI;
+- preservar regras de negócio;
+- não alterar contratos;
+- respeitar design system;
+- melhorar legibilidade e hierarquia visual.
+
+---
+
+# 🚫 PROIBIÇÃO DE ESCRITA EM ARQUIVOS DE FASE
+O agente de IA **NÃO deve** escrever em:
+- `docs/phases/phases_mac.md`
+- `docs/phases/phases_XX_YY.md`
+- `docs/phases.md`
+
+Durante execução de fases, o agente apenas **gera conteúdo bruto** para revisão humana.
+O desenvolvedor inclui manualmente os artefatos nos arquivos apropriados.
+
+---
+
+# 📌 REGRA DE COMPATIBILIDADE
+O agente não deve:
+- quebrar contratos existentes;
+- remover estruturas utilizadas;
+- alterar comportamento consolidado;
+- gerar incompatibilidade sem documentação explícita da fase.
+
+---
+
+# 📌 REGRAS DE MOCK
+Mocks são permitidos SOMENTE quando:
+- dependência pertence a fase futura;
+- integração ainda não existe;
+- explicitamente permitido pela fase.
+
+---
+
+# 📌 REGRAS DE ARQUITETURA
+- frontend e backend devem funcionar desacoplados;
+- APIs não devem conter regra de negócio complexa;
+- backend centraliza domínio;
+- frontend apenas orquestra visualização;
+- persistência deve ser desacoplada.
+
+---
+
+# 📌 REGRAS DE QUALIDADE
+Toda implementação deve:
+- evitar duplicação;
+- manter tipagem consistente;
+- preservar escalabilidade;
+- evitar hardcodes;
+- seguir padrões do projeto.
+
+---
+
+# 📂 ORGANIZAÇÃO DAS FASES
+As fases estão distribuídas em:
+- `/docs/phases/phases_mac.md` (Marcos, Riscos & Ações — histórico de todas as fases)
+- `/docs/phases/phases_00_10.md` (Fases 0-10: Fundação, MVP, Gestão)
+- `/docs/phases/phases_11_20.md` (Fases 11-20: Escala, Multi-loja)
+- `/docs/phases/phases_21_30.md` (Fases 21-30: Inteligência, Ecossistema)
+- `/docs/phases/phases_31_40.md` (Reservado)
+- `/docs/phases/phases_41_50.md` (Reservado)
+
+---
+
+# 📐 ESTRUTURA OBRIGATÓRIA PARA ARQUIVOS DE FASE
+Todo arquivo em `/docs/phases/` DEVE seguir exatamente esta organização e ordem:
+
+## 1. Visão geral das fases
+Tabela com todas as fases do range coberto pelo arquivo:
 | Fase | Nome | Período | Foco Principal |
-|------|------|---------|----------------|
-| **1** | Fundação e MVP Loja | Ago–Out 2026 | Auth, Catálogo, Carrinho, Checkout, Pagamentos, Pedidos básicos |
-| **2** | Gestão Completa + Admin | Nov 2026–Jan 2027 | Estoque multi-depósito, Dashboard, Relatórios, NF-e, Configurações |
-| **3** | Escala e Multi-loja | Fev–Abr 2027 | Multi-tenant real, Marketplace sync, API pública, Webhooks gerenciáveis |
-| **4** | Inteligência e Ecossistema | Mai–Jul 2027 | IA (recomendação, previsão), App store, Extensibilidade, White-label |
+
+## 2. Por fase (ordem crescente de número)
+Para cada fase, obrigatoriamente:
+
+### Cabeçalho da fase (escolher status conforme caso):
+```markdown
+# 🔒 FASE X — Nome da fase
+**Status: BLOQUEADA**
+
+# 🟢 FASE X — Nome da fase
+**Status: EM DESENVOLVIMENTO**
+
+# ⚪ FASE X — Nome da fase
+**Status: CONCLUÍDA**
+```
+
+**Início:** YYYY-MM-DD | **Fim estimado:** YYYY-MM-DD
+
+#### Objetivo
+Descrição clara do objetivo da fase.
+
+#### Entregáveis (Definition of Done)
+Subdividido por camada (apenas as aplicáveis):
+- `### Infra & Shared`
+- `### Backend`
+- `### Frontend`
+- `### Deploy & Ops`
+
+Cada item como checkbox: `- [ ] Descrição técnica clara`
+
+### 2.3 Critérios de aceitação
+Lista numerada, testável, orientada a usuário:
+1. `Papel consegue: ação → resultado observável`
+
+## 3. Governança de fases (idêntica em todos os arquivos)
+- `## Transição de fase`
+- `## Mudanças estruturais durante fase`
+- `## Dívida técnica`
 
 ---
 
-## FASE 1 — Fundação e MVP Loja (Ativa)
-
-### Objetivo
-Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedidos básicos.
-
-### Entregáveis (Definition of Done)
-
-#### Infra & Shared
-- [ ] Monorepo configurado (pnpm, Biome, Husky, CI)
-- [ ] `packages/shared` com tipos, enums, schemas Zod do domínio core
-- [ ] Supabase project: PostgreSQL, Auth, Storage, Realtime
-- [ ] Prisma schema + migrations iniciais (entidades core)
-- [ ] Seed: perfis sistema (ADMIN, GESTOR, OPERADOR, ESTOQUISTA, CLIENTE)
-- [ ] CI: lint, typecheck, test, build, db migrate check
-
-#### Backend (`apps/api`)
-- [ ] Fastify bootstrap + plugins (cors, helmet, rate-limit, swagger)
-- [ ] Auth: JWT verify (JWKS Supabase), RBAC middleware, login/register/refresh
-- [ ] CRUD Produto/Categoria (admin)
-- [ ] Vitrine pública: listagem paginada, busca, filtros, detalhes
-- [ ] Carrinho API: create, add/remove/update item, apply cupom, get
-- [ ] Checkout API: calcular frete (CEP), criar pedido (transação atômica)
-- [ ] Pagamentos: integração Mercado Pago (PIX, cartão, boleto) + webhooks
-- [ ] Pedidos: listagem, detalhes, timeline, transição status (manual admin)
-- [ ] Webhooks: payment.approved/expired, idempotência, DLQ
-- [ ] Testes: unitários services/repositories (≥80%), integração auth/pedidos
-
-#### Frontend (`apps/web`)
-- [ ] Next.js 15 App Router + Tailwind 4 + shadcn/ui configurado
-- [ ] Design System: tokens (cores, spacing, typografia), componentes base
-- [ ] Loja pública:
-  - [ ] Home (hero, destaques, categorias)
-  - [ ] Listagem produtos (busca, filtros, paginação, grid)
-  - [ ] Detalhe produto (galeria, variação, preço, add carrinho, avaliações)
-  - [ ] Carrinho (drawer + página, cupom, estimativa frete)
-  - [ ] Checkout single-page (endereço, frete, pagamento, resumo)
-  - [ ] Conta cliente (login, pedidos, endereços, favoritos, perfil)
-- [ ] Admin (básico):
-  - [ ] Login admin (separado da loja)
-  - [ ] Dashboard: KPIs básicos (vendas dia, pedidos pendentes)
-  - [ ] Produtos: listagem, criar/editar (básico), ativar/inativar
-  - [ ] Pedidos: listagem, detalhes, alterar status
-- [ ] TanStack Query + services tipados (shared schemas)
-- [ ] Testes: unitários componentes críticos, E2E fluxo compra (Playwright)
-
-#### Deploy & Ops
-- [ ] Vercel (web): preview deployments, production
-- [ ] Render (api): auto-deploy main, health check, logs
-- [ ] Variáveis de ambiente configuradas (staging + prod)
-- [ ] Monitoramento básico: uptime, error rate, latency
-
-### Critérios de aceitação da fase
-1. Cliente anônimo consegue: buscar produto → adicionar carrinho → checkout → pagar PIX → receber confirmação
-2. Admin consegue: login → ver pedido → marcar como pago/enviado/entregue
-3. Zero erros de tipo (typecheck passa)
-4. Zero warnings de lint
-5. Testes E2E fluxo compra passam em CI
-6. Deploy staging funcional (web + api)
+**Regra de validação:** O agente DEVE verificar conformidade com esta estrutura ao criar ou atualizar qualquer arquivo em `/docs/phases/`. Não conformidade = bloqueio.
 
 ---
-
-## FASE 2 — Gestão Completa + Admin
-
-### Objetivo
-Operação completa: estoque real, relatórios, NF-e, configurações ricas, multi-depósito.
-
-### Entregáveis
-
-#### Backend
-- [ ] Estoque: multi-depósito, entrada/saída/transferência, reserva atômica, alertas, inventário
-- [ ] NF-e: emissão automática (integração provedor), XML/PDF no Storage, evento `ENVIADO`
-- [ ] Relatórios: materialized views (vendas diário, produtos top, estoque baixo, conciliação)
-- [ ] Configurações: frete (regras priorizadas), pagamentos (credenciais criptografadas), cupons, e-mails (templates MJML)
-- [ ] Rastreamento: webhook transportadoras, eventos append-only, notificação cliente
-- [ ] Jobs: conciliação diária, alertas estoque horário, relatórios agendados
-- [ ] Auditoria: trigger `audit_log` para ações críticas
-
-#### Frontend (Admin)
-- [ ] Estoque: dashboard (baixo, zerado), entrada (NF compra), saída, transferência, inventário
-- [ ] Relatórios: visualização + export CSV/PDF + agendamento e-mail
-- [ ] Configurações: abas (Loja, Frete, Pagamentos, Cupons, E-mails, Integrações)
-- [ ] Pedidos: timeline completa, imprimir etiqueta/NF-e, rastreamento
-- [ ] Usuários/Perfis: convite, atribuição por loja, RBAC visual
-
-#### Shared
-- [ ] Schemas/tipos expandidos: estoque, NF-e, relatórios, configurações
-
-### Critérios de aceitação
-1. Estoquista consegue: ver alertas → receber mercadoria (entrada NF) → separar pedido → inventário
-2. Financeiro consegue: conciliação diária automática + divergências em fila
-3. Gestor consegue: dashboard tempo real + relatórios agendados por e-mail
-4. NF-e emitida automaticamente ao marcar "Enviado"
-
----
-
-## FASE 3 — Escala e Multi-loja
-
-### Objetivo
-Multi-tenant real, sincronização marketplaces, API pública para parceiros.
-
-### Entregáveis
-- [ ] Multi-loja: isolamento RLS completo, onboarding self-service, planos/limites
-- [ ] Marketplace Sync: Mercado Livre / Shopee / Amazon (produtos, pedidos, estoque)
-- [ ] API Pública: OAuth2 para parceiros, rate limiting, documentação Scalar
-- [ ] Webhooks Gerenciáveis: UI para configurar URLs, secrets, retry, logs
-- [ ] Cache distribuído: Redis cluster, invalidação por tags
-- [ ] Observabilidade: OpenTelemetry, traces, dashboards Grafana
-
----
-
-## FASE 4 — Inteligência e Ecossistema
-
-### Objetivo
-IA nativa, marketplace de apps, white-label, expansão internacional.
-
-### Entregáveis
-- [ ] Recomendação: "Compre junto", "Quem viu viu", personalização home
-- [ ] Previsão: demanda (reposição), churn, LTV, sazonalidade
-- [ ] App Store: SDK para extensões, marketplace interno, revenue share
-- [ ] White-label: multi-brand, domínios ilimitados, customização profunda
-- [ ] Internacionalização: multi-moeda, multi-idioma, tax compliance (LatAm/EU)
-
----
-
-## Governança de fases
-
-### Transição de fase
-- Apenas quando **todos** critérios de aceitação da fase atual atendidos
-- Aprovação: Tech Lead + Product Owner
-- Documentação atualizada (`phases.md`, `CHANGELOG.md`)
-- Tag semver: `v1.0.0` (fim F1), `v2.0.0` (fim F2), etc.
-
-### Mudanças estruturais durante fase
-- Permitidas: refatorações internas, otimizações, bug fixes
-- **Não permitidas**: alterar contratos de API (breaking), remover entidades, mudar arquitetura de camadas
-- Exceções requerem: ADR (Architecture Decision Record) + aprovação Tech Lead
-
-### Dívida técnica
-- Registrada em `TECH_DEBT.md` na raiz
-- Priorizada na fase seguinte (máx 20% capacity)
-- Não bloqueia transição se critérios de aceitação atendidos
-
----
-
-## Marcos importantes (Milestones)
-
-| Marco | Data Alvo | Fase |
-|-------|-----------|------|
-| Monorepo + CI funcionando | 2026-08-29 | 1 |
-| Auth + RBAC funcionando | 2026-09-05 | 1 |
-| Vitrine + Carrinho + Checkout | 2026-09-26 | 1 |
-| Pagamentos (PIX + Cartão + Boleto) | 2026-10-10 | 1 |
-| Pedidos + Admin básico | 2026-10-24 | 1 |
-| **Fase 1 Done** | **2026-10-31** | **1** |
-| Estoque multi-depósito | 2026-11-21 | 2 |
-| NF-e automática | 2026-12-12 | 2 |
-| Relatórios + Configurações | 2027-01-09 | 2 |
-| **Fase 2 Done** | **2027-01-23** | **2** |
-
----
-
-## Riscos e mitigações (Fase 1)
-
-| Risco | Probabilidade | Impacto | Mitigação |
-|-------|---------------|---------|-----------|
-| Complexidade Pagamentos (webhooks, idempotência) | Alta | Alto | Spike técnico semana 1; provider abstraction; testes de contrato |
-| Performance busca/filtros (full-text + trigram) | Média | Médio | Índices GIN + tsvector; paginação cursor; cache Redis |
-| Multi-tenant RLS (isolamento dados) | Média | Crítico | Políticas RLS desde migration 1; testes de isolamento automatizados |
-| Design System consistência | Baixa | Médio | shadcn/ui base; tokens centralizados; storybook (futuro) |
-| Deploy Vercel + Render sincronizado | Baixa | Baixo | Variáveis compartilhadas via `.env.example`; health checks |
-
----
-
-## Próximas ações imediatas (Sprint 1)
-1. [ ] Configurar monorepo: pnpm-workspace, Biome, Husky, GitHub Actions
-2. [ ] Criar `packages/shared` com tipos/enums/schemas core
-3. [ ] Provisionar Supabase (dev + staging)
-4. [ ] Prisma schema inicial + migrate + seed perfis
-5. [ ] Fastify bootstrap + auth middleware + health check
-6. [ ] Next.js bootstrap + Tailwind 4 + shadcn/ui + providers
-7. [ ] CI pipeline passando (lint, typecheck, test, build)

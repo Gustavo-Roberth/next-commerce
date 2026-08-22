@@ -66,9 +66,9 @@ pnpm db:seed
 - **Comunicação** — HTTP/REST + JSON via contratos shared
 
 ## Agents Específicos
-- `apps/web/agents/AGENTS.md` — Instruções frontend
-- `apps/api/agents/AGENTS.md` — Instruções backend
-- `packages/shared/agents/AGENTS.md` — Instruções shared
+- `apps/web/agents/agent.md` — Instruções frontend
+- `apps/api/agents/agent.md` — Instruções backend
+- `packages/shared/agents/agent.md` — Instruções shared
 
 ## Fase Atual
 **FASE 1 — Fundação e MVP Loja** (Ago–Out 2026)
