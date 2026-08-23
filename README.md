@@ -90,10 +90,11 @@
 - Utils: cn() para className merging (clsx + tailwind-merge)
 - class-variance-authority para variantes de componentes
 
-**13. Frontend bootstrap (apps/web)**
+**13. Frontend Storefront (apps/web)**
 - Next.js 15 (App Router) + Tailwind CSS 4
-- layout.tsx, globals.css (design tokens), page.tsx inicial
-- rewrites /api/backend → API_URL (condicional quando env ausente)
+- Layout da loja: Header, Footer, ProductCard, ProductGrid, CartDrawer
+- Páginas: Home, Listagem de produtos (/produtos), Detalhe do produto (/produtos/[slug]), Carrinho (/carrinho), Checkout (/checkout)
+- Rewrites /api/backend → API_URL (condicional quando env ausente)
 
 **14. Quality Gates — todos verdes**
 - lint ✅ | typecheck ✅ | test ✅ (31 testes) | build ✅
@@ -110,10 +111,10 @@
 - Cart routes suportam usuário autenticado + sessão anônima
 - Checkout integra Mercado Pago (preference + PIX)
 - Webhook Mercado Pago atualiza pedido/pagamento automaticamente
+- ProductCard suporta tanto Produto quanto ProdutoDestaque (type guard)
 
 ### ⏳ Pendente (Fase 1)
-Loja pública (Home, Listagem, Detalhe, Carrinho, Checkout, Conta) ·
-Admin (Login, Dashboard, Produtos, Pedidos) ·
+Design System/shadcn-ui completo · Loja pública completa · Admin (Login, Dashboard, Produtos, Pedidos) ·
 TanStack Query + services tipados · E2E · CI/CD · Deploy
 
 ---

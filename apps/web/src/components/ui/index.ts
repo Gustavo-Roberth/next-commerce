@@ -7,3 +7,5 @@ export * from './avatar';
 export * from './dropdown-menu';
 export * from './dialog';
 export * from './toast';
+export * from './radio-group';
+export * from './tabs';
