@@ -11,7 +11,9 @@ import { authRoutes } from './auth/routes.js';
 import { cartRoutes } from './cart/routes.js';
 import { categoryRoutes } from './categories/routes.js';
 import { checkoutRoutes } from './checkout/routes.js';
+import { orderRoutes } from './orders/routes.js';
 import { productRoutes } from './products/routes.js';
+import { webhookRoutes } from './webhooks/routes.js';
 
 config();
 
@@ -78,6 +80,8 @@ async function initialize() {
   await app.register(productRoutes, { prefix: '/api/v1' });
   await app.register(cartRoutes, { prefix: '/api/v1' });
   await app.register(checkoutRoutes, { prefix: '/api/v1' });
+  await app.register(orderRoutes, { prefix: '/api/v1' });
+  await app.register(webhookRoutes, { prefix: '/api/v1' });
 
   const port = Number(process.env.PORT) || 3001;
   await app.listen({ port, host: '0.0.0.0' });

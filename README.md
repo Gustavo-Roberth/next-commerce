@@ -1,4 +1,4 @@
-# Notas de Atualização 0.0.1
+# Notas de Atualização 0.0.5
 
 ## FASE 1 — Fundação e MVP Loja
 ### ✅ Concluído nesta fase
@@ -69,12 +69,27 @@
 - Integração Mercado Pago: criação de preference, geração de URL de pagamento, PIX QR code
 - Idempotency key para pagamentos
 
-**10. Frontend bootstrap (apps/web)**
+**10. Pedidos (apps/api)**
+- GET /api/v1/pedidos (listagem paginada com filtros por status, data, cliente)
+- GET /api/v1/pedidos/:id (detalhe completo com itens, endereços, cupom, pagamentos, eventos)
+- PUT /api/v1/pedidos/:id/status (atualizar status - ADMIN/GESTOR/OPERADOR, valida transições)
+- POST /api/v1/pedidos/:id/cancelar (cancelar pedido - cliente ou admin, libera estoque, estorna pagamento)
+- Máquina de estados de status: CRIADO → PAGAMENTO_PENDENTE → PAGO → SEPARANDO → ENVIADO → ENTREGUE / CANCELADO
+- Eventos de auditoria automáticos
+
+**11. Webhooks (apps/api)**
+- POST /api/v1/webhooks/mercado-pago (processa notificações de pagamento)
+- Atualiza status do pagamento (APROVADO, RECUSADO, EXPIRADO, ESTORNADO, PROCESSANDO)
+- Atualiza status do pedido automaticamente (PAGO → libera estoque, RECUSADO/EXPIRADO → cancela)
+- Deduplicação via idempotency_key
+- Cria eventos de auditoria
+
+**12. Frontend bootstrap (apps/web)**
 - Next.js 15 (App Router) + Tailwind CSS 4 (@tailwindcss/postcss)
 - layout.tsx, globals.css (design tokens), page.tsx inicial
 - rewrites /api/backend → API_URL (condicional quando env ausente)
 
-**11. Quality Gates — todos verdes**
+**13. Quality Gates — todos verdes**
 - lint ✅ | typecheck ✅ | test ✅ (31 testes) | build ✅
 
 ### 🔧 Ajustes técnicos importantes
@@ -88,9 +103,9 @@
 - Token JWT inclui nome_completo para uso no checkout
 - Cart routes suportam usuário autenticado + sessão anônima
 - Checkout integra Mercado Pago (preference + PIX)
+- Webhook Mercado Pago atualiza pedido/pagamento automaticamente
 
 ### ⏳ Pendente (Fase 1)
-Pedidos: listar/detalhe/cancelar + Webhooks (Mercado Pago) ·
 Design System/shadcn-ui · Loja pública · Admin ·
 TanStack Query · E2E · CI/CD · Deploy
 
