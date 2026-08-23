@@ -1,0 +1,149 @@
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  GESTOR = 'GESTOR',
+  OPERADOR = 'OPERADOR',
+  ESTOQUISTA = 'ESTOQUISTA',
+  CLIENTE = 'CLIENTE',
+}
+
+export enum PerfilCodigo {
+  ADMIN = 'ADMIN',
+  GESTOR = 'GESTOR',
+  OPERADOR = 'OPERADOR',
+  ESTOQUISTA = 'ESTOQUISTA',
+  CLIENTE = 'CLIENTE',
+}
+
+export enum OrderStatus {
+  CRIADO = 'CRIADO',
+  PAGAMENTO_PENDENTE = 'PAGAMENTO_PENDENTE',
+  PAGO = 'PAGO',
+  SEPARANDO = 'SEPARANDO',
+  ENVIADO = 'ENVIADO',
+  ENTREGUE = 'ENTREGUE',
+  CANCELADO = 'CANCELADO',
+}
+
+export enum PaymentStatus {
+  INICIADO = 'INICIADO',
+  PROCESSANDO = 'PROCESSANDO',
+  APROVADO = 'APROVADO',
+  RECUSADO = 'RECUSADO',
+  EXPIRADO = 'EXPIRADO',
+  ESTORNADO = 'ESTORNADO',
+}
+
+export enum PaymentMethod {
+  PIX = 'PIX',
+  CARTAO_CREDITO = 'CARTAO_CREDITO',
+  CARTAO_DEBITO = 'CARTAO_DEBITO',
+  BOLETO = 'BOLETO',
+}
+
+export enum PaymentGateway {
+  MERCADO_PAGO = 'MERCADO_PAGO',
+  STRIPE = 'STRIPE',
+  PIX_GATEWAY = 'PIX_GATEWAY',
+  BOLETO_GATEWAY = 'BOLETO_GATEWAY',
+}
+
+export enum ProductStatus {
+  RASCUNHO = 'RASCUNHO',
+  ATIVO = 'ATIVO',
+  INATIVO = 'INATIVO',
+  ARQUIVADO = 'ARQUIVADO',
+}
+
+export enum CategoryStatus {
+  ATIVA = 'ATIVA',
+  INATIVA = 'INATIVA',
+}
+
+export enum CupomStatus {
+  ATIVO = 'ATIVO',
+  EXPIRADO = 'EXPIRADO',
+  ESGOTADO = 'ESGOTADO',
+  DESATIVADO = 'DESATIVADO',
+}
+
+export enum CupomType {
+  PERCENTUAL = 'PERCENTUAL',
+  VALOR_FIXO = 'VALOR_FIXO',
+  FRETE_GRATIS = 'FRETE_GRATIS',
+}
+
+export enum EnderecoTipo {
+  ENTREGA = 'ENTREGA',
+  COBRANCA = 'COBRANCA',
+  RETIRADA = 'RETIRADA',
+}
+
+export enum EstoqueMovimentoTipo {
+  ENTRADA_COMPRA = 'ENTRADA_COMPRA',
+  ENTRADA_DEVOLUCAO = 'ENTRADA_DEVOLUCAO',
+  ENTRADA_AJUSTE = 'ENTRADA_AJUSTE',
+  SAIDA_VENDA = 'SAIDA_VENDA',
+  SAIDA_PERDA = 'SAIDA_PERDA',
+  SAIDA_DOACAO = 'SAIDA_DOACAO',
+  SAIDA_AJUSTE = 'SAIDA_AJUSTE',
+  TRANSFERENCIA_SAIDA = 'TRANSFERENCIA_SAIDA',
+  TRANSFERENCIA_ENTRADA = 'TRANSFERENCIA_ENTRADA',
+  RESERVA = 'RESERVA',
+  LIBERACAO_RESERVA = 'LIBERACAO_RESERVA',
+}
+
+export enum EstoqueReferenciaTipo {
+  PEDIDO = 'PEDIDO',
+  NOTA_COMPRA = 'NOTA_COMPRA',
+  AJUSTE = 'AJUSTE',
+  INVENTARIO = 'INVENTARIO',
+  TRANSFERENCIA = 'TRANSFERENCIA',
+}
+
+export enum ProdutoAtributoTipo {
+  COR = 'COR',
+  TAMANHO = 'TAMANHO',
+  VOLTAGEM = 'VOLTAGEM',
+  PERSONALIZADO = 'PERSONALIZADO',
+}
+
+export enum FreteTipo {
+  CORREIOS = 'CORREIOS',
+  TRANSPORTADORA = 'TRANSPORTADORA',
+  TABELA_PRECO = 'TABELA_PRECO',
+  GRATIS_VALOR = 'GRATIS_VALOR',
+  GRATIS_REGIAO = 'GRATIS_REGIAO',
+}
+
+export enum Transportadora {
+  CORREIOS = 'CORREIOS',
+  JADLOG = 'JADLOG',
+  MELHOR_ENVIO = 'MELHOR_ENVIO',
+}
+
+export enum RastreamentoStatus {
+  COLETADO = 'COLETADO',
+  EM_TRANSITO = 'EM_TRANSITO',
+  SAIU_ENTREGA = 'SAIU_ENTREGA',
+  ENTREGUE = 'ENTREGUE',
+  DEVOLVIDO = 'DEVOLVIDO',
+}
+
+export enum AvaliacaoStatus {
+  PENDENTE = 'PENDENTE',
+  APROVADA = 'APROVADA',
+  REJEITADA = 'REJEITADA',
+}
+
+export enum WebhookEventType {
+  PAYMENT_APPROVED = 'payment.approved',
+  PAYMENT_EXPIRED = 'payment.expired',
+  PAYMENT_REJECTED = 'payment.rejected',
+  SHIPPING_UPDATE = 'shipping.update',
+}
+
+export enum IdempotencyKeyScope {
+  PAYMENT = 'payment',
+  ORDER = 'order',
+  WEBHOOK = 'webhook',
+}

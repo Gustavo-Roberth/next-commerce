@@ -1,0 +1,927 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  GESTOR
+  OPERADOR
+  ESTOQUISTA
+  CLIENTE
+}
+
+enum PerfilCodigo {
+  ADMIN
+  GESTOR
+  OPERADOR
+  ESTOQUISTA
+  CLIENTE
+}
+
+enum OrderStatus {
+  CRIADO
+  PAGAMENTO_PENDENTE
+  PAGO
+  SEPARANDO
+  ENVIADO
+  ENTREGUE
+  CANCELADO
+}
+
+enum PaymentStatus {
+  INICIADO
+  PROCESSANDO
+  APROVADO
+  RECUSADO
+  EXPIRADO
+  ESTORNADO
+}
+
+enum PaymentMethod {
+  PIX
+  CARTAO_CREDITO
+  CARTAO_DEBITO
+  BOLETO
+}
+
+enum PaymentGateway {
+  MERCADO_PAGO
+  STRIPE
+  PIX_GATEWAY
+  BOLETO_GATEWAY
+}
+
+enum ProductStatus {
+  RASCUNHO
+  ATIVO
+  INATIVO
+  ARQUIVADO
+}
+
+enum CategoryStatus {
+  ATIVA
+  INATIVA
+}
+
+enum CupomStatus {
+  ATIVO
+  EXPIRADO
+  ESGOTADO
+  DESATIVADO
+}
+
+enum CupomType {
+  PERCENTUAL
+  VALOR_FIXO
+  FRETE_GRATIS
+}
+
+enum EnderecoTipo {
+  ENTREGA
+  COBRANCA
+  RETIRADA
+}
+
+enum EstoqueMovimentoTipo {
+  ENTRADA_COMPRA
+  ENTRADA_DEVOLUCAO
+  ENTRADA_AJUSTE
+  SAIDA_VENDA
+  SAIDA_PERDA
+  SAIDA_DOACAO
+  SAIDA_AJUSTE
+  TRANSFERENCIA_SAIDA
+  TRANSFERENCIA_ENTRADA
+  RESERVA
+  LIBERACAO_RESERVA
+}
+
+enum EstoqueReferenciaTipo {
+  PEDIDO
+  NOTA_COMPRA
+  AJUSTE
+  INVENTARIO
+  TRANSFERENCIA
+}
+
+enum ProdutoAtributoTipo {
+  COR
+  TAMANHO
+  VOLTAGEM
+  PERSONALIZADO
+}
+
+enum FreteTipo {
+  CORREIOS
+  TRANSPORTADORA
+  TABELA_PRECO
+  GRATIS_VALOR
+  GRATIS_REGIAO
+}
+
+enum Transportadora {
+  CORREIOS
+  JADLOG
+  MELHOR_ENVIO
+}
+
+enum RastreamentoStatus {
+  COLETADO
+  EM_TRANSITO
+  SAIU_ENTREGA
+  ENTREGUE
+  DEVOLVIDO
+}
+
+enum AvaliacaoStatus {
+  PENDENTE
+  APROVADA
+  REJEITADA
+}
+
+enum WebhookEventType {
+  PAYMENT_APPROVED
+  PAYMENT_EXPIRED
+  PAYMENT_REJECTED
+  SHIPPING_UPDATE
+}
+
+enum IdempotencyKeyScope {
+  PAYMENT
+  ORDER
+  WEBHOOK
+}
+
+model Usuario {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  nome_completo     String
+  telefone          String?
+  cpf_cnpj          String?   @unique
+  avatar_url        String?
+  senha_hash        String
+  ultimo_login_em   DateTime?
+  ativo             Boolean   @default(true)
+  email_verificado_em DateTime?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+  deleted_at        DateTime?
+
+  perfis            UsuarioPerfil[]
+  enderecos         Endereco[]
+  pedidos           Pedido[]  @relation("PedidoCliente")
+  avaliacoes        Avaliacao[]
+  favoritos         Favorito[]
+  carrinhos         Carrinho[]
+  estoque_movimentos EstoqueMovimento[]
+  usuario_perfis_atribuidos UsuarioPerfil[] @relation("UsuarioPerfilAtribuidoPor")
+  pedido_eventos    PedidoEvento[]
+  webhook_events    WebhookEvent[]
+  audit_logs        AuditLog[]
+
+  @@index([email])
+  @@index([cpf_cnpj])
+  @@index([ativo])
+}
+
+model Perfil {
+  id          String   @id @default(uuid())
+  codigo      PerfilCodigo @unique
+  nome        String
+  descricao   String?
+  permissoes  Json
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  deleted_at  DateTime?
+
+  usuarios    UsuarioPerfil[]
+
+  @@index([codigo])
+}
+
+model UsuarioPerfil {
+  id            String   @id @default(uuid())
+  usuario_id    String
+  perfil_id     String
+  loja_id       String
+  ativo         Boolean  @default(true)
+  atribuido_por_id String?
+  atribuido_em  DateTime @default(now())
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  deleted_at    DateTime?
+
+  usuario       Usuario  @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  perfil        Perfil   @relation(fields: [perfil_id], references: [id], onDelete: Cascade)
+  loja          Loja     @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+  atribuido_por Usuario? @relation("UsuarioPerfilAtribuidoPor", fields: [atribuido_por_id], references: [id], onDelete: SetNull)
+
+  @@unique([usuario_id, perfil_id, loja_id])
+  @@index([usuario_id])
+  @@index([loja_id])
+  @@index([perfil_id])
+  @@index([ativo])
+}
+
+model Loja {
+  id                   String   @id @default(uuid())
+  nome                 String
+  slug                 String   @unique
+  dominio_customizado  String?  @unique
+  logo_url             String?
+  cores_tema           Json     @default("{}")
+  configuracoes_seo    Json     @default("{}")
+  ativa                Boolean  @default(true)
+  plano_id             String?
+  trial_ate            DateTime?
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+  deleted_at           DateTime?
+
+  usuarios             UsuarioPerfil[]
+  produtos             Produto[]
+  categorias           Categoria[]
+  pedidos              Pedido[]
+  configuracoes_frete  ConfiguracaoFrete[]
+  configuracoes_pagamento ConfiguracaoPagamento[]
+  cupons               Cupom[]
+  depositos            Deposito[]
+  estoques             Estoque[]
+  avaliacoes           Avaliacao[]
+  favoritos            Favorito[]
+  carrinhos            Carrinho[]
+  webhook_events       WebhookEvent[]
+  audit_logs           AuditLog[]
+  produto_atributos    ProdutoAtributo[]
+  estoque_movimentos   EstoqueMovimento[]
+
+  @@index([slug])
+  @@index([ativa])
+}
+
+model Categoria {
+  id               String   @id @default(uuid())
+  loja_id          String
+  nome             String
+  slug             String
+  descricao        String?
+  imagem_url       String?
+  pai_id           String?
+  ordem_exibicao   Int      @default(0)
+  ativa            Boolean  @default(true)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+  deleted_at       DateTime?
+
+  loja             Loja     @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+  pai              Categoria? @relation("CategoriaFilhos", fields: [pai_id], references: [id], onDelete: SetNull)
+  filhos           Categoria[] @relation("CategoriaFilhos")
+  produtos         Produto[]
+
+  @@unique([loja_id, slug])
+  @@index([loja_id])
+  @@index([pai_id])
+  @@index([ativa])
+}
+
+model Endereco {
+  id              String       @id @default(uuid())
+  usuario_id      String
+  tipo            EnderecoTipo
+  cep             String
+  logradouro      String
+  numero          String
+  complemento     String?
+  bairro          String
+  cidade          String
+  uf              String
+  pais            String       @default("BRA")
+  principal       Boolean      @default(false)
+  apelido         String?
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+  deleted_at      DateTime?
+
+  usuario         Usuario      @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  pedidos_entrega Pedido[]     @relation("PedidoEnderecoEntrega")
+  pedidos_cobranca Pedido[]    @relation("PedidoEnderecoCobranca")
+
+  @@index([usuario_id])
+  @@index([cep])
+  @@index([tipo])
+}
+
+model Produto {
+  id                   String         @id @default(uuid())
+  loja_id              String
+  categoria_id         String
+  nome                 String
+  slug                 String
+  descricao_curta      String?
+  descricao_completa   String?
+  sku                  String
+  codigo_barras        String?        @unique
+  ncm                  String?
+  cest                 String?
+  origem_mercadoria    Int?
+  peso_bruto_kg        Decimal?       @db.Decimal(10, 3)
+  peso_liquido_kg      Decimal?       @db.Decimal(10, 3)
+  dimensoes_cm         Json?
+  ativo                Boolean        @default(true)
+  destaque             Boolean        @default(false)
+  permite_avaliacao    Boolean        @default(true)
+  meta_title           String?
+  meta_description     String?
+  publicado_em         DateTime?
+  status               ProductStatus  @default(RASCUNHO)
+  created_at           DateTime       @default(now())
+  updated_at           DateTime       @updatedAt
+  deleted_at           DateTime?
+
+  loja                 Loja           @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+  categoria            Categoria      @relation(fields: [categoria_id], references: [id], onDelete: Restrict)
+  variacoes            ProdutoVariacao[]
+  imagens              ProdutoImagem[]
+  itens_carrinho       ItemCarrinho[]
+  itens_pedido         ItemPedido[]
+  avaliacoes           Avaliacao[]
+  favoritos            Favorito[]
+  estoque_movimentos   EstoqueMovimento[]
+
+  @@unique([loja_id, sku])
+  @@unique([loja_id, slug])
+  @@index([loja_id])
+  @@index([categoria_id])
+  @@index([ativo])
+  @@index([status])
+  @@index([destaque])
+}
+
+model ProdutoVariacao {
+  id                String   @id @default(uuid())
+  produto_id        String
+  sku               String
+  nome              String
+  codigo_barras     String?  @unique
+  preco_cents       Int?
+  custo_cents       Int?
+  peso_bruto_kg     Decimal? @db.Decimal(10, 3)
+  peso_liquido_kg   Decimal? @db.Decimal(10, 3)
+  dimensoes_cm      Json?
+  ativo             Boolean  @default(true)
+  ordem_exibicao    Int      @default(0)
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  deleted_at        DateTime?
+
+  produto           Produto  @relation(fields: [produto_id], references: [id], onDelete: Cascade)
+  atributos         ProdutoVariacaoAtributo[]
+  estoques          Estoque[]
+  itens_carrinho    ItemCarrinho[]
+  itens_pedido      ItemPedido[]
+  estoque_movimentos EstoqueMovimento[]
+  imagens           ProdutoImagem[]
+  favoritos         Favorito[]
+
+  @@unique([produto_id, sku])
+  @@index([produto_id])
+  @@index([sku])
+  @@index([ativo])
+}
+
+model ProdutoAtributo {
+  id          String               @id @default(uuid())
+  loja_id     String
+  nome        String
+  tipo        ProdutoAtributoTipo
+  valores     Json
+  created_at  DateTime             @default(now())
+  updated_at  DateTime             @updatedAt
+  deleted_at  DateTime?
+
+  loja        Loja                 @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+  variacoes   ProdutoVariacaoAtributo[]
+
+  @@index([loja_id])
+}
+
+model ProdutoVariacaoAtributo {
+  id            String   @id @default(uuid())
+  variacao_id   String
+  atributo_id   String
+  valor         String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  variacao      ProdutoVariacao @relation(fields: [variacao_id], references: [id], onDelete: Cascade)
+  atributo      ProdutoAtributo @relation(fields: [atributo_id], references: [id], onDelete: Cascade)
+
+  @@unique([variacao_id, atributo_id])
+  @@index([variacao_id])
+  @@index([atributo_id])
+}
+
+model ProdutoImagem {
+  id          String   @id @default(uuid())
+  produto_id  String
+  variacao_id String?
+  url         String
+  alt_text    String?
+  principal   Boolean  @default(false)
+  ordem       Int      @default(0)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  produto     Produto  @relation(fields: [produto_id], references: [id], onDelete: Cascade)
+  variacao    ProdutoVariacao? @relation(fields: [variacao_id], references: [id], onDelete: Cascade)
+
+  @@index([produto_id])
+  @@index([variacao_id])
+  @@index([principal])
+}
+
+model Pedido {
+  id                   String        @id @default(uuid())
+  loja_id              String
+  cliente_id           String
+  numero_sequencial    Int
+  status               OrderStatus   @default(CRIADO)
+  subtotal_cents       Int
+  desconto_cents       Int            @default(0)
+  frete_cents          Int            @default(0)
+  total_cents          Int
+  cupom_id             String?
+  endereco_entrega_id  String
+  endereco_cobranca_id String
+  observacoes_cliente  String?
+  observacoes_internas String?
+  pago_em              DateTime?
+  enviado_em           DateTime?
+  entregue_em          DateTime?
+  cancelado_em         DateTime?
+  cancelamento_motivo  String?
+  created_at           DateTime      @default(now())
+  updated_at           DateTime      @updatedAt
+  deleted_at           DateTime?
+
+  loja                 Loja          @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+  cliente              Usuario       @relation("PedidoCliente", fields: [cliente_id], references: [id], onDelete: Restrict)
+  cupom                Cupom?        @relation(fields: [cupom_id], references: [id], onDelete: SetNull)
+  endereco_entrega     Endereco      @relation("PedidoEnderecoEntrega", fields: [endereco_entrega_id], references: [id], onDelete: Restrict)
+  endereco_cobranca    Endereco      @relation("PedidoEnderecoCobranca", fields: [endereco_cobranca_id], references: [id], onDelete: Restrict)
+  itens                ItemPedido[]
+  pagamentos           Pagamento[]
+  eventos              PedidoEvento[]
+  notas_fiscais        NotaFiscal[]
+  rastreamento         TransportadoraRastreamento?
+  avaliacoes           Avaliacao[]
+
+  @@unique([loja_id, numero_sequencial])
+  @@index([loja_id])
+  @@index([cliente_id])
+  @@index([status])
+  @@index([created_at])
+  @@index([cupom_id])
+}
+
+model ItemPedido {
+  id                  String   @id @default(uuid())
+  pedido_id           String
+  produto_id          String
+  variacao_id         String
+  nome_produto        String
+  sku                 String
+  quantidade          Int
+  preco_unitario_cents Int
+  total_cents         Int
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  pedido              Pedido   @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+  produto             Produto  @relation(fields: [produto_id], references: [id], onDelete: Restrict)
+  variacao            ProdutoVariacao @relation(fields: [variacao_id], references: [id], onDelete: Restrict)
+
+  @@index([pedido_id])
+  @@index([produto_id])
+  @@index([variacao_id])
+}
+
+model Pagamento {
+  id                      String          @id @default(uuid())
+  pedido_id               String
+  gateway                 PaymentGateway
+  metodo                  PaymentMethod
+  status                  PaymentStatus   @default(INICIADO)
+  valor_cents             Int
+  parcelas                Int             @default(1)
+  juros_cents             Int             @default(0)
+  idempotency_key         String          @unique
+  gateway_transaction_id  String?
+  gateway_response        Json?
+  webhook_received_at     DateTime?
+  aprovado_em             DateTime?
+  estornado_em            DateTime?
+  created_at              DateTime        @default(now())
+  updated_at              DateTime        @updatedAt
+  deleted_at              DateTime?
+
+  pedido                  Pedido          @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+  eventos                 PagamentoEvento[]
+
+  @@index([pedido_id])
+  @@index([status])
+  @@index([gateway])
+  @@index([idempotency_key])
+  @@index([created_at])
+}
+
+model PagamentoEvento {
+  id                  String   @id @default(uuid())
+  pagamento_id        String
+  tipo                String
+  descricao           String
+  gateway_response    Json?
+  created_at          DateTime @default(now())
+
+  pagamento           Pagamento @relation(fields: [pagamento_id], references: [id], onDelete: Cascade)
+
+  @@index([pagamento_id])
+  @@index([tipo])
+}
+
+model Cupom {
+  id                        String       @id @default(uuid())
+  loja_id                   String
+  codigo                    String
+  nome                      String
+  tipo                      CupomType
+  valor                     Int
+  valor_minimo_pedido_cents Int?
+  uso_maximo_total          Int?
+  uso_maximo_por_cliente    Int?
+  uso_atual                 Int          @default(0)
+  valido_de                 DateTime
+  valido_ate                DateTime
+  categorias_aplicaveis     String[]   @default([])
+  produtos_aplicaveis       String[]   @default([])
+  primeira_compra_only      Boolean      @default(false)
+  ativo                     Boolean      @default(true)
+  status                    CupomStatus  @default(ATIVO)
+  created_at                DateTime     @default(now())
+  updated_at                DateTime     @updatedAt
+  deleted_at                DateTime?
+
+  loja                      Loja         @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+  pedidos                   Pedido[]
+
+  @@unique([loja_id, codigo])
+  @@index([loja_id])
+  @@index([codigo])
+  @@index([ativo])
+  @@index([status])
+  @@index([valido_de, valido_ate])
+}
+
+model Estoque {
+  id                  String   @id @default(uuid())
+  loja_id             String
+  variacao_id         String
+  deposito_id         String
+  quantidade_fisica   Int      @default(0)
+  quantidade_reservada Int      @default(0)
+  quantidade_minima   Int      @default(0)
+  quantidade_maxima   Int?
+  custo_medio_cents   Int      @default(0)
+  atualizado_em       DateTime @default(now())
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  deleted_at          DateTime?
+
+  loja                Loja     @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+  variacao            ProdutoVariacao @relation(fields: [variacao_id], references: [id], onDelete: Cascade)
+  deposito            Deposito @relation(fields: [deposito_id], references: [id], onDelete: Cascade)
+  movimentos          EstoqueMovimento[]
+
+  @@unique([variacao_id, deposito_id])
+  @@index([loja_id])
+  @@index([variacao_id])
+  @@index([deposito_id])
+}
+
+model Deposito {
+  id              String   @id @default(uuid())
+  loja_id         String
+  nome            String
+  codigo          String
+  endereco_completo String
+  padrao          Boolean  @default(false)
+  ativo           Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  deleted_at      DateTime?
+
+  loja            Loja     @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+  estoques        Estoque[]
+  estoque_movimentos EstoqueMovimento[]
+  movimentos_origem  EstoqueMovimento[] @relation("EstoqueMovimentoOrigem")
+  movimentos_destino EstoqueMovimento[] @relation("EstoqueMovimentoDestino")
+
+  @@unique([loja_id, codigo])
+  @@index([loja_id])
+  @@index([padrao])
+  @@index([ativo])
+}
+
+model EstoqueMovimento {
+  id                    String                @id @default(uuid())
+  loja_id               String
+  variacao_id           String
+  deposito_id           String
+  tipo                  EstoqueMovimentoTipo
+  quantidade            Int
+  custo_unitario_cents  Int?
+  referencia_tipo       EstoqueReferenciaTipo
+  referencia_id         String?
+  usuario_id            String?
+  observacao            String?
+  created_at            DateTime              @default(now())
+
+  loja                  Loja                  @relation(fields: [loja_id], references: [id], onDelete: Cascade, map: "EstoqueMovimento_loja_fkey")
+  variacao              ProdutoVariacao       @relation(fields: [variacao_id], references: [id], onDelete: Cascade, map: "EstoqueMovimento_variacao_fkey")
+  deposito              Deposito              @relation(fields: [deposito_id], references: [id], onDelete: Cascade, map: "EstoqueMovimento_deposito_fkey")
+  estoque               Estoque?              @relation(fields: [variacao_id, deposito_id], references: [variacao_id, deposito_id], map: "EstoqueMovimento_estoque_fkey")
+  deposito_origem       Deposito?             @relation("EstoqueMovimentoOrigem", fields: [deposito_id], references: [id], onDelete: SetNull, map: "EstoqueMovimento_deposito_origem_fkey")
+  deposito_destino      Deposito?             @relation("EstoqueMovimentoDestino", fields: [deposito_id], references: [id], onDelete: SetNull, map: "EstoqueMovimento_deposito_destino_fkey")
+  produto               Produto?              @relation(fields: [variacao_id], references: [id], onDelete: SetNull, map: "EstoqueMovimento_produto_fkey")
+  usuario               Usuario?              @relation(fields: [usuario_id], references: [id], onDelete: SetNull, map: "EstoqueMovimento_usuario_fkey")
+
+  @@index([loja_id])
+  @@index([variacao_id])
+  @@index([deposito_id])
+  @@index([tipo])
+  @@index([referencia_tipo, referencia_id])
+  @@index([created_at])
+  @@index([usuario_id])
+}
+
+model Avaliacao {
+  id            String           @id @default(uuid())
+  loja_id       String
+  produto_id    String
+  cliente_id    String
+  pedido_id     String
+  nota          Int
+  titulo        String?
+  comentario    String?
+  imagens_urls  String[]         @default([])
+  verificada    Boolean          @default(false)
+  aprovada      Boolean          @default(false)
+  publicada_em  DateTime?
+  status        AvaliacaoStatus  @default(PENDENTE)
+  created_at    DateTime         @default(now())
+  updated_at    DateTime         @updatedAt
+  deleted_at    DateTime?
+
+  loja          Loja             @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+  produto       Produto          @relation(fields: [produto_id], references: [id], onDelete: Cascade)
+  cliente       Usuario          @relation(fields: [cliente_id], references: [id], onDelete: Cascade)
+  pedido        Pedido           @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+
+  @@unique([cliente_id, produto_id, pedido_id])
+  @@index([loja_id])
+  @@index([produto_id])
+  @@index([cliente_id])
+  @@index([status])
+  @@index([verificada])
+  @@index([aprovada])
+}
+
+model Favorito {
+  id            String   @id @default(uuid())
+  cliente_id    String
+  produto_id    String
+  variacao_id   String?
+  loja_id       String
+  created_at    DateTime @default(now())
+
+  cliente       Usuario  @relation(fields: [cliente_id], references: [id], onDelete: Cascade)
+  produto       Produto  @relation(fields: [produto_id], references: [id], onDelete: Cascade)
+  variacao      ProdutoVariacao? @relation(fields: [variacao_id], references: [id], onDelete: Cascade)
+  loja          Loja     @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+
+  @@unique([cliente_id, produto_id, variacao_id])
+  @@index([cliente_id])
+  @@index([produto_id])
+  @@index([loja_id])
+}
+
+model Carrinho {
+  id          String    @id @default(uuid())
+  cliente_id  String?
+  sessao_id   String?
+  loja_id     String
+  expira_em   DateTime
+  atualizado_em DateTime @default(now())
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  cliente     Usuario?  @relation(fields: [cliente_id], references: [id], onDelete: Cascade)
+  loja        Loja      @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+  itens       ItemCarrinho[]
+
+  @@index([cliente_id])
+  @@index([sessao_id])
+  @@index([loja_id])
+}
+
+model ItemCarrinho {
+  id                  String   @id @default(uuid())
+  carrinho_id         String
+  produto_id          String
+  variacao_id         String
+  quantidade          Int
+  preco_unitario_cents Int
+  adicionado_em       DateTime @default(now())
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  carrinho            Carrinho @relation(fields: [carrinho_id], references: [id], onDelete: Cascade)
+  produto             Produto  @relation(fields: [produto_id], references: [id], onDelete: Cascade)
+  variacao            ProdutoVariacao @relation(fields: [variacao_id], references: [id], onDelete: Cascade)
+
+  @@unique([carrinho_id, produto_id, variacao_id])
+  @@index([carrinho_id])
+  @@index([produto_id])
+  @@index([variacao_id])
+}
+
+model ConfiguracaoFrete {
+  id              String     @id @default(uuid())
+  loja_id         String
+  nome            String
+  tipo            FreteTipo
+  configuracao    Json
+  prioridade      Int
+  ativo           Boolean    @default(true)
+  created_at      DateTime   @default(now())
+  updated_at      DateTime   @updatedAt
+  deleted_at      DateTime?
+
+  loja            Loja       @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+
+  @@index([loja_id])
+  @@index([prioridade])
+  @@index([ativo])
+}
+
+model ConfiguracaoPagamento {
+  id                      String         @id @default(uuid())
+  loja_id                 String
+  gateway                 PaymentGateway
+  credenciais_criptografadas String
+  parcelamento_max        Int            @default(12)
+  juros_parcela           Json           @default("{}")
+  ativo                   Boolean        @default(true)
+  modo_teste              Boolean        @default(false)
+  created_at              DateTime       @default(now())
+  updated_at              DateTime       @updatedAt
+  deleted_at              DateTime?
+
+  loja                    Loja           @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+
+  @@unique([loja_id, gateway])
+  @@index([loja_id])
+  @@index([gateway])
+  @@index([ativo])
+}
+
+model TransportadoraRastreamento {
+  id                    String            @id @default(uuid())
+  pedido_id             String            @unique
+  transportadora        Transportadora
+  codigo_rastreamento   String
+  url_rastreamento      String?
+  status_transportadora RastreamentoStatus
+  eventos               Json              @default("[]")
+  ultima_atualizacao    DateTime?
+  webhook_recebido_em   DateTime?
+  created_at            DateTime          @default(now())
+  updated_at            DateTime          @updatedAt
+
+  pedido                Pedido            @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+
+  @@index([transportadora])
+  @@index([codigo_rastreamento])
+  @@index([status_transportadora])
+}
+
+model PedidoEvento {
+  id          String   @id @default(uuid())
+  pedido_id   String
+  tipo        String
+  descricao   String
+  usuario_id  String?
+  metadata    Json?
+  created_at  DateTime @default(now())
+
+  pedido      Pedido   @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+  usuario     Usuario? @relation(fields: [usuario_id], references: [id], onDelete: SetNull)
+
+  @@index([pedido_id])
+  @@index([tipo])
+  @@index([created_at])
+}
+
+model NotaFiscal {
+  id              String   @id @default(uuid())
+  pedido_id       String   @unique
+  numero          String?
+  serie           String?
+  chave_acesso    String?  @unique
+  xml_url         String?
+  pdf_url         String?
+  status          String   @default("PENDENTE")
+  emitida_em      DateTime?
+  autorizada_em   DateTime?
+  cancelada_em    DateTime?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  pedido          Pedido   @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+
+  @@index([pedido_id])
+  @@index([chave_acesso])
+  @@index([status])
+}
+
+model WebhookEvent {
+  id                String            @id @default(uuid())
+  event_type        WebhookEventType
+  payload           Json
+  idempotency_key   String            @unique
+  scope             IdempotencyKeyScope
+  processed         Boolean           @default(false)
+  processed_at      DateTime?
+  attempts          Int               @default(0)
+  last_error        String?
+  created_at        DateTime          @default(now())
+  updated_at        DateTime          @updatedAt
+  usuario_id        String?
+  loja_id           String?
+
+  usuario           Usuario?          @relation(fields: [usuario_id], references: [id], onDelete: SetNull)
+  loja              Loja?             @relation(fields: [loja_id], references: [id], onDelete: SetNull)
+
+  @@index([event_type])
+  @@index([scope])
+  @@index([processed])
+  @@index([idempotency_key])
+  @@index([created_at])
+  @@index([usuario_id])
+  @@index([loja_id])
+}
+
+model WebhookDlq {
+  id                String            @id @default(uuid())
+  event_type        WebhookEventType
+  payload           Json
+  idempotency_key   String
+  scope             IdempotencyKeyScope
+  error             String
+  attempts          Int
+  last_attempt_at   DateTime
+  created_at        DateTime          @default(now())
+
+  @@index([event_type])
+  @@index([scope])
+  @@index([created_at])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  usuario_id  String?
+  loja_id     String?
+  acao        String
+  entidade    String
+  entidade_id String?
+  antes       Json?
+  depois      Json?
+  ip          String?
+  user_agent  String?
+  created_at  DateTime @default(now())
+
+  usuario     Usuario? @relation(fields: [usuario_id], references: [id], onDelete: SetNull)
+  loja        Loja?    @relation(fields: [loja_id], references: [id], onDelete: SetNull)
+
+  @@index([usuario_id])
+  @@index([loja_id])
+  @@index([acao])
+  @@index([entidade])
+  @@index([entidade_id])
+  @@index([created_at])
+}
