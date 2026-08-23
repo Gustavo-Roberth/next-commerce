@@ -36,13 +36,30 @@
 - Swagger docs em /docs
 - 8 testes de auth passando
 
-**6. Frontend bootstrap (apps/web)**
+**6. Categorias CRUD (apps/api)**
+- GET /api/v1/categorias (listagem paginada com cursor, filtros)
+- GET /api/v1/categorias/:id (detalhe com pai, filhos, contagem produtos)
+- POST /api/v1/categorias (criar - ADMIN/GESTOR)
+- PUT /api/v1/categorias/:id (atualizar - ADMIN/GESTOR)
+- DELETE /api/v1/categorias/:id (remover - ADMIN/GESTOR, validações de integridade)
+- Validação de slug único por loja, prevenção de referência circular
+
+**7. Produtos CRUD (apps/api)**
+- GET /api/v1/produtos (listagem paginada, busca, filtros por categoria/status/destaque/preço)
+- GET /api/v1/produtos/destaques (produtos em destaque para vitrine)
+- GET /api/v1/produtos/:id (detalhe completo com variações, atributos, imagens)
+- POST /api/v1/produtos (criar - ADMIN/GESTOR, validações SKU/código de barras/slug únicos)
+- PUT /api/v1/produtos/:id (atualizar - ADMIN/GESTOR)
+- DELETE /api/v1/produtos/:id (arquivar - ADMIN/GESTOR, soft delete via status ARQUIVADO)
+- Serialização de Decimal para number
+
+**8. Frontend bootstrap (apps/web)**
 - Next.js 15 (App Router) + Tailwind CSS 4 (@tailwindcss/postcss)
 - layout.tsx, globals.css (design tokens), page.tsx inicial
 - rewrites /api/backend → API_URL (condicional quando env ausente)
 
-**7. Quality Gates — todos verdes**
-- lint ✅ | typecheck ✅ | test ✅ (23 testes) | build ✅
+**9. Quality Gates — todos verdes**
+- lint ✅ | typecheck ✅ | test ✅ (31 testes) | build ✅
 
 ### 🔧 Ajustes técnicos importantes
 - @tailwindcss/postcss obrigatório no Tailwind 4 (plugin mudou de pacote)
@@ -51,9 +68,10 @@
 - Prisma 5: relations exigem campo oposto; String[]? → String[] @default([])
 - Shared package: "type": "module" + moduleResolution: "Bundler" para imports sem extensão
 - Auth tests usam import .js (resolvido pelo tsc-alias)
+- Fastify routes com type assertions para compatibilidade com exactOptionalPropertyTypes
 
 ### ⏳ Pendente (Fase 1)
-CRUD Produtos/Categorias · Carrinho/Checkout/Mercado Pago ·
+Carrinho/Checkout/Mercado Pago ·
 Pedidos/Webhooks · Design System/shadcn-ui · Loja pública · Admin ·
 TanStack Query · E2E · CI/CD · Deploy
 
