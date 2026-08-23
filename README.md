@@ -27,22 +27,33 @@
 - Endpoint /health
 - Build via tsc + tsc-alias
 
-**5. Frontend bootstrap (apps/web)**
+**5. Auth backend (apps/api)**
+- JWT tokens locais (access + refresh) com jose (HS256)
+- JWKS verification para Supabase (pronto para uso)
+- Password hashing com bcryptjs (cost 12)
+- RBAC middleware: perfis, permissões, roles (requireRole, requirePermission, requireAnyRole, requireAllRoles)
+- Rotas: POST /api/v1/auth/login, POST /api/v1/auth/register, POST /api/v1/auth/refresh, GET /api/v1/auth/me, POST /api/v1/auth/logout
+- Swagger docs em /docs
+- 8 testes de auth passando
+
+**6. Frontend bootstrap (apps/web)**
 - Next.js 15 (App Router) + Tailwind CSS 4 (@tailwindcss/postcss)
 - layout.tsx, globals.css (design tokens), page.tsx inicial
 - rewrites /api/backend → API_URL (condicional quando env ausente)
 
-**6. Quality Gates — todos verdes**
-- lint ✅ | typecheck ✅ | test ✅ (15 testes) | build ✅
+**7. Quality Gates — todos verdes**
+- lint ✅ | typecheck ✅ | test ✅ (23 testes) | build ✅
 
 ### 🔧 Ajustes técnicos importantes
 - @tailwindcss/postcss obrigatório no Tailwind 4 (plugin mudou de pacote)
 - Rewrite do Next só é registrado se API_URL estiver definida (evita erro de build)
 - Biome precisou de files.ignore (travava sem ele)
 - Prisma 5: relations exigem campo oposto; String[]? → String[] @default([])
+- Shared package: "type": "module" + moduleResolution: "Bundler" para imports sem extensão
+- Auth tests usam import .js (resolvido pelo tsc-alias)
 
 ### ⏳ Pendente (Fase 1)
-Auth backend · CRUD Produtos/Categorias · Carrinho/Checkout/Mercado Pago ·
+CRUD Produtos/Categorias · Carrinho/Checkout/Mercado Pago ·
 Pedidos/Webhooks · Design System/shadcn-ui · Loja pública · Admin ·
 TanStack Query · E2E · CI/CD · Deploy
 

@@ -1,5 +1,13 @@
+import cookie from '@fastify/cookie';
+import cors from '@fastify/cors';
+import helmet from '@fastify/helmet';
+import rateLimit from '@fastify/rate-limit';
+import swagger from '@fastify/swagger';
+import swaggerUi from '@fastify/swagger-ui';
 import { config } from 'dotenv';
 import Fastify from 'fastify';
+import { registerAuthMiddleware } from './auth/middleware.js';
+import { authRoutes } from './auth/routes.js';
 
 config();
 
@@ -7,19 +15,69 @@ const app = Fastify({
   logger: true,
 });
 
-app.get('/health', async () => {
-  return { status: 'ok', timestamp: new Date().toISOString() };
+async function initialize() {
+  await app.register(cors, {
+    origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
+    credentials: true,
+  });
+
+  await app.register(helmet, {
+    contentSecurityPolicy: false,
+  });
+
+  await app.register(rateLimit, {
+    max: 100,
+    timeWindow: '1 minute',
+  });
+
+  await app.register(cookie, {
+    secret: process.env.COOKIE_SECRET || 'dev-cookie-secret',
+    hook: 'onRequest',
+  });
+
+  await app.register(swagger, {
+    openapi: {
+      info: {
+        title: 'NextCommerce API',
+        description: 'SaaS de e-commerce para pequenos lojistas',
+        version: '1.0.0',
+      },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+          },
+        },
+      },
+      security: [{ bearerAuth: [] }],
+    },
+  });
+
+  await app.register(swaggerUi, {
+    routePrefix: '/docs',
+    uiConfig: {
+      docExpansion: 'list',
+      deepLinking: true,
+    },
+  });
+
+  await registerAuthMiddleware(app);
+
+  app.get('/health', async () => {
+    return { status: 'ok', timestamp: new Date().toISOString() };
+  });
+
+  await app.register(authRoutes, { prefix: '/api/v1' });
+
+  const port = Number(process.env.PORT) || 3001;
+  await app.listen({ port, host: '0.0.0.0' });
+  console.log(`🚀 Server running on port ${port}`);
+  console.log(`📚 Swagger UI available at http://localhost:${port}/docs`);
+}
+
+initialize().catch((err) => {
+  app.log.error(err);
+  process.exit(1);
 });
-
-const start = async () => {
-  try {
-    const port = Number(process.env.PORT) || 3001;
-    await app.listen({ port, host: '0.0.0.0' });
-    console.log(`🚀 Server running on port ${port}`);
-  } catch (err) {
-    app.log.error(err);
-    process.exit(1);
-  }
-};
-
-start();
