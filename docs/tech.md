@@ -27,7 +27,9 @@ Deploy: Vercel (web), Render (api) — configurações independentes.
 
 ## Stack consolidada
 
-### Frontend (`apps/web`)
+### Frontend
+Aplicação: `apps/web`
+
 | Item | Tecnologia |
 |------|------------|
 | Framework | Next.js 15 (App Router, RSC) |
@@ -44,7 +46,9 @@ Deploy: Vercel (web), Render (api) — configurações independentes.
 | Testes E2E | Playwright |
 | Auth client | Supabase JS SDK (auth helpers) |
 
-### Backend (`apps/api`)
+### Backend
+Aplicação: `apps/api`
+
 | Item | Tecnologia |
 |------|------------|
 | Framework | Fastify 5 |
@@ -53,7 +57,7 @@ Deploy: Vercel (web), Render (api) — configurações independentes.
 | Validação | Zod (schemas de `packages/shared`) |
 | Autenticação | Supabase Auth (JWT verification via JWKS) |
 | Organização | Camadas: routes, controllers, services, repositories, providers, middleware, lib, types |
-| ORM | Prisma 6 (PostgreSQL) |
+| ORM | Prisma 7 (PostgreSQL, via `@prisma/adapter-pg`) |
 | Banco | Supabase (PostgreSQL 16) |
 | Storage | Supabase Storage |
 | Realtime | Supabase Realtime (opcional, notificações) |
@@ -63,8 +67,11 @@ Deploy: Vercel (web), Render (api) — configurações independentes.
 
 ### Persistência
 - **Banco**: Supabase PostgreSQL 16 (managed)
-- **ORM**: Prisma 6 (schema.prisma em `apps/api/prisma/`)
+- **ORM**: Prisma 7 (`schema.prisma` em `apps/api/prisma/`) — client runtime 100% TypeScript/WASM (sem binário Rust)
+- **Driver adapter**: `@prisma/adapter-pg` (conexão direta com PostgreSQL, obrigatório a partir do Prisma 7)
+- **Configuração**: `prisma.config.ts` na raiz de `apps/api` (obrigatório para migrations e introspection a partir do Prisma 7 — substitui parte do que antes vivia só no `schema.prisma`)
 - **Migrations**: Prisma Migrate (versionadas, `prisma/migrations/`)
+- **Client gerado**: output fora de `node_modules` (path customizado definido em `prisma.config.ts`) — ajustar `.gitignore` e imports que referenciarem o client diretamente
 - **Seeds**: `prisma/seed.ts` (perfis sistema, configs iniciais)
 - **Constraints**: Unicidade, FK, CHECK no banco sempre que possível
 - **Auditoria**: Triggers PostgreSQL para `created_at`/`updated_at` + tabela `audit_log` (eventos críticos)
@@ -83,7 +90,8 @@ Ferramentas:
 
 ## Estrutura por responsabilidade
 
-### Frontend (`apps/web/src`)
+### Frontend
+`apps/web/src`
 ```
 src/
 ├── app/                    # App Router (páginas, layouts, route groups)
@@ -97,16 +105,16 @@ src/
 ├── components/
 │   ├── ui/                 # shadcn/ui components (button, input, dialog, table, etc.)
 │   ├── loja/               # Componentes de domínio loja (ProductCard, CartDrawer, CheckoutForm)
-│   ├── admin/              # Componentes de domínio admin (DataTable, ProductForm, OrderTimeline)
-│   └── shared/             # Compartilhados entre loja/admin (Header, Footer, Breadcrumbs)
-├── hooks/                  # Hooks compartilhados (useAuth, useCart, useToast, useDebounce)
-├── services/               # Camada HTTP (api.ts + feature services: products, orders, cart, auth)
-├── schemas/                # Re-export de `packages/shared/schemas` + schemas locais de UI
-├── types/                  # Re-export de `packages/shared/types` + tipos locais de UI
-├── lib/                    # Utilitários puros (cn, formatCurrency, formatDate, validators)
-├── constants/              # Constantes da aplicação (APP_NAME, COOKIE_NAMES, QUERY_KEYS)
-├── providers/              # React Context Providers (AuthProvider, QueryProvider, ThemeProvider)
-└── assets/                 # Imagens, fontes, ícones estáticos
+│   ├── admin/               # Componentes de domínio admin (DataTable, ProductForm, OrderTimeline)
+│   └── shared/               # Compartilhados entre loja/admin (Header, Footer, Breadcrumbs)
+├── hooks/                   # Hooks compartilhados (useAuth, useCart, useToast, useDebounce)
+├── services/                 # Camada HTTP (api.ts + feature services: products, orders, cart, auth)
+├── schemas/                  # Re-export de `packages/shared/schemas` + schemas locais de UI
+├── types/                     # Re-export de `packages/shared/types` + tipos locais de UI
+├── lib/                        # Utilitários puros (cn, formatCurrency, formatDate, validators)
+├── constants/                   # Constantes da aplicação (APP_NAME, COOKIE_NAMES, QUERY_KEYS)
+├── providers/                    # React Context Providers (AuthProvider, QueryProvider, ThemeProvider)
+└── assets/                        # Imagens, fontes, ícones estáticos
 ```
 
 **Regras de organização:**
@@ -121,7 +129,8 @@ src/
 - Constantes → `src/constants`
 - Assets → `src/assets` (organizado por categoria)
 
-### Backend (`apps/api/src`)
+### Backend
+`apps/api/src`
 ```
 src/
 ├── main.ts                 # Entry point (Fastify bootstrap, plugins, routes)
@@ -180,7 +189,7 @@ src/
 - Toda validação de entrada/saída via schemas Zod (shared)
 - Toda regra crítica validada independentemente do frontend
 
-### Shared (`packages/shared/src`)
+`packages/shared/src`
 ```
 src/
 ├── types/                  # Tipos TypeScript do domínio
@@ -198,6 +207,7 @@ src/
 ├── utils/                  # Utilitários puros (formatters, validators, helpers)
 └── index.ts                # Barrel export
 ```
+> `packages/shared` existe porque `0.14 = A` (packages compartilhados permitidos). Em arquiteturas sem compartilhamento (0.14 = B), esta subseção não se aplica.
 
 ## Arquitetura alvo e limites de responsabilidade
 
@@ -268,7 +278,7 @@ src/
 - RLS (Row Level Security) para isolamento multi-tenant
 - Constraints de unicidade no nível do banco
 
-## Regras gerais (obrigatórias)
+## Regras gerais
 - **Named exports apenas** — nunca default exports
 - **Tipagem forte** — `strict: true`, evitar `any` (salvo inevitável)
 - **Regras de negócio desacopladas da interface** — backend é source of truth
@@ -287,7 +297,8 @@ src/
 
 ## Configuração
 
-### TypeScript (`tsconfig.json` base + extends por app/package)
+### TypeScript
+`tsconfig.json` base + extends por app/package
 - `strict: true`
 - `noUncheckedIndexedAccess: true`
 - `exactOptionalPropertyTypes: true`
@@ -295,13 +306,15 @@ src/
 - `forceConsistentCasingInFileNames: true`
 - Path aliases: `@/*`, `@/components/*`, `@/lib/*`, `@/hooks/*`, `@shared/*`
 
-### Biome (`biome.json`)
+### ESLint/Biome
+`biome.json`
 - Formatter: indent 2, single quotes, trailing commas es5, line width 100
 - Linter: recommended + correctness + style + suspicious + a11y
 - Organize imports: on
 - Override: Next.js (web), Node (api/shared)
 
-### Tailwind (`apps/web/tailwind.config.ts`)
+### Tailwind
+`apps/web/tailwind.config.ts`
 - Design tokens como CSS variables (cores, spacing, radius, shadows)
 - `tailwind-variants (tv)` para componentes com variantes
 - `tailwind-merge (twMerge)` para composição de classes
@@ -309,7 +322,16 @@ src/
 - Evitar interpolação manual de classes
 - Tokens exclusivos do Design System
 
-### Aliases (tsconfig paths)
+### Prisma
+`apps/api/prisma.config.ts`
+- Obrigatório a partir do Prisma 7 para migrations e introspection
+- Declara: caminho do `schema.prisma`, driver adapter (`@prisma/adapter-pg`), path de output do client gerado
+- `DATABASE_URL` continua vindo de variável de ambiente, referenciada dentro do config
+- `prisma/seed.ts` continua declarado normalmente (via `package.json` ou no próprio config)
+
+### Alias
+tsconfig paths
+
 | Alias | Resolve para |
 |-------|--------------|
 | `@/*` | `apps/web/src/*` |
@@ -340,20 +362,43 @@ REFRESH_TOKEN_SECRET="..."
 ENCRYPTION_KEY="32-char-base64"
 ```
 
-### Convenções de nomenclatura
+### Convenções
 
-| Tipo | Convenção | Exemplo |
-|------|-----------|---------|
-| Arquivos | kebab-case | `product-card.tsx`, `order.service.ts` |
-| Pastas | kebab-case | `components/ui`, `hooks/use-cart` |
-| Componentes | PascalCase | `ProductCard`, `DataTable` |
-| Hooks | camelCase + prefix `use` | `useCart`, `useAuth` |
-| Types/Interfaces/Enums | PascalCase | `Product`, `OrderStatus`, `UserRole` |
-| Funções | camelCase | `formatCurrency`, `calculateFreight` |
-| Variáveis | camelCase | `productList`, `isLoading` |
-| Constantes | UPPER_SNAKE_CASE | `MAX_CART_ITEMS`, `DEFAULT_PAGE_SIZE` |
-| Exports | Named apenas | `export function...`, `export interface...` |
-| Imports | Ordenados: libs → internos → relativos | — |
+#### Arquivos
+- kebab-case — ex: `product-card.tsx`, `order.service.ts`
+
+#### Pastas
+- kebab-case — ex: `components/ui`, `hooks/use-cart`
+
+#### Componentes
+- PascalCase — ex: `ProductCard`, `DataTable`
+
+#### Hooks
+- camelCase com prefixo `use` — ex: `useCart`, `useAuth`
+
+#### Tipos
+- PascalCase — ex: `Product`, `CartItem`
+
+#### Interfaces
+- PascalCase — ex: `ProductCardProps`
+
+#### Enums
+- PascalCase — ex: `OrderStatus`, `UserRole`
+
+#### Funções
+- camelCase — ex: `formatCurrency`, `calculateFreight`
+
+#### Variáveis
+- camelCase — ex: `productList`, `isLoading`
+
+#### Constantes
+- UPPER_SNAKE_CASE — ex: `MAX_CART_ITEMS`, `DEFAULT_PAGE_SIZE`
+
+#### Exports
+- Apenas Named Exports — `export function...`, `export interface...`
+
+#### Imports
+- Organizados por origem: bibliotecas → internos → relativos
 
 ### Dependências
 - Priorizar bibliotecas consolidadas, amplamente usadas
@@ -364,14 +409,16 @@ ENCRYPTION_KEY="32-char-base64"
 
 ### API / Services
 
-**Frontend (`apps/web/src/services`):**
+#### Frontend
+`apps/web/src/services`
 - Toda chamada HTTP via `src/services/api.ts` (Ky instance configurada)
 - Feature services: `products.service.ts`, `orders.service.ts`, `cart.service.ts`, `auth.service.ts`
 - Services encapsulam: URLs, auth headers, error handling, retry logic
 - Respostas padronizadas: `{ data, error, meta }`
 - Loading/error/success states consistentes via TanStack Query
 
-**Backend (`apps/api/src`):**
+#### Backend
+`apps/api/src`
 - Rotas: apenas recebem, validam (Zod), delegam para controllers
 - Controllers: orquestram, chamam services, formatam response HTTP
 - Services: casos de uso, regras de negócio, transações
@@ -457,7 +504,8 @@ ENCRYPTION_KEY="32-char-base64"
 - Responsabilidade única
 - Ex: `useCart`, `useAuth`, `useProducts`, `useDebounce`, `useToast`
 
-### Services (Frontend)
+### Services
+Camada frontend (`src/services`)
 - Não dependem de componentes React
 - Reutilizáveis
 - Centralizam auth, headers, error handling, retry
@@ -485,7 +533,7 @@ ENCRYPTION_KEY="32-char-base64"
 - **Sem regra de negócio**
 
 ### Layouts
-- Apenas organizam composição visual
+- Layouts apenas organizam composição visual
 - Sem regra de negócio
 - Providers globais registrados nos layouts apropriados
 - Navegação desacoplada do domínio
@@ -497,7 +545,8 @@ ENCRYPTION_KEY="32-char-base64"
 - Mensagens de erro padronizadas (toast + inline)
 - Backend = validação definitiva
 
-### Tabelas (DataTable)
+### Tabelas
+Componente DataTable
 - Componente reutilizável genérico (`data-table.tsx`)
 - Paginação desacoplada da regra de negócio
 - Filtros independentes da implementação visual
@@ -512,14 +561,16 @@ Todos os componentes que consomem dados preveem:
 - `error` (retry + mensagem amigável)
 Comportamento consistente em toda aplicação.
 
-### Estilização (componentes)
+### Estilização
+Componentes
 - `tailwind-variants (tv)` para múltiplas variantes
 - `tailwind-merge (twMerge)` para composição
 - **Não usar `cn()`**
 - Evitar interpolação manual de classes
 - Exclusivamente tokens do Design System
 
-### Reutilização (obrigatório antes de criar)
+### Reutilização
+Obrigatório antes de criar
 1. Analisar estrutura existente
 2. Reutilizar: componentes, hooks, services, schemas, types, layouts, tabelas, formulários
 3. Consolidar responsabilidades equivalentes
@@ -535,39 +586,118 @@ Revisão contínua para identificar:
 - Oportunidades de extração/composição
 - Duplicação não intencional
 
-## Convenções de API (Backend)
+## Backend — padrões recomendados
 
-### REST
-- Recursos no plural: `/api/produtos`, `/api/pedidos`, `/api/estoque`
+### Organização das Camadas
+- Routes definem os endpoints disponíveis
+- Controllers recebem requisições e delegam execução
+- Services implementam os casos de uso
+- Repositories encapsulam persistência
+- Providers encapsulam integrações externas
+- Schemas definem contratos de validação
+- Types concentram contratos compartilhados
+- Lib concentra clientes, helpers e integrações técnicas
+
+### Controllers
+Nunca devem:
+- implementar regra de negócio extensa
+- acessar banco diretamente
+
+#### Services
+Nunca devem:
+- conhecer detalhes de persistência
+- conhecer detalhes de apresentação
+- depender diretamente do framework de UI
+
+#### Repositories
+Nunca devem:
+- validar regra de negócio
+- montar resposta visual
+- acessar contexto HTTP
+
+### Providers
+Providers devem ser facilmente substituíveis sem alterar as demais camadas da aplicação.
+Providers abstraem: storage, upload, e-mail, cache, APIs externas, geração de documentos.
+Nenhuma camada superior deve depender diretamente da implementação dessas integrações.
+
+#### API
+Estrutura consistente de resposta contendo: dados, paginação, metadados, mensagens.
+
+#### Tratamento de erros
+Todos os erros devem possuir: mensagem, código, status HTTP, contexto quando aplicável.
+
+## Modelo de contratos de integração
+- Toda API segue convenções REST — recursos no plural: `/api/produtos`, `/api/pedidos`, `/api/estoque`
 - Verbos HTTP semânticos: GET, POST, PATCH, DELETE
 - Versionamento: `/api/v1/...` (header `Accept: application/vnd.nextcommerce.v1+json`)
 - Paginação: cursor-based (`?cursor=&limit=20`), response: `{ data, nextCursor, hasMore }`
 - Filtros: query params tipados (`?status=PAGO&data_inicio=2024-01-01`)
 - Ordenação: `?sort=created_at:desc`
 - Erros: RFC 9457 (Problem Details) — `{ type, title, status, detail, instance, errors[] }`
+- Contratos públicos devem preservar compatibilidade sempre que possível; mudanças incompatíveis são versionadas
 
-### Autenticação
+**Autenticação**
 - Access Token: JWT (RS256, JWKS do Supabase), 15min
 - Refresh Token: rotação, httpOnly cookie (opcional) + body
 - Middleware `auth.middleware.ts` valida JWT + extrai `userId`, `lojaId`, `perfis[]`
 - Middleware `rbac.middleware.ts` verifica `permissao` por rota (`route:action`)
 
-### Validação
+**Validação**
 - Schemas Zod em `packages/shared/schemas`
 - Request: `body`, `query`, `params`, `headers` validados no controller
 - Response: schema de saída para documentação + type safety
 - Erros de validação: array `{ field, message, code }` no response 422
 
-### Webhooks
+**Webhooks**
 - HMAC SHA256 (secret por integração)
-- Idempotency via `Idempotency-Key` header + tabela `webhook_event` (processed keys)
+- Idempotência via `Idempotency-Key` header + tabela `webhook_event` (processed keys)
 - Retry exponencial (3x) + dead letter queue (tabela `webhook_dlq`)
 - Logging estruturado (request/response headers + body)
 
-### Rate Limiting
+**Rate Limiting**
 - Por IP + por usuário autenticado
 - Configurável por rota (auth: 10/min, checkout: 30/min, admin: 100/min)
 - Redis (Upstash) para contadores distribuídos
+
+## Estratégia de compatibilidade
+- Evitar breaking changes sempre que possível
+- Priorizar evolução incremental da arquitetura
+- Preservar contratos públicos existentes
+- Novas funcionalidades devem estender a arquitetura existente antes de substituí-la
+- Versionamento: tag semver (`vX.Y.Z`) a cada release, `CHANGELOG.md` atualizado
+- Migração: mudanças incompatíveis exigem nova versão de API (`/api/v2/...`) convivendo com a anterior até depreciação formal
+
+## Matriz de impacto para mudanças estruturais futuras
+
+| Tipo da mudança | Impacto | Risco | Ação obrigatória |
+|---|---|---|---|
+| Adicionar campo opcional em schema existente | Baixo | Baixo | PR revisado + testes de regressão |
+| Adicionar novo endpoint | Baixo | Baixo | Documentação Scalar/OpenAPI atualizada |
+| Alterar campo obrigatório em contrato existente | Alto | Alto | Nova versão de API (`/v2`) + ADR + aprovação Tech Lead |
+| Remover campo ou endpoint existente | Alto | Alto | Depreciação formal (aviso + prazo) antes da remoção |
+| Alterar estrutura de tabela com dados existentes | Alto | Crítico | Migration com estratégia de backfill + rollback testado em staging |
+| Trocar tecnologia da stack oficial | Alto | Crítico | ADR + aprovação Tech Lead + PO, fora do ciclo normal de fase |
+| Alterar arquitetura de camadas (routes/services/repositories) | Alto | Crítico | ADR + aprovação Tech Lead, tratado como mudança estrutural de fase |
+| Renomear ou mover pacote/app do monorepo | Médio | Médio | Atualizar todos os imports, aliases e `agents/agent.md` |
+
+## Requisitos mínimos de qualidade técnica
+- **Cobertura de testes**: ≥ 80% em `services` e `repositories` (Vitest)
+- **Testes E2E**: cenários críticos cobertos (checkout, login, admin CRUD) via Playwright, executados em CI
+- **Contratos**: toda rota pública documentada via Scalar/OpenAPI, gerado a partir dos schemas Zod
+- **Observabilidade**:
+  - Logs estruturados: requestId, userId, lojaId, duration, status
+  - Métricas: latency (p50/p95/p99), error rate, throughput
+  - Traces: OpenTelemetry (futuro)
+  - Alertas: error rate > 1%, latency p95 > 2s, jobs falhando
+- **Auditoria**: ações críticas registradas em `audit_log`, imutáveis
+- **Monitoramento**: uptime, error rate e latência acompanhados em produção (Vercel + Render)
+
+## Plano de evolução técnica
+- Novas funcionalidades devem respeitar a arquitetura consolidada
+- Alterações estruturais devem priorizar reutilização e compatibilidade
+- Novos módulos devem seguir os mesmos padrões organizacionais definidos neste documento
+- A evolução técnica deve ocorrer de forma incremental, preservando estabilidade e manutenibilidade
+- Mudanças estruturais maiores (novas integrações, troca de stack, reorganização de camadas) seguem a Matriz de Impacto acima e respeitam a fase ativa definida em `/docs/phases.md`
 
 ## Dados Sensíveis
 - **Nunca** commitar secrets (`.env`, keys, tokens)
@@ -575,9 +705,3 @@ Revisão contínua para identificar:
 - Credenciais de gateway criptografadas no banco (AES-256)
 - Chave de criptografia em variável de ambiente (`ENCRYPTION_KEY`)
 - Service role keys apenas no backend (Supabase Admin API)
-
-## Observabilidade
-- Logs estruturados (pino): requestId, userId, lojaId, duration, status
-- Métricas: latency (p50/p95/p99), error rate, throughput
-- Traces: OpenTelemetry (futuro)
-- Alertas: error rate > 1%, latency p95 > 2s, jobs falhando

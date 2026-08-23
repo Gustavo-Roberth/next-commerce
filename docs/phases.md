@@ -13,31 +13,31 @@ Este arquivo define:
 
 ---
 
-# 📍 FONTE ÚNICA DE VERDADE
+## Fonte de Verdade
 - O fluxo operacional deve seguir `/agents/agent.md`.
 - O controle de fases, regras e escopo deve seguir `/docs/phases.md`.
 
-# 📚 ORDEM DE LEITURA OBRIGATÓRIA
+## Ordem Obrigatória de Leitura
 O agente deve SEMPRE ler nesta ordem:
-1. /agents/agent.md
-2. /docs/context.md
-3. /docs/product.md
-4. /docs/behavior.md
-5. /docs/entities.md
-6. /docs/tech.md
-7. /docs/phases.md
+1. `/agents/agent.md`
+2. `/docs/context.md`
+3. `/docs/product.md`
+4. `/docs/behavior.md`
+5. `/docs/entities.md`
+6. `/docs/tech.md`
+7. `/docs/ui-reference.md` (quando existir)
+7. `/docs/phases.md`
 8. arquivo modular da fase ativa
 
----
-
-# 📌 HIERARQUIA DOCUMENTAL
+## Hierarquia Documental
 Em caso de conflito entre documentos:
-1. phases.md
-2. behavior.md
-3. tech.md
-4. entities.md
-5. context.md
-6. product.md
+1. `/docs/phases.md`
+2. `/docs/behavior.md`
+3. `/docs/tech.md`
+4. `/docs/entities.md`
+5. `/docs/context.md`
+6. `/docs/product.md`
+6. `/docs/ui-reference.md`
 
 O agente deve sempre respeitar a maior prioridade documental.
 
@@ -69,7 +69,7 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 1** — Fundação e MVP Loja
+🟢 **FASE 1 — Fundação e MVP Loja**
 **Status: EM DESENVOLVIMENTO**
 **Início:** 2026-08-22 | **Fim estimado:** 2026-10-31
 
@@ -79,7 +79,6 @@ Arquivo:
 ---
 
 # 📌 DEFINIÇÕES DE STATUS DE FASE
-
 ## 🔒 BLOQUEADA
 Fase futura que **não deve ser desenvolvida**.
 - Não implementar, não revisar, não refinar
@@ -102,15 +101,30 @@ Fase finalizada — **não reescrever, adaptar, modificar ou apagar**.
 
 ---
 
-## Artefatos de Conclusão de Fase
+# 📌 ARTEFATOS DE CONCLUSÃO DE FASE
 Ao concluir uma fase, o desenvolvedor deve registrar manualmente em `docs/phases/phases_mac.md`:
+
 1. **Marcos Importantes (Milestones)** — Data real, status, comparação planejado vs. realizado
 2. **Riscos e Mitigações** — Riscos materializados, novos riscos descobertos, mitigações aplicadas
 3. **Próximas Ações Imediatas** — Top 5-7 ações prioritárias para a próxima fase
+
 > O agente de IA **não deve** escrever em `docs/phases/phases_mac.md`. O agente apenas gera conteúdo bruto para revisão; o desenvolvedor inclui manualmente.
+
+---
 
 ## Referência Histórica
 Artefatos detalhados de todas as fases concluídas (marcos, riscos, sprints) estão em: `docs/phases/phases_mac.md`
+
+---
+
+# 🚫 PROIBIÇÃO DE ESCRITA EM ARQUIVOS DE FASE
+O agente de IA **NÃO deve** escrever em:
+- `docs/phases/phases_mac.md`
+- `docs/phases/phases_XX_YY.md`
+- `docs/phases.md`
+
+Durante execução de fases, o agente apenas **gera conteúdo bruto** para revisão humana.
+O desenvolvedor inclui manualmente os artefatos nos arquivos apropriados.
 
 ---
 
@@ -159,50 +173,11 @@ Quando solicitado refinamento:
 
 ---
 
-# 🚫 PROIBIÇÃO DE ESCRITA EM ARQUIVOS DE FASE
-O agente de IA **NÃO deve** escrever em:
-- `docs/phases/phases_mac.md`
-- `docs/phases/phases_XX_YY.md`
-- `docs/phases.md`
-
-Durante execução de fases, o agente apenas **gera conteúdo bruto** para revisão humana.
-O desenvolvedor inclui manualmente os artefatos nos arquivos apropriados.
-
----
-
-# 📌 REGRA DE COMPATIBILIDADE
-O agente não deve:
-- quebrar contratos existentes;
-- remover estruturas utilizadas;
-- alterar comportamento consolidado;
-- gerar incompatibilidade sem documentação explícita da fase.
-
----
-
 # 📌 REGRAS DE MOCK
 Mocks são permitidos SOMENTE quando:
 - dependência pertence a fase futura;
 - integração ainda não existe;
 - explicitamente permitido pela fase.
-
----
-
-# 📌 REGRAS DE ARQUITETURA
-- frontend e backend devem funcionar desacoplados;
-- APIs não devem conter regra de negócio complexa;
-- backend centraliza domínio;
-- frontend apenas orquestra visualização;
-- persistência deve ser desacoplada.
-
----
-
-# 📌 REGRAS DE QUALIDADE
-Toda implementação deve:
-- evitar duplicação;
-- manter tipagem consistente;
-- preservar escalabilidade;
-- evitar hardcodes;
-- seguir padrões do projeto.
 
 ---
 

@@ -82,7 +82,7 @@ Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedi
 ## Objetivo
 Operação completa: estoque real, relatórios, NF-e, configurações ricas, multi-depósito.
 
-## Entregáveis
+## Entregáveis (Definition of Done)
 ### Backend
 - [ ] Estoque: multi-depósito, entrada/saída/transferência, reserva atômica, alertas, inventário
 - [ ] NF-e: emissão automática (integração provedor), XML/PDF no Storage, evento `ENVIADO`
@@ -99,7 +99,7 @@ Operação completa: estoque real, relatórios, NF-e, configurações ricas, mul
 - [ ] Pedidos: timeline completa, imprimir etiqueta/NF-e, rastreamento
 - [ ] Usuários/Perfis: convite, atribuição por loja, RBAC visual
 
-### Shared
+### Infra & Shared
 - [ ] Schemas/tipos expandidos: estoque, NF-e, relatórios, configurações
 
 ## Critérios de aceitação
@@ -116,13 +116,33 @@ Operação completa: estoque real, relatórios, NF-e, configurações ricas, mul
 ## Objetivo
 Multi-tenant real, sincronização marketplaces, API pública para parceiros.
 
-## Entregáveis
+## Entregáveis (Definition of Done)
+### Infra & Shared
+- [ ] Redis cluster provisionado para cache distribuído
+- [ ] Schemas/tipos expandidos: planos/limites (multi-loja), marketplace sync, webhooks gerenciáveis
+
+### Backend
 - [ ] Multi-loja: isolamento RLS completo, onboarding self-service, planos/limites
 - [ ] Marketplace Sync: Mercado Livre / Shopee / Amazon (produtos, pedidos, estoque)
 - [ ] API Pública: OAuth2 para parceiros, rate limiting, documentação Scalar
+- [ ] Webhooks: engine de disparo (secrets, retry, logs)
+- [ ] Cache distribuído: invalidação por tags
+- [ ] Observabilidade: OpenTelemetry, traces
+
+### Frontend (Admin)
+- [ ] Onboarding self-service (criação de loja, escolha de plano)
 - [ ] Webhooks Gerenciáveis: UI para configurar URLs, secrets, retry, logs
-- [ ] Cache distribuído: Redis cluster, invalidação por tags
-- [ ] Observabilidade: OpenTelemetry, traces, dashboards Grafana
+
+### Deploy & Ops
+- [ ] Cluster Redis (staging + prod)
+- [ ] Dashboards Grafana (observabilidade)
+
+## Critérios de aceitação
+1. Novo lojista consegue: cadastrar-se → escolher plano → operar loja isolada por RLS
+2. Parceiro consegue: autenticar via OAuth2 → consumir API pública documentada
+3. Loja consegue: configurar webhook próprio → receber eventos com retry automático
+4. Produto/pedido sincroniza automaticamente com pelo menos 1 marketplace integrado
+5. Cache distribuído reduz latência de leitura sem servir dados desatualizados entre lojas
 
 ---
 
@@ -132,12 +152,35 @@ Multi-tenant real, sincronização marketplaces, API pública para parceiros.
 ## Objetivo
 IA nativa, marketplace de apps, white-label, expansão internacional.
 
-## Entregáveis
-- [ ] Recomendação: "Compre junto", "Quem viu viu", personalização home
-- [ ] Previsão: demanda (reposição), churn, LTV, sazonalidade
-- [ ] App Store: SDK para extensões, marketplace interno, revenue share
-- [ ] White-label: multi-brand, domínios ilimitados, customização profunda
-- [ ] Internacionalização: multi-moeda, multi-idioma, tax compliance (LatAm/EU)
+## Entregáveis (Definition of Done)
+### Infra & Shared
+- [ ] Pipeline de dados para treinamento de modelos (recomendação/previsão)
+- [ ] Schemas/tipos expandidos: multi-moeda, multi-idioma, revenue share
+
+### Backend
+- [ ] Recomendação: engine "compre junto", "quem viu viu"
+- [ ] Previsão: modelos de demanda (reposição), churn, LTV, sazonalidade
+- [ ] App Store: SDK para extensões, sandbox, revenue share
+- [ ] Internacionalização: multi-moeda, tax compliance (LatAm/EU)
+
+### Frontend
+- [ ] Personalização de home (recomendação)
+- [ ] App Store: marketplace interno de extensões
+- [ ] White-label: customização de tema/domínio por loja
+- [ ] Internacionalização: multi-idioma na interface
+
+### Deploy & Ops
+- [ ] Provisionamento dinâmico de domínios ilimitados (white-label)
+- [ ] Monitoramento de modelos ML (drift, performance)
+
+## Critérios de aceitação
+1. Cliente consegue: ver recomendações personalizadas relevantes na home
+2. Gestor consegue: visualizar previsão de demanda/reposição para produtos-chave
+3. Parceiro consegue: publicar extensão na App Store e receber revenue share
+4. Loja consegue: aplicar white-label (marca, domínio próprio) sem afetar outras lojas
+5. Cliente internacional consegue: comprar em sua moeda/idioma com impostos calculados corretamente
+
+---
 
 ## Governança de fases
 ### Transição de fase
@@ -156,5 +199,10 @@ IA nativa, marketplace de apps, white-label, expansão internacional.
 - Registrada em `TECH_DEBT.md` na raiz
 - Priorizada na fase seguinte (máx 20% capacity)
 - Não bloqueia transição se critérios de aceitação atendidos
+
+---
+
+## Referência
+Artefatos de conclusão de fase (marcos, riscos, próximas ações) são registrados em `docs/phases/phases_mac.md`, conforme as regras definidas em `docs/phases.md`.
 
 ---

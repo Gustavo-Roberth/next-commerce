@@ -8,7 +8,7 @@ SaaS de e-commerce multi-perfil (Cliente, Estoquista, Operador, Gestor, Administ
 ## Regras transversais de comportamento
 
 ### Controle de acesso
-- Autenticação via Supabase Auth (e-mail/senha, OAuth opcional, MFA TOTP opcional)
+- Autenticação via provedor de identidade (e-mail/senha, OAuth opcional, MFA TOTP opcional)
 - Autorização baseada em RBAC com 5 perfis imutáveis:
   - **Administrador**: acesso total (configurações, usuários, integrações, tudo)
   - **Gestor**: leitura total + relatórios + dashboards (sem escrita em cadastros)
@@ -16,19 +16,19 @@ SaaS de e-commerce multi-perfil (Cliente, Estoquista, Operador, Gestor, Administ
   - **Estoquista**: estoque (leitura/escrita), separação de pedidos, inventário
   - **Cliente**: próprio perfil, endereços, pedidos, carrinho, favoritos, avaliações
 - Isolamento de dados por loja (tenant): cada loja acessa apenas seus dados
-- Sessões com access token (JWT, 15min) + refresh token (rotação a cada uso, 30 dias)
+- Sessões com access token (15min) + refresh token (rotação a cada uso, 30 dias)
 - Bloqueio após 5 tentativas falhas (15min), recuperação por e-mail com token único
 
 ### Integridade e rastreabilidade
-- Todos os registros: `id` (UUID v7), `created_at`, `updated_at`, `deleted_at` (soft delete obrigatório)
+- Todos os registros: `id` (identificador único), `created_at`, `updated_at`, `deleted_at` (soft delete obrigatório)
 - Auditoria imutável de ações críticas: login, alteração de preço, estoque, status de pedido, pagamentos, concessão de perfis
-- Event sourcing leve para Pedido e Pagamento: `PedidoEvento`, `PagamentoEvento` append-only
+- Registro histórico (append-only) para Pedido e Pagamento: `PedidoEvento`, `PagamentoEvento`
 - Exclusão lógica obrigatória para entidades transacionais (Pedido, Produto, Estoque, Cupom, etc.)
-- Constraints de unicidade no banco: SKU por loja, e-mail de usuário, código de cupom, slug de categoria/produto
+- Unicidade garantida para: SKU por loja, e-mail de usuário, código de cupom, slug de categoria/produto
 
 ### Validação de dados
-- Campos obrigatórios validados na API (schemas Zod em `packages/shared`)
-- Formatos: e-mail (RFC 5322), CPF/CNPJ (algoritmo oficial), CEP (8 dígitos + validação ViaCEP), telefone (E.164), moeda (centavos inteiros, `int64`)
+- Campos obrigatórios validados na API
+- Formatos: e-mail (RFC 5322), CPF/CNPJ (algoritmo oficial), CEP (8 dígitos + validação de existência), telefone (E.164), moeda (centavos inteiros)
 - Unicidade: SKU por loja, e-mail de usuário, código de cupom por loja, slug por loja
 - Consistência: estoque disponível ≥ 0, preço > 0, quantidade > 0, parcelas ≤ máximo configurado
 - Validação cruzada: CEP válido para frete, cupom válido/expirado/uso máximo/escopo, variação ativa para venda
@@ -43,7 +43,7 @@ SaaS de e-commerce multi-perfil (Cliente, Estoquista, Operador, Gestor, Administ
 ## Comportamento por módulo
 
 ### Identidade e Acesso
-- Login retorna access token + refresh token (httpOnly cookie opcional)
+- Login retorna access token + refresh token (cookie seguro opcional)
 - Refresh token rotação a cada uso (revoga anterior, emite novo)
 - Perfil define permissões granulares: `route:action` (ex: `pedidos:write`, `produtos:read`)
 - Administrador convida usuários via e-mail → define perfis por loja
@@ -52,14 +52,14 @@ SaaS de e-commerce multi-perfil (Cliente, Estoquista, Operador, Gestor, Administ
 
 ### Vitrine e Catálogo
 - Apenas produtos `ATIVO` com categoria `ATIVA` aparecem na vitrine
-- Busca full-text: nome, descrição, tags, SKU (PostgreSQL tsvector + trigram)
+- Busca full-text: nome, descrição, tags, SKU (com suporte a busca aproximada/fuzzy)
 - Filtros combinados: categoria (árvore), faixa preço (centavos), atributos (cor/tamanho/voltagem), disponibilidade (estoque > 0)
 - Paginação cursor-based (performance, sem offset)
 - Favoritos: toggle por cliente, lista privada, persiste cross-device
 - Avaliações: apenas cliente com pedido `ENTREGUE` daquele produto → 1-5 estrelas + texto + imagens opcionais → moderação opcional (aprovada por admin)
 
 ### Carrinho e Checkout
-- Carrinho persistido no banco (server-side) + localStorage (otimista, sync via `updated_at`)
+- Carrinho persistido no servidor + cache local (otimista, sincronizado por data de atualização)
 - Sessão de carrinho expira em 24h (limpeza via job)
 - Cupom: valida código (case-insensitive), vigência, valor mínimo, uso total, uso por cliente, escopo (categorias/produtos), primeira compra
 - Frete: consulta CEP → retorna opções ordenadas (prazo, valor, transportadora) — cache 1h por CEP+loja
@@ -67,24 +67,24 @@ SaaS de e-commerce multi-perfil (Cliente, Estoquista, Operador, Gestor, Administ
 - Checkout single-page: validação inline, resumo lateral, loading states por seção
 
 ### Pagamentos
-- Integração 100% assíncrona via webhooks (HMAC assinado)
+- Integração 100% assíncrona via webhooks (assinados criptograficamente)
 - PIX: QR code expira 15min, webhook `payment.approved` confirma, `payment.expired` cancela
-- Cartão: tokenização no frontend (SDK gateway), 3DS challenge quando exigido, webhook confirma
+- Cartão: tokenização no frontend (SDK do gateway), 3DS challenge quando exigido, webhook confirma
 - Boleto: vencimento D+1, webhook `payment.paid` confirma, `payment.expired` cancela
-- Idempotência: `Idempotency-Key` header obrigatório em todas mutações (UUID v7)
+- Idempotência: chave de idempotência obrigatória em todas mutações
 - Conciliação: job diário compara `Pagamento.APROVADO` vs extrato gateway → divergências em fila manual
 
 ### Pedidos
 - Criação atômica (transação): `Pedido` + `ItemPedido[]` + `Estoque.reserva` + `Pagamento.INICIADO`
 - Timeline de eventos visível ao cliente (público) e interno (comentários da equipe)
 - Cancelamento: transação inverte reserva estoque, estorna pagamento se `APROVADO`, emite `PedidoEvento.CANCELADO`
-- NF-e: emissão automática (integração provedor) ao status `ENVIADO` → XML + PDF armazenados no Supabase Storage
+- NF-e: emissão automática (integração provedor) ao status `ENVIADO` → XML + PDF armazenados no storage de arquivos do sistema (ver `/docs/tech.md`)
 - Rastreamento: código + URL transportadora, webhook atualiza `TransportadoraRastreamento.eventos[]` → notifica cliente
 
 ### Estoque
 - SKU = `ProdutoVariacao` (identificador fiscal único)
-- Quantidade disponível = `fisica` - `reservada` (computed, não persistido)
-- Reserva atômica no checkout: `UPDATE estoque SET reservada = reservada + qtd WHERE variacao_id = ? AND deposito_id = ? AND (fisica - reservada) >= qtd` — retry exponencial 3x
+- Quantidade disponível = `fisica` - `reservada` (calculado, não persistido)
+- Reserva atômica no checkout: incrementa a quantidade reservada apenas se houver saldo disponível suficiente, verificação e escrita na mesma operação — retry exponencial 3x em caso de conflito de concorrência
 - Entrada: `NOTA_COMPRA` (atualiza custo médio ponderado), `DEVOLUCAO`, `AJUSTE_POSITIVO`
 - Saída: `VENDA` (baixa reservada), `PERDA`, `DOACAO`, `AJUSTE_NEGATIVO`
 - Transferência: `TRANSFERENCIA_SAIDA` (origem) + `TRANSFERENCIA_ENTRADA` (destino) — mesma transação
@@ -92,18 +92,18 @@ SaaS de e-commerce multi-perfil (Cliente, Estoquista, Operador, Gestor, Administ
 - Inventário: contagem física → `AJUSTE_POSITIVO/NEGATIVO` com divergência registrada
 
 ### Dashboard e Relatórios
-- KPIs tempo real: materialized views atualizadas via trigger/evento (vendas dia/mês, ticket médio, conversão, abandono)
+- KPIs tempo real: visões consolidadas atualizadas por trigger/evento (vendas dia/mês, ticket médio, conversão, abandono)
 - Filtros: período (date range), canal (loja/marketplace), vendedor, categoria
 - Exportação: CSV (dados brutos), PDF (relatórios formatados com logo/loja)
 - Agendamento: relatórios recorrentes (diário/semanal/mensal) → e-mail com anexo + link painel
 
 ### Configurações
-- Loja: nome, logo, cores (design tokens), domínio customizado (verificação DNS TXT), SEO (meta, sitemap, robots), redes sociais
+- Loja: nome, logo, cores (design tokens), domínio customizado (verificação de propriedade), SEO (meta, sitemap, robots), redes sociais
 - Frete: múltiplas regras avaliadas por prioridade — Correios (tabela), transportadora (API), tabela preço (CEP faixa), grátis por valor mínimo, grátis por região (UF)
-- Pagamento: credenciais criptografadas (AES-256, chave por loja), parcelamento máx, juros por parcela (JSON), modo teste/homologação
+- Pagamento: credenciais criptografadas (chave por loja), parcelamento máx, juros por parcela, modo teste/homologação
 - Cupons: `%` ou `valor_fixo` (centavos), `frete_gratis`, primeira compra, escopo categoria/produto, validade, limite uso
-- E-mails: templates MJML/HTML (boas-vindas, pedido criado, pagamento aprovado, envio, entrega, avaliação, carrinho abandonado) — variáveis handlebars
-- Integrações: API keys criptografadas, webhook URLs com HMAC secret, logs de entrega
+- E-mails: templates (boas-vindas, pedido criado, pagamento aprovado, envio, entrega, avaliação, carrinho abandonado) — variáveis dinâmicas
+- Integrações: credenciais criptografadas, webhook URLs com segredo compartilhado, logs de entrega
 
 ## Fluxos macro consolidados
 1. **Compra completa**: Cliente navega → busca/filtra → carrinho → checkout (cupom + CEP → frete + endereço) → pagamento (PIX/cartão/boleto) → webhook aprova → pedido `PAGO` + estoque reservado → notifica equipe
@@ -116,9 +116,9 @@ Este documento representa a fonte de verdade do comportamento funcional da fase 
 
 ## Fluxo oficial para alterações de banco de dados
 Toda alteração estrutural segue:
-1. **Migration** versionada (Prisma Migrate) — nome descritivo `YYYYMMDDhhmmss_descricao_curta`, timestamp
+1. **Migration** versionada — nome descritivo `YYYYMMDDhhmmss_descricao_curta`, timestamp (ferramenta oficial definida em `/docs/tech.md`)
 2. **Seed** quando necessário para parametrização (perfis de sistema, configs iniciais, dados de referência)
 3. **Revisão técnica** — PR revisado por 2+ devs, CI passa (lint, typecheck, testes unitários, build)
 4. **Aprovação operacional** — PO valida impacto em dados existentes, rollback testado em staging
-5. **Rollback** — script de reversão (`down` migration) testado, tempo de execução < 5min
-6. **Versionamento** — tag semver no monorepo (`vX.Y.Z`), changelog atualizado (`CHANGELOG.md`)
+5. **Rollback** — script de reversão testado, tempo de execução < 5min
+6. **Versionamento** — tag semver no projeto (`vX.Y.Z`), changelog atualizado (`CHANGELOG.md`)
