@@ -20,6 +20,7 @@ export interface AuthTokens {
 export interface TokenPayload extends JWTPayload {
   sub: string;
   email: string;
+  nome_completo: string;
   loja_id: string;
   perfis: Array<{ codigo: string; nome: string }>;
   permissoes: string[];
@@ -97,6 +98,7 @@ export async function generateAuthTokens(
   const accessToken = await generateAccessToken({
     sub: user.id,
     email: user.email,
+    nome_completo: user.nome_completo,
     loja_id: usuarioPerfis[0]?.loja_id || '',
     perfis,
     permissoes,

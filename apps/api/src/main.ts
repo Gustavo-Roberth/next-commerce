@@ -8,7 +8,9 @@ import { config } from 'dotenv';
 import Fastify from 'fastify';
 import { registerAuthMiddleware } from './auth/middleware.js';
 import { authRoutes } from './auth/routes.js';
+import { cartRoutes } from './cart/routes.js';
 import { categoryRoutes } from './categories/routes.js';
+import { checkoutRoutes } from './checkout/routes.js';
 import { productRoutes } from './products/routes.js';
 
 config();
@@ -74,6 +76,8 @@ async function initialize() {
   await app.register(authRoutes, { prefix: '/api/v1' });
   await app.register(categoryRoutes, { prefix: '/api/v1' });
   await app.register(productRoutes, { prefix: '/api/v1' });
+  await app.register(cartRoutes, { prefix: '/api/v1' });
+  await app.register(checkoutRoutes, { prefix: '/api/v1' });
 
   const port = Number(process.env.PORT) || 3001;
   await app.listen({ port, host: '0.0.0.0' });

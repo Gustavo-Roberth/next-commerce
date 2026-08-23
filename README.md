@@ -53,12 +53,28 @@
 - DELETE /api/v1/produtos/:id (arquivar - ADMIN/GESTOR, soft delete via status ARQUIVADO)
 - Serialização de Decimal para number
 
-**8. Frontend bootstrap (apps/web)**
+**8. Carrinho (apps/api)**
+- GET /api/v1/carrinho (obter carrinho do usuário/sessão com itens, subtotal)
+- POST /api/v1/carrinho/itens (adicionar item com validação de estoque)
+- PUT /api/v1/carrinho/itens/:item_id (atualizar quantidade com validação de estoque)
+- DELETE /api/v1/carrinho/itens/:item_id (remover item)
+- DELETE /api/v1/carrinho (limpar carrinho)
+- Suporte a usuário autenticado e sessão anônima (x-session-id header)
+
+**9. Checkout (apps/api)**
+- POST /api/v1/checkout/calcular-frete (cálculo de frete simplificado por peso/volume)
+- POST /api/v1/checkout/aplicar-cupom (validação e aplicação de cupom)
+- POST /api/v1/checkout (criar pedido a partir do carrinho, criar pagamento, integração Mercado Pago)
+- Validação de estoque no checkout, aplicação de cupom, endereços de entrega/cobrança
+- Integração Mercado Pago: criação de preference, geração de URL de pagamento, PIX QR code
+- Idempotency key para pagamentos
+
+**10. Frontend bootstrap (apps/web)**
 - Next.js 15 (App Router) + Tailwind CSS 4 (@tailwindcss/postcss)
 - layout.tsx, globals.css (design tokens), page.tsx inicial
 - rewrites /api/backend → API_URL (condicional quando env ausente)
 
-**9. Quality Gates — todos verdes**
+**11. Quality Gates — todos verdes**
 - lint ✅ | typecheck ✅ | test ✅ (31 testes) | build ✅
 
 ### 🔧 Ajustes técnicos importantes
@@ -69,10 +85,13 @@
 - Shared package: "type": "module" + moduleResolution: "Bundler" para imports sem extensão
 - Auth tests usam import .js (resolvido pelo tsc-alias)
 - Fastify routes com type assertions para compatibilidade com exactOptionalPropertyTypes
+- Token JWT inclui nome_completo para uso no checkout
+- Cart routes suportam usuário autenticado + sessão anônima
+- Checkout integra Mercado Pago (preference + PIX)
 
 ### ⏳ Pendente (Fase 1)
-Carrinho/Checkout/Mercado Pago ·
-Pedidos/Webhooks · Design System/shadcn-ui · Loja pública · Admin ·
+Pedidos: listar/detalhe/cancelar + Webhooks (Mercado Pago) ·
+Design System/shadcn-ui · Loja pública · Admin ·
 TanStack Query · E2E · CI/CD · Deploy
 
 ---
