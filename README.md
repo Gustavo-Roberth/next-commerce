@@ -1,4 +1,4 @@
-# Notas de Atualização 0.0.5
+# Notas de Atualização 0.0.6
 
 ## FASE 1 — Fundação e MVP Loja
 ### ✅ Concluído nesta fase
@@ -84,12 +84,18 @@
 - Deduplicação via idempotency_key
 - Cria eventos de auditoria
 
-**12. Frontend bootstrap (apps/web)**
-- Next.js 15 (App Router) + Tailwind CSS 4 (@tailwindcss/postcss)
+**12. Design System / UI Components (apps/web)**
+- shadcn/ui + Tailwind CSS 4 (@tailwindcss/postcss)
+- Componentes: Button, Label, Input, Card, Badge, Avatar, DropdownMenu, Dialog, Toast
+- Utils: cn() para className merging (clsx + tailwind-merge)
+- class-variance-authority para variantes de componentes
+
+**13. Frontend bootstrap (apps/web)**
+- Next.js 15 (App Router) + Tailwind CSS 4
 - layout.tsx, globals.css (design tokens), page.tsx inicial
 - rewrites /api/backend → API_URL (condicional quando env ausente)
 
-**13. Quality Gates — todos verdes**
+**14. Quality Gates — todos verdes**
 - lint ✅ | typecheck ✅ | test ✅ (31 testes) | build ✅
 
 ### 🔧 Ajustes técnicos importantes
@@ -106,8 +112,9 @@
 - Webhook Mercado Pago atualiza pedido/pagamento automaticamente
 
 ### ⏳ Pendente (Fase 1)
-Design System/shadcn-ui · Loja pública · Admin ·
-TanStack Query · E2E · CI/CD · Deploy
+Loja pública (Home, Listagem, Detalhe, Carrinho, Checkout, Conta) ·
+Admin (Login, Dashboard, Produtos, Pedidos) ·
+TanStack Query + services tipados · E2E · CI/CD · Deploy
 
 ---
 

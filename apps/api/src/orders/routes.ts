@@ -434,12 +434,10 @@ export async function orderRoutes(app: FastifyInstance): Promise<void> {
 
       const primeiroPagamento = pedido.pagamentos?.[0];
       if (primeiroPagamento && ['APROVADO', 'PROCESSANDO'].includes(primeiroPagamento.status)) {
-        return reply
-          .code(400)
-          .send({
-            error:
-              'Pedido com pagamento aprovado não pode ser cancelado diretamente. Solicite estorno.',
-          });
+        return reply.code(400).send({
+          error:
+            'Pedido com pagamento aprovado não pode ser cancelado diretamente. Solicite estorno.',
+        });
       }
 
       await prisma.$transaction(async (tx) => {
