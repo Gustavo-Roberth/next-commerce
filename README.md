@@ -102,6 +102,8 @@
 - Produtos: listagem com busca, filtro status, paginação cursor, dropdown editar/arquivar ✅
 - Produtos: criação (`/admin/produtos/novo`) - formulário completo (básico, fiscal, logística, SEO, config) ✅
 - Produtos: edição (`/admin/produtos/[id]/editar`) com pré-preenchimento e validações ✅
+- Produtos: gestão de imagens integrada - upload, preview, progress, múltiplas imagens, definição de principal ✅
+- Produtos: gestão de variações integrada - listagem, criação, edição, exclusão ✅
 - Pedidos: listagem (`/admin/pedidos`) com filtros status/data, paginação ✅
 - Pedidos: detalhes (`/admin/pedidos/[id]`) - itens, financeiro, pagamento, timeline, alterar status ✅
 - Produtos: gestão de variações integrada - listagem, criação, edição, exclusão ✅
@@ -112,6 +114,8 @@
 **15. Admin Panel - Backend (`apps/api`)**
 - `GET /admin/stats` - pedidosPendentes + vendasHoje por loja ✅
 - Produtos CRUD: `GET/POST/PUT/DELETE /admin/produtos` com isolamento loja ✅
+- Produtos: imagens CRUD via API (`/admin/upload/product-image`, `/admin/upload/multiple-product-images`) ✅
+- Produtos: variações CRUD via API (`/admin/produtos/:id/variacoes`) ✅
 - Pedidos: `GET /admin/pedidos`, `GET /admin/pedidos/:id`, `PUT /admin/pedidos/:id/status` ✅
 - Validação transições status: CRIADO→PAGAMENTO_PENDENTE/CANCELADO, PAGAMENTO_PENDENTE→PAGO/CANCELADO, PAGO→SEPARANDO/CANCELADO, SEPARANDO→ENVIADO/CANCELADO, ENVIADO→ENTREGUE/CANCELADO ✅
 - Auto timestamps (pago_em, enviado_em, etc.) + PedidoEvento.STATUS_ALTERADO ✅
@@ -124,9 +128,26 @@
 - JWT com JWKS Supabase - access 15min, refresh rotation ✅
 
 **17. Componentes UI Adicionados**
-- `textarea.tsx`, `switch.tsx`, `select.tsx`, `separator.tsx`, `table.tsx`, `badge.tsx` ✅
+- `textarea.tsx`, `switch.tsx`, `select.tsx`, `separator.tsx`, `table.tsx`, `badge.tsx`, `progress.tsx`, `accordion.tsx`, `alert-dialog.tsx`, `checkbox.tsx`, `scroll-area.tsx` ✅
 
-**18. Quality Gates — todos verdes**
+**18. Storefront (`apps/web`) - TanStack Query Integration**
+- `QueryProvider` no root layout com configuração padrão ✅
+- `/produtos` page - client-side fetching com `useQuery`, Suspense boundary para `useSearchParams` ✅
+- `/produtos/[slug]` - client-side fetching com loading/error states ✅
+- `produtosApi`, `categoriasApi` services atualizados para TanStack Query ✅
+
+**19. Image Upload (Supabase Storage)**
+- `storage.provider.ts` - upload, delete, signed URLs, validação de imagens ✅
+- Buckets: `product-images`, `nfe-xml`, `nfe-pdf`, `user-avatars` ✅
+- Endpoints: `POST /admin/upload/product-image`, `DELETE /admin/upload/product-image`, `POST /admin/upload/multiple-product-images` ✅
+- `ImageUpload` component: drag & drop, preview, progress bar, múltiplas imagens, imagem principal ✅
+- Integração no formulário de edição de produto (`/admin/produtos/[id]/editar`) ✅
+- `@fastify/multipart` plugin registrado no backend ✅
+
+**20. shadcn/ui Components (nice to have)**
+- `Accordion`, `AlertDialog`, `Checkbox`, `ScrollArea`, `Progress` components ✅
+
+**21. Quality Gates — todos verdes**
 - lint ✅ | typecheck ✅ | test ✅ (31 testes) | build ✅
 
 ### 🔧 Ajustes técnicos importantes
@@ -151,7 +172,7 @@
 - Schemas admin reutilizando queries públicas (`adminCategoriaListQuerySchema`, `adminPedidoListQuerySchema`)
 
 ### ⏳ Pendente (Fase 1)
-Design System/shadcn-ui completo · Loja pública completa · TanStack Query + services tipados · E2E · CI/CD · Testes E2E Playwright fluxo admin completo · Testes unitários Vitest admin services · Upload imagens produto Supabase Storage · Configurações loja (frete, pagamentos, cupons, emails, integrações) · Relatórios CSV/PDF export · Deploy staging (Vercel + Render) ·  Deploy
+Testes E2E Playwright (admin fluxo completo) · Testes unitários Vitest (admin services) · Configurações loja (frete, pagamentos, cupons, emails, integrações) · Relatórios CSV/PDF export · Deploy staging (Vercel + Render)
 
 ---
 

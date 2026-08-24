@@ -1,6 +1,9 @@
+'use client';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useQuery } from '@tanstack/react-query';
 import { produtosApi } from '@/lib/api/services';
 import type { Produto, ProdutoImagem, ProdutoVariacao } from '@/lib/api/types';
 import { formatCurrency } from '@/lib/utils';
@@ -9,14 +12,6 @@ import { notFound } from 'next/navigation';
 
 interface Props {
   params: Promise<{ slug: string }>;
-}
-
-async function getProduto(slug: string): Promise<Produto | null> {
-  try {
-    return await produtosApi.getBySlug(slug, 'default-loja-id');
-  } catch {
-    return null;
-  }
 }
 
 function ImageGallery({
@@ -140,8 +135,7 @@ function ProductVariations({ variacoes }: { variacoes: ProdutoVariacao[] }) {
               <p className="text-sm text-muted-foreground">{variacao.sku}</p>
               {variacao.preco_cents !== null && (
                 <p className="text-lg font-bold text-primary mt-2">
-                  {(variacao.preco_cents / 100) | 0},
-                  {String((variacao.preco_cents / 100) % 1).slice(2, 4)}
+                  {formatCurrency(variacao.preco_cents / 100)}
                 </p>
               )}
               {variacao.atributos.length > 0 && (
@@ -179,12 +173,34 @@ function ProductDescription({ product }: { product: Produto }) {
 }
 
 export default async function ProdutoDetalhePage({ params }: Props) {
-  const resolvedParams = await params;
-  const product = await getProduto(resolvedParams.slug);
+  const { slug } = await params;
 
-  if (!product) {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['produto', slug, 'default-loja-id'],
+    queryFn: async () => {
+      try {
+        return await produtosApi.getBySlug(slug, 'default-loja-id');
+      } catch {
+        return null;
+      }
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !data) {
     notFound();
   }
+
+  const product = data!;
 
   return (
     <div className="container mx-auto px-4 py-8">

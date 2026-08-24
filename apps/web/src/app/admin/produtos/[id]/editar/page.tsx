@@ -17,11 +17,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { api } from '@/lib/api/client';
 import { adminApi } from '@/lib/api/services';
 import type { Categoria, CreateProdutoInput, UpdateProdutoInput, ProdutoVariacao, ProdutoAtributo } from '@/lib/api/types';
-import { ArrowLeft, Loader2, Save, Plus, Trash2, Edit, Image, Tag, DollarSign, X } from 'lucide-react';
+import { ArrowLeft, Loader2, Save, Plus, Trash2, Edit, Image, Tag, DollarSign, X, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { formatCurrency } from '@/lib/utils';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 
 interface ProdutoFormData extends Partial<CreateProdutoInput> {
   nome: string;
@@ -541,6 +542,26 @@ export default function AdminProdutoEditarPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Imagens do Produto */}
+        {isEditing && (
+          <Card>
+            <CardHeader>
+<CardTitle className="flex items-center gap-2">
+                <ImageIcon className="h-5 w-5" />
+                Imagens do Produto
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ImageUpload
+                productId={produtoId}
+                multiple
+                maxFiles={10}
+                label="Imagens do Produto"
+              />
+            </CardContent>
+          </Card>
+        )}
 
         {/* Variações do Produto */}
         {isEditing && (

@@ -14,3 +14,8 @@ export * from './switch';
 export * from './select';
 export * from './separator';
 export * from './table';
+export * from './progress';
+export * from './accordion';
+export * from './alert-dialog';
+export * from './checkbox';
+export * from './scroll-area';

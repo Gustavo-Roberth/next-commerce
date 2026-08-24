@@ -4,6 +4,7 @@ import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
+import multipart from '@fastify/multipart';
 import { config } from 'dotenv';
 import Fastify from 'fastify';
 import { adminRoutes } from './admin/routes.js';
@@ -17,6 +18,7 @@ import { adminOrderRoutes } from './orders/admin.routes.js';
 import { orderRoutes } from './orders/routes.js';
 import { adminProductRoutes } from './products/admin.routes.js';
 import { productRoutes } from './products/routes.js';
+import { storageRoutes } from './providers/storage.routes.js';
 import { webhookRoutes } from './webhooks/routes.js';
 
 config();
@@ -43,6 +45,12 @@ async function initialize() {
   await app.register(cookie, {
     secret: process.env.COOKIE_SECRET || 'dev-cookie-secret',
     hook: 'onRequest',
+  });
+
+  await app.register(multipart, {
+    limits: {
+      fileSize: 5 * 1024 * 1024, // 5MB
+    },
   });
 
   await app.register(swagger, {
@@ -79,7 +87,6 @@ async function initialize() {
     return { status: 'ok', timestamp: new Date().toISOString() };
   });
 
-  await app.register(authRoutes, { prefix: '/api/v1' });
   await app.register(adminRoutes, { prefix: '/api/v1' });
   await app.register(categoryRoutes, { prefix: '/api/v1' });
   await app.register(adminCategoryRoutes, { prefix: '/api/v1' });
@@ -89,6 +96,7 @@ async function initialize() {
   await app.register(checkoutRoutes, { prefix: '/api/v1' });
   await app.register(orderRoutes, { prefix: '/api/v1' });
   await app.register(adminOrderRoutes, { prefix: '/api/v1' });
+  await app.register(storageRoutes, { prefix: '/api/v1' });
   await app.register(webhookRoutes, { prefix: '/api/v1' });
 
   const port = Number(process.env.PORT) || 3001;
