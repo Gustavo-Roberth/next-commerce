@@ -1,4 +1,4 @@
-# Notas de Atualização 0.0.7
+# Notas de Atualização 0.0.8
 
 ## FASE 1 — Fundação e MVP Loja
 ### ✅ Concluído nesta fase
@@ -104,6 +104,10 @@
 - Produtos: edição (`/admin/produtos/[id]/editar`) com pré-preenchimento e validações ✅
 - Pedidos: listagem (`/admin/pedidos`) com filtros status/data, paginação ✅
 - Pedidos: detalhes (`/admin/pedidos/[id]`) - itens, financeiro, pagamento, timeline, alterar status ✅
+- Produtos: gestão de variações integrada - listagem, criação, edição, exclusão ✅
+- Categorias: listagem em árvore (`/admin/categorias`) com busca, filtro ativa/pai, paginação ✅
+- Categorias: criação (`/admin/categorias/novo`) - formulário com hierarquia (pai/filho) ✅
+- Categorias: edição (`/admin/categorias/[id]/editar`) com validações de integridade ✅
 
 **15. Admin Panel - Backend (`apps/api`)**
 - `GET /admin/stats` - pedidosPendentes + vendasHoje por loja ✅
@@ -112,13 +116,15 @@
 - Validação transições status: CRIADO→PAGAMENTO_PENDENTE/CANCELADO, PAGAMENTO_PENDENTE→PAGO/CANCELADO, PAGO→SEPARANDO/CANCELADO, SEPARANDO→ENVIADO/CANCELADO, ENVIADO→ENTREGUE/CANCELADO ✅
 - Auto timestamps (pago_em, enviado_em, etc.) + PedidoEvento.STATUS_ALTERADO ✅
 - Cancelamento libera reserva estoque ✅
+- Categorias CRUD: `GET/POST/PUT/DELETE /admin/categorias` com isolamento loja e validações hierárquicas ✅
 
 **16. Autenticação & Autorização**
 - Middleware `requireRole` para ADMIN/GESTOR/OPERADOR ✅
 - Isolamento multi-tenant via `loja_id` em todas queries ✅
+- JWT com JWKS Supabase - access 15min, refresh rotation ✅
 
 **17. Componentes UI Adicionados**
-- `textarea.tsx`, `switch.tsx`, `select.tsx`, `separator.tsx`, `table.tsx` ✅
+- `textarea.tsx`, `switch.tsx`, `select.tsx`, `separator.tsx`, `table.tsx`, `badge.tsx` ✅
 
 **18. Quality Gates — todos verdes**
 - lint ✅ | typecheck ✅ | test ✅ (31 testes) | build ✅
@@ -139,13 +145,13 @@
 - Route group renomeado de `(admin)` para `admin` (evita conflito slug dinâmico com `(store)/produtos/[slug]`)
 - Correção TypeScript `exactOptionalPropertyTypes` nos Select components (value com fallback)
 - `Textarea` component nativo (sem dependência `@radix-ui/react-textarea` inexistente)
-- Types estendidos: `PedidoItem.variacao`, `PedidoEvento.metadata`, `ApiError.data`
+- Types estendidos: `PedidoItem.variacao`, `PedidoEvento.metadata`, `ApiError.data`, `ProdutoAtributo`, `AdminCategoriaListResponse`, `CreateCategoriaInput`, `UpdateCategoriaInput`
 - Serialização Decimal (Prisma) → Number nas respostas API
 - Schemas: `status` em createProdutoSchema, admin query schemas reutilizando queries públicas
+- Schemas admin reutilizando queries públicas (`adminCategoriaListQuerySchema`, `adminPedidoListQuerySchema`)
 
 ### ⏳ Pendente (Fase 1)
-Design System/shadcn-ui completo · Loja pública completa ·
-TanStack Query + services tipados · E2E · CI/CD · Deploy
+Design System/shadcn-ui completo · Loja pública completa · TanStack Query + services tipados · E2E · CI/CD · Testes E2E Playwright fluxo admin completo · Testes unitários Vitest admin services · Upload imagens produto Supabase Storage · Configurações loja (frete, pagamentos, cupons, emails, integrações) · Relatórios CSV/PDF export · Deploy staging (Vercel + Render) ·  Deploy
 
 ---
 

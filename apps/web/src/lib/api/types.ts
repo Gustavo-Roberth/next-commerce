@@ -59,6 +59,12 @@ export interface ProdutoVariacaoAtributo {
   valor: string;
 }
 
+export interface ProdutoAtributo {
+  atributo_id: string;
+  nome: string;
+  valores: string[];
+}
+
 export interface ProdutoImagem {
   id: string;
   url: string;
@@ -329,6 +335,32 @@ export interface AdminPedidoListResponse {
   data: Pedido[];
   nextCursor: string | null;
   total: number;
+}
+
+export interface AdminCategoriaListResponse {
+  data: Categoria[];
+  nextCursor: string | null;
+  total: number;
+}
+
+export interface CreateCategoriaInput {
+  loja_id: string;
+  nome: string;
+  slug: string;
+  descricao?: string;
+  imagem_url?: string;
+  pai_id?: string;
+  ordem_exibicao?: number;
+}
+
+export interface UpdateCategoriaInput {
+  nome?: string;
+  slug?: string;
+  descricao?: string;
+  imagem_url?: string;
+  pai_id?: string;
+  ordem_exibicao?: number;
+  ativa?: boolean;
 }
 
 export interface CreateProdutoInput {

@@ -11,15 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { api } from '@/lib/api/client';
 import { adminApi } from '@/lib/api/services';
-import type { Categoria, CreateProdutoInput, UpdateProdutoInput } from '@/lib/api/types';
-import { ArrowLeft, Loader2, Save } from 'lucide-react';
+import type { Categoria, CreateProdutoInput, UpdateProdutoInput, ProdutoVariacao, ProdutoAtributo } from '@/lib/api/types';
+import { ArrowLeft, Loader2, Save, Plus, Trash2, Edit, Image, Tag, DollarSign, X } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { formatCurrency } from '@/lib/utils';
 
 interface ProdutoFormData extends Partial<CreateProdutoInput> {
   nome: string;
@@ -74,6 +76,24 @@ export default function AdminProdutoEditarPage() {
     status: 'RASCUNHO',
   });
 
+  const [variacoes, setVariacoes] = useState<ProdutoVariacao[]>([]);
+  const [atributos, setAtributos] = useState<ProdutoAtributo[]>([]);
+  const [editingVariacao, setEditingVariacao] = useState<ProdutoVariacao | null>(null);
+  const [variacaoForm, setVariacaoForm] = useState<{
+    sku: string;
+    nome: string;
+    preco_cents: number;
+    ativo: boolean;
+    atributos: Record<string, string>;
+  }>({
+    sku: '',
+    nome: '',
+    preco_cents: 0,
+    ativo: true,
+    atributos: {} as Record<string, string>,
+  });
+  const [variacaoFormError, setVariacaoFormError] = useState('');
+
   useEffect(() => {
     fetchCategorias();
   }, []);
@@ -117,11 +137,106 @@ export default function AdminProdutoEditarPage() {
         meta_description: data.meta_description || '',
         status: data.status,
       });
+      if (data.variacoes) {
+        setVariacoes(data.variacoes);
+      }
+      if (data.variacoes?.[0]?.atributos) {
+        // Extract unique attributes from variations
+        const attrMap = new Map<string, ProdutoAtributo>();
+        data.variacoes.forEach((v) => {
+          v.atributos?.forEach((a) => {
+            if (!attrMap.has(a.atributo_id)) {
+              attrMap.set(a.atributo_id, { atributo_id: a.atributo_id, nome: a.nome, valores: [a.valor] });
+            } else {
+              const existing = attrMap.get(a.atributo_id)!;
+              if (!existing.valores.includes(a.valor)) {
+                existing.valores.push(a.valor);
+              }
+            }
+          });
+        });
+        setAtributos(Array.from(attrMap.values()));
+      }
     } catch (error) {
       console.error('Erro ao buscar produto:', error);
       setError('Erro ao carregar produto');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Variation management functions
+  const openVariacaoForm = (variacao?: ProdutoVariacao) => {
+    if (variacao) {
+      const attrs: Record<string, string> = {};
+      variacao.atributos?.forEach((a) => {
+        attrs[a.atributo_id] = a.valor;
+      });
+      setEditingVariacao(variacao);
+      setVariacaoForm({
+        sku: variacao.sku,
+        nome: variacao.nome,
+        preco_cents: variacao.preco_cents || 0,
+        ativo: variacao.ativo,
+        atributos: attrs,
+      });
+    } else {
+      setEditingVariacao(null);
+      setVariacaoForm({
+        sku: '',
+        nome: '',
+        preco_cents: 0,
+        ativo: true,
+        atributos: {},
+      });
+    }
+    setVariacaoFormError('');
+  };
+
+  const closeVariacaoForm = () => {
+    setEditingVariacao(null);
+    setVariacaoForm({ sku: '', nome: '', preco_cents: 0, ativo: true, atributos: {} });
+    setVariacaoFormError('');
+  };
+
+  const saveVariacao = async () => {
+    setVariacaoFormError('');
+    if (!variacaoForm.sku || !variacaoForm.nome) {
+      setVariacaoFormError('SKU e Nome são obrigatórios');
+      return;
+    }
+    if (variacaoForm.preco_cents === undefined || variacaoForm.preco_cents <= 0) {
+      setVariacaoFormError('Preço deve ser maior que zero');
+      return;
+    }
+
+    try {
+      if (editingVariacao) {
+        // Update existing variation
+        await api.put(`/admin/produtos/${produtoId}/variacoes/${editingVariacao.id}`, variacaoForm);
+      } else {
+        // Create new variation
+        await api.post(`/admin/produtos/${produtoId}/variacoes`, variacaoForm);
+      }
+      closeVariacaoForm();
+      // Refresh product data
+      const data = await adminApi.produtos.getById(produtoId);
+      if (data.variacoes) {
+        setVariacoes(data.variacoes);
+      }
+    } catch (err: any) {
+      setVariacaoFormError(err.data?.error || 'Erro ao salvar variação');
+    }
+  };
+
+  const deleteVariacao = async (variacaoId: string) => {
+    if (!confirm('Tem certeza que deseja excluir esta variação?')) return;
+    try {
+      await api.delete(`/admin/produtos/${produtoId}/variacoes/${variacaoId}`);
+      setVariacoes((prev) => prev.filter((v) => v.id !== variacaoId));
+    } catch (error) {
+      console.error('Erro ao excluir variação:', error);
+      alert('Erro ao excluir variação');
     }
   };
 
@@ -426,6 +541,194 @@ export default function AdminProdutoEditarPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Variações do Produto */}
+        {isEditing && (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Tag className="h-5 w-5" />
+                Variações do Produto
+              </CardTitle>
+              <Button onClick={() => openVariacaoForm()} size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Nova Variação
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {variacoes.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Tag className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Nenhuma variação cadastrada</p>
+                  <p className="text-sm">Clique em "Nova Variação" para adicionar</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {variacoes.map((variacao) => (
+                    <div
+                      key={variacao.id}
+                      className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
+                          {variacao.imagens?.[0] ? (
+                            <img
+                              src={variacao.imagens[0].url}
+                              alt={variacao.nome}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <Tag className="h-6 w-6 text-gray-400" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium">{variacao.nome}</p>
+                          <p className="text-sm text-muted-foreground">SKU: {variacao.sku}</p>
+                          <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                            <span>{formatCurrency((variacao.preco_cents || 0) / 100)}</span>
+                            <Badge
+                              className={variacao.ativo ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}
+                            >
+                              {variacao.ativo ? 'Ativa' : 'Inativa'}
+                            </Badge>
+                          </div>
+                          {variacao.atributos && variacao.atributos.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {variacao.atributos.map((a) => (
+                                <Badge key={a.atributo_id} variant="secondary" className="text-xs">
+                                  {a.nome}: {a.valor}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openVariacaoForm(variacao)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => deleteVariacao(variacao.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Modal de Variação */}
+        {editingVariacao !== null && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">
+                    {editingVariacao ? 'Editar Variação' : 'Nova Variação'}
+                  </h3>
+                  <Button variant="ghost" size="icon" onClick={closeVariacaoForm}>
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+              <form onSubmit={(e) => { e.preventDefault(); saveVariacao(); }} className="p-6 space-y-4">
+                {variacaoFormError && (
+                  <div className="rounded-lg bg-red-50 p-3 text-red-600 text-sm">{variacaoFormError}</div>
+                )}
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="var_sku">SKU *</Label>
+                    <Input
+                      id="var_sku"
+                      value={variacaoForm.sku}
+                      onChange={(e) => setVariacaoForm((prev) => ({ ...prev, sku: e.target.value.toUpperCase() }))}
+                      placeholder="CAM-001-PRETA"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="var_nome">Nome *</Label>
+                    <Input
+                      id="var_nome"
+                      value={variacaoForm.nome}
+                      onChange={(e) => setVariacaoForm((prev) => ({ ...prev, nome: e.target.value }))}
+                      placeholder="Ex: Vermelho / GG"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="var_preco">Preço (centavos) *</Label>
+                  <Input
+                    id="var_preco"
+                    type="number"
+                    value={variacaoForm.preco_cents}
+                    onChange={(e) => setVariacaoForm((prev) => ({ ...prev, preco_cents: parseInt(e.target.value) || 0 }))}
+                    placeholder="9990"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Atributos</Label>
+                  <div className="space-y-2">
+                    {atributos.map((attr) => (
+                      <div key={attr.atributo_id} className="space-y-1">
+                        <Label htmlFor={`attr_${attr.atributo_id}`}>{attr.nome}</Label>
+                        <Select
+                          value={variacaoForm.atributos[attr.atributo_id] || ''}
+                          onValueChange={(v) =>
+                            setVariacaoForm((prev) => ({
+                              ...prev,
+                              atributos: { ...prev.atributos, [attr.atributo_id]: v },
+                            }))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={`Selecione ${attr.nome}`} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {attr.valores.map((valor) => (
+                              <SelectItem key={valor} value={valor}>
+                                {valor}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="var_ativo"
+                      checked={variacaoForm.ativo}
+                      onChange={(e) => setVariacaoForm((prev) => ({ ...prev, ativo: e.target.checked }))}
+                    />
+                    <Label htmlFor="var_ativo">Ativa</Label>
+                  </div>
+                </div>
+                <div className="flex justify-end gap-2 pt-4 border-t">
+                  <Button type="button" variant="outline" onClick={closeVariacaoForm}>
+                    Cancelar
+                  </Button>
+                  <Button type="submit">
+                    <Save className="h-4 w-4 mr-2" />
+                    {editingVariacao ? 'Atualizar' : 'Criar'}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         <Card>
           <CardHeader>

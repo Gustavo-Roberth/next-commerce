@@ -28,6 +28,15 @@ export const categoriaParamsSchema = z.object({
   id: z.string().uuid(),
 });
 
+export const adminCategoriaListQuerySchema = z.object({
+  cursor: z.string().uuid().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  ativa: z.coerce.boolean().optional(),
+  pai_id: z.string().uuid().optional(),
+  search: z.string().optional(),
+});
+
 export type CategoriaInput = z.infer<typeof categoriaSchema>;
 export type UpdateCategoriaInput = z.infer<typeof updateCategoriaSchema>;
 export type CategoriaParams = z.infer<typeof categoriaParamsSchema>;
+export type AdminCategoriaListQuery = z.infer<typeof adminCategoriaListQuerySchema>;

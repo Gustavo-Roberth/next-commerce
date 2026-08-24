@@ -7,6 +7,7 @@ import swaggerUi from '@fastify/swagger-ui';
 import { config } from 'dotenv';
 import Fastify from 'fastify';
 import { adminRoutes } from './admin/routes.js';
+import { adminCategoryRoutes } from './categories/admin.routes.js';
 import { registerAuthMiddleware } from './auth/middleware.js';
 import { authRoutes } from './auth/routes.js';
 import { cartRoutes } from './cart/routes.js';
@@ -81,6 +82,7 @@ async function initialize() {
   await app.register(authRoutes, { prefix: '/api/v1' });
   await app.register(adminRoutes, { prefix: '/api/v1' });
   await app.register(categoryRoutes, { prefix: '/api/v1' });
+  await app.register(adminCategoryRoutes, { prefix: '/api/v1' });
   await app.register(productRoutes, { prefix: '/api/v1' });
   await app.register(adminProductRoutes, { prefix: '/api/v1' });
   await app.register(cartRoutes, { prefix: '/api/v1' });

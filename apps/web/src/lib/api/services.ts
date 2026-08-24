@@ -1,6 +1,7 @@
 import { api } from './client';
 import type {
   AddItemToCartInput,
+  AdminCategoriaListResponse,
   AdminPedidoListResponse,
   AdminProdutoListResponse,
   AdminStats,
@@ -13,6 +14,7 @@ import type {
   CategoriasListResponse,
   CheckoutInput,
   CheckoutResponse,
+  CreateCategoriaInput,
   CreateProdutoInput,
   Pedido,
   PedidosListResponse,
@@ -20,6 +22,7 @@ import type {
   ProdutoDestaqueResponse,
   ProdutosListResponse,
   UpdateCartItemInput,
+  UpdateCategoriaInput,
   UpdatePedidoStatusInput,
   UpdateProdutoInput,
 } from './types';
@@ -138,6 +141,36 @@ export const pedidosApi = {
 
 export const adminApi = {
   getStats: () => api.get<AdminStats>('/admin/stats'),
+
+  categorias: {
+    list: (params?: {
+      cursor?: string;
+      limit?: number;
+      ativa?: boolean;
+      pai_id?: string;
+      search?: string;
+    }) => {
+      const searchParams = new URLSearchParams();
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            searchParams.set(key, String(value));
+          }
+        });
+      }
+      const query = searchParams.toString();
+      return api.get<AdminCategoriaListResponse>(`/admin/categorias${query ? `?${query}` : ''}`);
+    },
+
+    getById: (id: string) => api.get<Categoria>(`/admin/categorias/${id}`),
+
+    create: (input: CreateCategoriaInput) => api.post<Categoria>('/admin/categorias', input),
+
+    update: (id: string, input: UpdateCategoriaInput) =>
+      api.put<Categoria>(`/admin/categorias/${id}`, input),
+
+    delete: (id: string) => api.delete<{ message: string }>(`/admin/categorias/${id}`),
+  },
 
   produtos: {
     list: (params?: {
