@@ -47,6 +47,7 @@ export const createProdutoSchema = z.object({
   permite_avaliacao: z.boolean().optional(),
   meta_title: z.string().max(60).optional(),
   meta_description: z.string().max(160).optional(),
+  status: z.nativeEnum(ProductStatus).optional(),
 });
 
 export const updateProdutoSchema = createProdutoSchema.partial().extend({
@@ -71,7 +72,10 @@ export const produtoListQuerySchema = z.object({
   sort: z.string().optional(),
 });
 
+export const adminProdutoListQuerySchema = produtoListQuerySchema;
+
 export type CreateProdutoInput = z.infer<typeof createProdutoSchema>;
 export type UpdateProdutoInput = z.infer<typeof updateProdutoSchema>;
 export type ProdutoParams = z.infer<typeof produtoParamsSchema>;
 export type ProdutoListQuery = z.infer<typeof produtoListQuerySchema>;
+export type AdminProdutoListQuery = z.infer<typeof adminProdutoListQuerySchema>;

@@ -9,3 +9,8 @@ export * from './dialog';
 export * from './toast';
 export * from './radio-group';
 export * from './tabs';
+export * from './textarea';
+export * from './switch';
+export * from './select';
+export * from './separator';
+export * from './table';

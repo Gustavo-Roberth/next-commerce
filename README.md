@@ -1,4 +1,4 @@
-# Notas de Atualização 0.0.6
+# Notas de Atualização 0.0.7
 
 ## FASE 1 — Fundação e MVP Loja
 ### ✅ Concluído nesta fase
@@ -96,7 +96,31 @@
 - Páginas: Home, Listagem de produtos (/produtos), Detalhe do produto (/produtos/[slug]), Carrinho (/carrinho), Checkout (/checkout)
 - Rewrites /api/backend → API_URL (condicional quando env ausente)
 
-**14. Quality Gates — todos verdes**
+**14. Admin Panel - Frontend (`apps/web`)**
+- Login admin separado (`/admin/login`) com validação de roles (ADMIN, GESTOR, OPERADOR) ✅
+- Dashboard (`/admin/dashboard`) com KPIs: vendas hoje, pedidos pendentes + ações rápidas ✅
+- Produtos: listagem com busca, filtro status, paginação cursor, dropdown editar/arquivar ✅
+- Produtos: criação (`/admin/produtos/novo`) - formulário completo (básico, fiscal, logística, SEO, config) ✅
+- Produtos: edição (`/admin/produtos/[id]/editar`) com pré-preenchimento e validações ✅
+- Pedidos: listagem (`/admin/pedidos`) com filtros status/data, paginação ✅
+- Pedidos: detalhes (`/admin/pedidos/[id]`) - itens, financeiro, pagamento, timeline, alterar status ✅
+
+**15. Admin Panel - Backend (`apps/api`)**
+- `GET /admin/stats` - pedidosPendentes + vendasHoje por loja ✅
+- Produtos CRUD: `GET/POST/PUT/DELETE /admin/produtos` com isolamento loja ✅
+- Pedidos: `GET /admin/pedidos`, `GET /admin/pedidos/:id`, `PUT /admin/pedidos/:id/status` ✅
+- Validação transições status: CRIADO→PAGAMENTO_PENDENTE/CANCELADO, PAGAMENTO_PENDENTE→PAGO/CANCELADO, PAGO→SEPARANDO/CANCELADO, SEPARANDO→ENVIADO/CANCELADO, ENVIADO→ENTREGUE/CANCELADO ✅
+- Auto timestamps (pago_em, enviado_em, etc.) + PedidoEvento.STATUS_ALTERADO ✅
+- Cancelamento libera reserva estoque ✅
+
+**16. Autenticação & Autorização**
+- Middleware `requireRole` para ADMIN/GESTOR/OPERADOR ✅
+- Isolamento multi-tenant via `loja_id` em todas queries ✅
+
+**17. Componentes UI Adicionados**
+- `textarea.tsx`, `switch.tsx`, `select.tsx`, `separator.tsx`, `table.tsx` ✅
+
+**18. Quality Gates — todos verdes**
 - lint ✅ | typecheck ✅ | test ✅ (31 testes) | build ✅
 
 ### 🔧 Ajustes técnicos importantes
@@ -112,9 +136,15 @@
 - Checkout integra Mercado Pago (preference + PIX)
 - Webhook Mercado Pago atualiza pedido/pagamento automaticamente
 - ProductCard suporta tanto Produto quanto ProdutoDestaque (type guard)
+- Route group renomeado de `(admin)` para `admin` (evita conflito slug dinâmico com `(store)/produtos/[slug]`)
+- Correção TypeScript `exactOptionalPropertyTypes` nos Select components (value com fallback)
+- `Textarea` component nativo (sem dependência `@radix-ui/react-textarea` inexistente)
+- Types estendidos: `PedidoItem.variacao`, `PedidoEvento.metadata`, `ApiError.data`
+- Serialização Decimal (Prisma) → Number nas respostas API
+- Schemas: `status` em createProdutoSchema, admin query schemas reutilizando queries públicas
 
 ### ⏳ Pendente (Fase 1)
-Design System/shadcn-ui completo · Loja pública completa · Admin (Login, Dashboard, Produtos, Pedidos) ·
+Design System/shadcn-ui completo · Loja pública completa ·
 TanStack Query + services tipados · E2E · CI/CD · Deploy
 
 ---

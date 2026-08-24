@@ -1,6 +1,9 @@
 import { api } from './client';
 import type {
   AddItemToCartInput,
+  AdminPedidoListResponse,
+  AdminProdutoListResponse,
+  AdminStats,
   ApplyCupomInput,
   ApplyCupomResponse,
   CalcularFreteResponse,
@@ -10,12 +13,15 @@ import type {
   CategoriasListResponse,
   CheckoutInput,
   CheckoutResponse,
+  CreateProdutoInput,
   Pedido,
   PedidosListResponse,
   Produto,
   ProdutoDestaqueResponse,
   ProdutosListResponse,
   UpdateCartItemInput,
+  UpdatePedidoStatusInput,
+  UpdateProdutoInput,
 } from './types';
 
 export const produtosApi = {
@@ -128,4 +134,70 @@ export const pedidosApi = {
       status,
       observacoes_internas,
     }),
+};
+
+export const adminApi = {
+  getStats: () => api.get<AdminStats>('/admin/stats'),
+
+  produtos: {
+    list: (params?: {
+      cursor?: string;
+      limit?: number;
+      search?: string;
+      categoria_id?: string;
+      status?: string;
+      destaque?: boolean;
+      preco_min?: number;
+      preco_max?: number;
+      apenas_disponiveis?: boolean;
+      sort?: string;
+    }) => {
+      const searchParams = new URLSearchParams();
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            searchParams.set(key, String(value));
+          }
+        });
+      }
+      const query = searchParams.toString();
+      return api.get<AdminProdutoListResponse>(`/admin/produtos${query ? `?${query}` : ''}`);
+    },
+
+    getById: (id: string) => api.get<Produto>(`/admin/produtos/${id}`),
+
+    create: (input: CreateProdutoInput) => api.post<Produto>('/admin/produtos', input),
+
+    update: (id: string, input: UpdateProdutoInput) =>
+      api.put<Produto>(`/admin/produtos/${id}`, input),
+
+    delete: (id: string) => api.delete<{ message: string }>(`/admin/produtos/${id}`),
+  },
+
+  pedidos: {
+    list: (params?: {
+      cursor?: string;
+      limit?: number;
+      status?: string;
+      data_inicio?: string;
+      data_fim?: string;
+      cliente_id?: string;
+    }) => {
+      const searchParams = new URLSearchParams();
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            searchParams.set(key, String(value));
+          }
+        });
+      }
+      const query = searchParams.toString();
+      return api.get<AdminPedidoListResponse>(`/admin/pedidos${query ? `?${query}` : ''}`);
+    },
+
+    getById: (id: string) => api.get<Pedido>(`/admin/pedidos/${id}`),
+
+    atualizarStatus: (id: string, input: UpdatePedidoStatusInput) =>
+      api.put<{ id: string; status: string }>(`/admin/pedidos/${id}/status`, input),
+  },
 };

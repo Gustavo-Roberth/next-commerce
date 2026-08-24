@@ -20,6 +20,8 @@ export const pedidoListQuerySchema = z.object({
   cliente_id: z.string().uuid().optional(),
 });
 
+export const adminPedidoListQuerySchema = pedidoListQuerySchema;
+
 export const updatePedidoStatusSchema = z.object({
   status: z.nativeEnum(OrderStatus),
   observacoes_internas: z.string().max(2000).optional(),
@@ -27,4 +29,5 @@ export const updatePedidoStatusSchema = z.object({
 
 export type PedidoParams = z.infer<typeof pedidoParamsSchema>;
 export type PedidoListQuery = z.infer<typeof pedidoListQuerySchema>;
+export type AdminPedidoListQuery = z.infer<typeof adminPedidoListQuerySchema>;
 export type UpdatePedidoStatusInput = z.infer<typeof updatePedidoStatusSchema>;

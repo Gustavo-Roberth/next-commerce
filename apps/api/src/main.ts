@@ -6,12 +6,15 @@ import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import { config } from 'dotenv';
 import Fastify from 'fastify';
+import { adminRoutes } from './admin/routes.js';
 import { registerAuthMiddleware } from './auth/middleware.js';
 import { authRoutes } from './auth/routes.js';
 import { cartRoutes } from './cart/routes.js';
 import { categoryRoutes } from './categories/routes.js';
 import { checkoutRoutes } from './checkout/routes.js';
+import { adminOrderRoutes } from './orders/admin.routes.js';
 import { orderRoutes } from './orders/routes.js';
+import { adminProductRoutes } from './products/admin.routes.js';
 import { productRoutes } from './products/routes.js';
 import { webhookRoutes } from './webhooks/routes.js';
 
@@ -76,11 +79,14 @@ async function initialize() {
   });
 
   await app.register(authRoutes, { prefix: '/api/v1' });
+  await app.register(adminRoutes, { prefix: '/api/v1' });
   await app.register(categoryRoutes, { prefix: '/api/v1' });
   await app.register(productRoutes, { prefix: '/api/v1' });
+  await app.register(adminProductRoutes, { prefix: '/api/v1' });
   await app.register(cartRoutes, { prefix: '/api/v1' });
   await app.register(checkoutRoutes, { prefix: '/api/v1' });
   await app.register(orderRoutes, { prefix: '/api/v1' });
+  await app.register(adminOrderRoutes, { prefix: '/api/v1' });
   await app.register(webhookRoutes, { prefix: '/api/v1' });
 
   const port = Number(process.env.PORT) || 3001;

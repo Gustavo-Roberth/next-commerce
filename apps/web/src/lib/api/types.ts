@@ -227,6 +227,14 @@ export interface PedidoItem {
   quantidade: number;
   preco_unitario_cents: number;
   total_cents: number;
+  variacao?: {
+    id: string;
+    sku: string;
+    nome: string;
+    preco_cents: number | null;
+    ativo: boolean;
+    imagens: { url: string; alt_text: string | null; principal: boolean }[];
+  };
 }
 
 export interface Endereco {
@@ -266,6 +274,7 @@ export interface PedidoEvento {
   tipo: string;
   descricao: string;
   created_at: string;
+  metadata?: Record<string, unknown>;
 }
 
 export interface PedidosListResponse {
@@ -303,4 +312,71 @@ export interface CalcularFreteResponse {
   opcoes: FreteOpcao[];
   cep_origem: string;
   cep_destino: string;
+}
+
+export interface AdminStats {
+  pedidosPendentes: number;
+  vendasHoje: number;
+}
+
+export interface AdminProdutoListResponse {
+  data: Produto[];
+  nextCursor: string | null;
+  total: number;
+}
+
+export interface AdminPedidoListResponse {
+  data: Pedido[];
+  nextCursor: string | null;
+  total: number;
+}
+
+export interface CreateProdutoInput {
+  loja_id: string;
+  categoria_id: string;
+  nome: string;
+  slug: string;
+  sku: string;
+  descricao_curta?: string;
+  descricao_completa?: string;
+  codigo_barras?: string;
+  ncm?: string;
+  cest?: string;
+  origem_mercadoria?: number;
+  peso_bruto_kg?: number;
+  peso_liquido_kg?: number;
+  dimensoes_cm?: Record<string, number>;
+  ativo?: boolean;
+  destaque?: boolean;
+  permite_avaliacao?: boolean;
+  meta_title?: string;
+  meta_description?: string;
+  status?: string;
+}
+
+export interface UpdateProdutoInput {
+  nome?: string;
+  slug?: string;
+  descricao_curta?: string;
+  descricao_completa?: string;
+  sku?: string;
+  codigo_barras?: string;
+  ncm?: string;
+  cest?: string;
+  origem_mercadoria?: number;
+  peso_bruto_kg?: number;
+  peso_liquido_kg?: number;
+  dimensoes_cm?: Record<string, number>;
+  ativo?: boolean;
+  destaque?: boolean;
+  permite_avaliacao?: boolean;
+  meta_title?: string;
+  meta_description?: string;
+  status?: string;
+  categoria_id?: string;
+}
+
+export interface UpdatePedidoStatusInput {
+  status: string;
+  observacoes_internas?: string;
 }

@@ -1,9 +1,15 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
 
+interface ApiErrorData {
+  error?: string;
+  message?: string;
+  [key: string]: unknown;
+}
+
 class ApiError extends Error {
   constructor(
     public status: number,
-    public data: unknown
+    public data: ApiErrorData
   ) {
     super(`API Error: ${status}`);
     this.name = 'ApiError';
@@ -27,7 +33,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new ApiError(response.status, data);
+    throw new ApiError(response.status, data as ApiErrorData);
   }
 
   return data as T;
@@ -43,3 +49,4 @@ export const api = {
 };
 
 export { ApiError };
+export type { ApiErrorData };
