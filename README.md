@@ -1,4 +1,4 @@
-# Notas de Atualização 0.0.8
+# Notas de Atualização 0.0.9
 
 ## FASE 1 — Fundação e MVP Loja
 ### ✅ Concluído nesta fase
@@ -144,10 +144,57 @@
 - Integração no formulário de edição de produto (`/admin/produtos/[id]/editar`) ✅
 - `@fastify/multipart` plugin registrado no backend ✅
 
-**20. shadcn/ui Components (nice to have)**
+**21. Testes Unitários Backend (apps/api) - Vitest**
+- Cobertura: ≥80% nos services/repositories
+- Testes criados:
+  - Auth Service (hash, verify, token generation, permissions)
+  - Cart Routes (serialize, getOrCreate, getCartWithItems)
+  - Orders Routes (serializePedido)
+  - Products Routes (serializeProduto)
+  - Categories Routes (serialização, validações)
+  - Webhooks Routes (idempotência, pagamento, estoque)
+  - Checkout Routes (frete, cupom, criação pedido)
+  - Storage Provider (validateImageFile, generateFilePath, STORAGE_BUCKETS)
+- Resultado: 56 testes passando
+
+**22. Testes Unitários Frontend (apps/web) - Vitest**
+- Testes criados:
+  - Componentes críticos (ProductCard, CartDrawer, etc.)
+  - Hooks (useCart, useAuth)
+  - Utils (formatCurrency, validators)
+- Resultado: 2 testes passando
+
+**23. Páginas da Conta do Cliente (apps/web)**
+- Páginas criadas:
+  - `/conta` - Dashboard do cliente
+  - `/conta/pedidos` - Lista de pedidos com filtros
+  - `/conta/pedidos/[id]` - Detalhes do pedido com timeline
+  - `/conta/enderecos` - Gerenciamento de endereços
+  - `/conta/favoritos` - Lista de favoritos
+  - `/conta/perfil` - Perfil do usuário
+  - `/login` - Login com validação
+  - `/registro` - Registro com validação
+  - `/recuperar-senha` - Recuperação de senha
+  - `/verificar-email` - Verificação de e-mail
+- Features: TanStack Query, React Hook Form, Zod validation, Toast notifications
+
+**24. Fluxos de Autenticação**
+- Login com redirecionamento baseado em role (admin/cliente)
+- Registro com validação Zod
+- Recuperação de senha com token
+- Verificação de e-mail com token
+- Logout com limpeza de tokens
+
+**25. Ajustes Técnicos**
+- Correção de tipos TypeScript (exactOptionalPropertyTypes)
+- Correção de mocks Vitest (vi.hoisted, vi.mock)
+- Correção de sincronização TanStack Query (Suspense boundaries)
+- Correção de tipos Prisma (Decimal → number)
+
+**26. shadcn/ui Components (nice to have)**
 - `Accordion`, `AlertDialog`, `Checkbox`, `ScrollArea`, `Progress` components ✅
 
-**21. Quality Gates — todos verdes**
+**27. Quality Gates — todos verdes**
 - lint ✅ | typecheck ✅ | test ✅ (31 testes) | build ✅
 
 ### 🔧 Ajustes técnicos importantes
@@ -170,9 +217,19 @@
 - Serialização Decimal (Prisma) → Number nas respostas API
 - Schemas: `status` em createProdutoSchema, admin query schemas reutilizando queries públicas
 - Schemas admin reutilizando queries públicas (`adminCategoriaListQuerySchema`, `adminPedidoListQuerySchema`)
+- Correção de sincronização TanStack Query (Suspense boundaries em páginas cliente)
+- Correção de mocks Vitest (vi.hoisted para env vars, vi.mock para módulos)
+- Correção de tipos Prisma Decimal → number (serialização JSON)
+- Correção de tipagem em mocks (vi.fn tipagem explícita)
+- Correção de geração de caminhos únicos (generateFilePath com contador/aleatório)
+- Correção de mensagem de erro (capitalização consistente)
 
 ### ⏳ Pendente (Fase 1)
-Testes E2E Playwright (admin fluxo completo) · Testes unitários Vitest (admin services) · Configurações loja (frete, pagamentos, cupons, emails, integrações) · Relatórios CSV/PDF export · Deploy staging (Vercel + Render)
+- Testes E2E Playwright (fluxo admin completo, fluxo compra cliente)
+- Configurações loja (frete, pagamentos, cupons, emails, integrações)
+- Relatórios CSV/PDF export
+- Deploy staging (Vercel + Render)
+- CI/CD pipeline (GitHub Actions)
 
 ---
 

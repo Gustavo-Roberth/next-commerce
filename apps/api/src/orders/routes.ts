@@ -485,3 +485,5 @@ export async function orderRoutes(app: FastifyInstance): Promise<void> {
     }
   );
 }
+
+export { serializePedido };

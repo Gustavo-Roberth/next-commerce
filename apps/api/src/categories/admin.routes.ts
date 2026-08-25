@@ -391,3 +391,5 @@ export async function adminCategoryRoutes(app: FastifyInstance): Promise<void> {
     }
   );
 }
+
+export { serializeCategoria };

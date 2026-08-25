@@ -468,3 +468,5 @@ export async function cartRoutes(app: FastifyInstance): Promise<void> {
     }
   );
 }
+
+export { serializeCart, getOrCreateCart, getCartWithItems };

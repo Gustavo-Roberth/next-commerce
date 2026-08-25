@@ -663,3 +663,5 @@ export async function productRoutes(app: FastifyInstance): Promise<void> {
     }
   );
 }
+
+export { serializeProduto };

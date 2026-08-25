@@ -605,3 +605,5 @@ export async function adminProductRoutes(app: FastifyInstance): Promise<void> {
     }
   );
 }
+
+export { serializeProduto };
