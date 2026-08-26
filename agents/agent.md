@@ -220,6 +220,8 @@ Nunca inventar comportamento não documentado.
 
 ---
 
+---
+
 # 📝 Rotina de Atualização do README
 Ao final de toda execução que gerar mudança real no projeto, registrar no início do `README.md`, na seção `# Notas de Atualização X.X.X`.
 
@@ -230,7 +232,7 @@ Ao final de toda execução que gerar mudança real no projeto, registrar no in�
 - Solicitação avulsa, sem execução de fase → escrever **apenas** `### 🔧 Ajustes técnicos importantes`.
 
 **Estrutura (fase):**
-```md
+
 # Notas de Atualização X.X.X
 
 ## Fase X - {Nome da fase ativa}
@@ -246,16 +248,16 @@ Ao final de toda execução que gerar mudança real no projeto, registrar no in�
 - {ajuste} (observação opcional)
 
 ### ⏳ Pendente (Fase X)
-{pendência} · {pendência} · {pendência}
-```
+{título da subfase já registrada em docs/phases/phases_XX_YY.md} · {título da subfase} · {título da subfase}
+
+**Antes de listar algo em "Pendente":** registrar a necessidade como subfase (`PENDENTE`) em `docs/phases/phases_XX_YY.md` — única escrita permitida nesse arquivo, restrita a acrescentar subfase nova ao final da lista (ver exceção em `phases.md` → Regras de Ouro / Proibição de Escrita). O `⏳ Pendente` do README não descreve mais a necessidade em texto livre — aponta só o título da subfase já registrada, funcionando como radar.
 
 **Estrutura (avulso):**
-```md
+
 # Notas de Atualização X.X.X
 
 ### 🔧 Ajustes técnicos importantes
 - {ajuste} (observação opcional)
-```
 
 **Versão:** incrementar só o último dígito da última versão registrada no topo do README (`1.4.2` → `1.4.3`). Sem versão anterior, iniciar em `0.1.1`.
 

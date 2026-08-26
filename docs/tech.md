@@ -24,6 +24,7 @@ Dependências: Workspace protocol (`workspace:*`).
 Build: Independente por app (`pnpm build:web`, `pnpm build:api`).
 Testes: Vitest (unitários), Playwright (E2E web).
 Deploy: Vercel (web), Render (api) — configurações independentes.
+Ferramentas de monorepo: Turborepo (orquestração e cache de build/lint/test/typecheck entre workspaces), Husky (git hooks — lint/typecheck no pre-commit), Changesets (versionamento semântico e changelog de packages publicáveis).
 
 ## Stack consolidada
 

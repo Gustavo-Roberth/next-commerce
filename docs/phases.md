@@ -64,6 +64,8 @@ Fases futuras servem apenas como:
 - referência arquitetural | entendimento contextual | compatibilidade estrutural
 - nunca como autorização de implementação antecipada.
 
+**Exceção — Subfases:** registrar uma subfase nova (status `PENDENTE`) dentro da fase ativa **não é** antecipar fase futura. É documentar, de forma estruturada, uma necessidade real percebida durante a execução (dívida técnica ou trabalho pendente). Registrar não é implementar — a subfase só pode ser implementada depois de assumir status `🟢 EM DESENVOLVIMENTO`, exatamente como qualquer fase.
+
 ---
 
 # 🚨 FASE ATUAL DO PROJETO
@@ -79,6 +81,7 @@ Arquivo:
 ---
 
 # 📌 DEFINIÇÕES DE STATUS DE FASE
+
 ## 🔒 BLOQUEADA
 Fase futura que **não deve ser desenvolvida**.
 - Não implementar, não revisar, não refinar
@@ -125,6 +128,13 @@ O agente de IA **NÃO deve** escrever em:
 
 Durante execução de fases, o agente apenas **gera conteúdo bruto** para revisão humana.
 O desenvolvedor inclui manualmente os artefatos nos arquivos apropriados.
+
+**Exceção — Subfases:** o agente **pode** acrescentar uma nova subfase (status `PENDENTE`) ao final da seção "Subfases percebidas durante a execução" do arquivo `docs/phases/phases_XX_YY.md` correspondente à fase ativa. Esta é a única escrita permitida neste arquivo, e está restrita a:
+- apenas **adicionar** uma subfase nova ao final da lista — nunca editar, remover ou reordenar subfases existentes;
+- apenas com status `PENDENTE` — o agente nunca altera status de nenhuma fase ou subfase;
+- nunca alterar qualquer outro conteúdo do arquivo (fases, entregáveis, critérios de aceitação já existentes, governança).
+
+Qualquer escrita fora desses limites continua proibida e segue a regra geral acima.
 
 ---
 
@@ -231,6 +241,31 @@ Cada item como checkbox: `- [ ] Descrição técnica clara`
 ### 2.3 Critérios de aceitação
 Lista numerada, testável, orientada a usuário:
 1. `Papel consegue: ação → resultado observável`
+
+## 2.4 Subfases percebidas durante a execução
+Toda fase pode conter, ao final do seu conteúdo, uma seção `## Subfases percebidas durante a execução`, contendo subfases geradas por dívida técnica ou por necessidades percebidas durante a execução.
+
+Uma subfase segue **exatamente a aparência de uma fase padrão**, em miniatura — sem tag de origem, sem categorização especial:
+
+```markdown
+### 🔒 Subfase X.Y — Nome da subfase
+**Status: PENDENTE**
+
+#### Objetivo
+Descrição clara do objetivo da subfase.
+
+#### Entregáveis
+- [ ] Item técnico claro
+
+#### Critérios de aceitação
+1. Papel consegue: ação → resultado observável
+```
+
+Regras:
+- Numeração `X.Y`, onde `X` é o número da fase-mãe e `Y` é sequencial, crescente, dentro daquela fase.
+- Status inicial sempre `PENDENTE` (aguardando priorização humana) — os únicos status válidos para subfase são `PENDENTE`, `🟢 EM DESENVOLVIMENTO` e `⚪ CONCLUÍDA` (subfase não usa `🔒 BLOQUEADA`, já que nasce dentro da fase ativa, não é fase futura).
+- Mudança de status `PENDENTE` → `🟢 EM DESENVOLVIMENTO` é manual, mesma regra de transição de fase.
+- Ao concluir, a subfase segue para `⚪ CONCLUÍDA` e seus marcos entram em `phases_mac.md` junto com os da fase-mãe — não precisa de registro próprio separado.
 
 ## 3. Governança de fases (idêntica em todos os arquivos)
 - `## Transição de fase`

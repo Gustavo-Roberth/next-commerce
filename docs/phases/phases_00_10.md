@@ -1,6 +1,6 @@
 # Phases - NextCommerce
-## Fase ativa: FASE 1 — Fundação e MVP Loja
-**Início:** 2026-08-22 | **Fim estimado:** 2026-10-31 | **Status:** EM DESENVOLVIMENTO
+## Fase ativa: FASE 0 — Correção e Atualização de Versões de Dependências
+**Início:** 2026-08-22 | **Fim estimado:** 2026-08-29 | **Status:** EM DESENVOLVIMENTO
 
 ---
 
@@ -8,15 +8,60 @@
 
 | Fase | Nome | Período | Foco Principal |
 |------|------|---------|----------------|
-| **1** | Fundação e MVP Loja | Ago–Out 2026 | Auth, Catálogo, Carrinho, Checkout, Pagamentos, Pedidos básicos |
-| **2** | Gestão Completa + Admin | Nov 2026–Jan 2027 | Estoque multi-depósito, Dashboard, Relatórios, NF-e, Configurações |
-| **3** | Escala e Multi-loja | Fev–Abr 2027 | Multi-tenant real, Marketplace sync, API pública, Webhooks gerenciáveis |
-| **4** | Inteligência e Ecossistema | Mai–Jul 2027 | IA (recomendação, previsão), App store, Extensibilidade, White-label |
+| **0** | Correção e Atualização de Dependências | Ago 2026 (1 semana) | Auditar e atualizar todo `package.json` do monorepo para `latest` estável |
+| **1** | Fundação e MVP Loja | Ago–Nov 2026 | Auth, Catálogo, Carrinho, Checkout, Pagamentos, Pedidos básicos |
+| **2** | Design e Polimento Visual | Nov 2026 (3 semanas) | Motion, microinterações, estados de loading/vazio, responsividade e acessibilidade sobre o MVP |
+| **3** | Gestão Completa + Admin | Dez 2026–Fev 2027 | Estoque multi-depósito, Dashboard, Relatórios, NF-e, Configurações |
+| **4** | Escala e Multi-loja | Fev–Abr 2027 | Multi-tenant real, Marketplace sync, API pública, Webhooks gerenciáveis |
+| **5** | Inteligência e Ecossistema | Mai–Jun 2027 | IA (recomendação, previsão), App store, Extensibilidade, White-label |
+
+> 🧠 **Datas são estimativas** recalculadas a partir do cronograma original — ajuste manualmente conforme velocidade real da equipe.
 
 ---
 
-# 🟢 FASE 1 — Fundação e MVP Loja
+# 🟢 FASE 0 — Correção e Atualização de Versões de Dependências
 **Status: EM DESENVOLVIMENTO**
+
+**Início:** 2026-08-22 | **Fim estimado:** 2026-08-29
+
+## Objetivo
+Auditar todas as dependências já instaladas no monorepo e atualizá-las para a maior versão estável disponível (`latest`), corrigindo inconsistências de versionamento introduzidas na geração inicial do projeto, antes de iniciar a implementação de funcionalidades (Fase 1). Nenhuma funcionalidade de produto é implementada nesta fase.
+
+## Entregáveis (Definition of Done)
+
+### Infra & Shared
+- [ ] `package.json` da raiz auditado: `@prisma/client` e `prisma` estão travados na versão exata `5.22.0` (sem `^`) — corrigir para range semver padrão (`^`) na versão `latest` estável
+- [ ] `packageManager` (`pnpm@9.0.0`) e `engines.node` atualizados para as versões `latest` estáveis correspondentes
+- [ ] `husky` atualizado para `latest`
+- [ ] `apps/web/package.json`, `apps/api/package.json` e `packages/shared/package.json` auditados individualmente e atualizados para `latest` estável (ainda não foram fornecidos nesta rodada — validar quando disponíveis)
+- [ ] `pnpm install` executado na raiz sem erros de peer dependency não resolvidos
+
+### Backend
+- [ ] `@fastify/multipart` e demais plugins Fastify usados em `apps/api` atualizados para `latest`
+- [ ] Build (`build:api`) e testes (`test`) passando após a atualização
+
+### Frontend
+- [ ] Família `@radix-ui/react-*` (accordion, alert-dialog, aspect-ratio, checkbox, collapsible, context-menu, form, hover-card, menubar, navigation-menu, popover, scroll-area, select, separator, slider, toggle, toggle-group, tooltip) atualizada para `latest` estável — hoje com versões desalinhadas entre si (de `^1.1.0` a `^1.2.15`)
+- [ ] Build (`build:web`) e testes (`test`) passando após a atualização
+
+### Deploy & Ops
+- [ ] `/docs/tech.md` atualizado com as versões finais de cada tecnologia
+
+## Ajuste técnico identificado (não bloqueante para a fase, registrar como subfase se não for corrigido aqui)
+- Os pacotes `@radix-ui/react-*` estão declarados no `package.json` **da raiz**, mas são dependência exclusiva de UI do frontend. Pelas regras de monorepo (`0.13`), dependências específicas devem permanecer no workspace que as utiliza — mover para `apps/web/package.json`.
+
+## Critérios de aceitação
+1. Desenvolvedor consegue: rodar `pnpm install` na raiz → instalação completa sem conflitos de versão
+2. Desenvolvedor consegue: rodar build e testes em `web` e `api` → sucesso sem regressões
+3. Nenhuma dependência exclusiva de UI permanece na raiz do monorepo
+4. `/docs/tech.md` reflete exatamente as versões finais instaladas, todas `latest` estáveis (nenhuma `alpha`/`beta`/`rc`/`canary`)
+
+---
+
+# 🔒 FASE 1 — Fundação e MVP Loja
+**Status: BLOQUEADA**
+
+**Início:** 2026-08-29 | **Fim estimado:** 2026-11-07
 
 ## Objetivo
 Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedidos básicos.
@@ -76,8 +121,43 @@ Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedi
 
 ---
 
-# 🔒 FASE 2 — Gestão Completa + Admin
+# 🔒 FASE 2 — Design e Polimento Visual
 **Status: BLOQUEADA**
+
+**Início:** 2026-11-07 | **Fim estimado:** 2026-11-28
+
+## Objetivo
+Aplicar uma camada de polimento visual, motion e microinterações sobre o MVP da loja já funcional (Fase 1), tornando a experiência atraente e moderna antes de avançar para as funcionalidades de gestão (Fase 3). Esta fase **não** altera contratos de API, regras de negócio ou cria funcionalidades novas — apenas refina o que já existe.
+
+## Entregáveis (Definition of Done)
+
+### Frontend (`apps/web`)
+- [ ] Biblioteca de animação (ex: Framer Motion) integrada ao Design System
+- [ ] Microinterações: hover em cards de produto, feedback visual ao adicionar ao carrinho, abertura do drawer do carrinho, transição entre imagens na galeria do produto
+- [ ] Transições de página suaves entre listagem → detalhe → carrinho → checkout (sem "saltos" de layout)
+- [ ] Estados de carregamento (skeletons) em: listagem de produtos, detalhe de produto, checkout, pedidos
+- [ ] Estados vazios ilustrados: carrinho vazio, busca sem resultado, sem pedidos
+- [ ] Revisão de hierarquia tipográfica, espaçamento e cor aplicada a todas as telas já existentes (loja e admin básico)
+- [ ] Auditoria de responsividade (mobile, tablet, desktop) em todas as telas da Fase 1
+- [ ] Auditoria de acessibilidade básica (contraste, foco visível, labels em formulários, navegação por teclado)
+- [ ] Home revisitada: hero com destaque visual mais forte, entrada animada de categorias/destaques
+
+### Infra & Shared
+- [ ] Tokens de motion (duração e easing padrão) formalizados junto ao Design System, ao lado dos tokens de cor/spacing/tipografia já existentes
+
+## Critérios de aceitação
+1. Cliente percebe transições suaves ao navegar entre as telas da loja, sem "saltos" de layout perceptíveis
+2. Toda tela da Fase 1 possui estado de carregamento e estado vazio tratados visualmente (nunca tela em branco ou quebrada)
+3. Nenhuma regra de negócio ou contrato de API foi alterado nesta fase — apenas camada visual
+4. Tokens de motion (duração/easing) documentados e reutilizados de forma consistente entre componentes
+5. Auditoria de acessibilidade não encontra bloqueadores críticos (contraste insuficiente, foco não visível)
+
+---
+
+# 🔒 FASE 3 — Gestão Completa + Admin
+**Status: BLOQUEADA**
+
+**Início:** 2026-11-28 | **Fim estimado:** 2027-02-06
 
 ## Objetivo
 Operação completa: estoque real, relatórios, NF-e, configurações ricas, multi-depósito.
@@ -110,8 +190,10 @@ Operação completa: estoque real, relatórios, NF-e, configurações ricas, mul
 
 ---
 
-# 🔒 FASE 3 — Escala e Multi-loja
+# 🔒 FASE 4 — Escala e Multi-loja
 **Status: BLOQUEADA**
+
+**Início:** 2027-02-06 | **Fim estimado:** 2027-04-17
 
 ## Objetivo
 Multi-tenant real, sincronização marketplaces, API pública para parceiros.
@@ -146,8 +228,10 @@ Multi-tenant real, sincronização marketplaces, API pública para parceiros.
 
 ---
 
-# 🔒 FASE 4 — Inteligência e Ecossistema
+# 🔒 FASE 5 — Inteligência e Ecossistema
 **Status: BLOQUEADA**
+
+**Início:** 2027-04-17 | **Fim estimado:** 2027-06-26
 
 ## Objetivo
 IA nativa, marketplace de apps, white-label, expansão internacional.
@@ -187,7 +271,7 @@ IA nativa, marketplace de apps, white-label, expansão internacional.
 - Apenas quando **todos** critérios de aceitação da fase atual atendidos
 - Aprovação: Tech Lead + Product Owner
 - Documentação atualizada (`phases.md`, `CHANGELOG.md`)
-- Tag semver: `v1.0.0` (fim F1), `v2.0.0` (fim F2), etc.
+- Tag semver: `vX.Y.Z` (fim F1), `vX.Y.Z` (fim F2), etc.
 - **Mudança de status (BLOQUEADA → EM DESENVOLVIMENTO → CONCLUÍDA) é MANUAL** — não deve ser realizada pelo agente durante execução de tarefas; apenas humano autorizado altera os arquivos de fase
 
 ## Mudanças estruturais durante fase
@@ -196,13 +280,24 @@ IA nativa, marketplace de apps, white-label, expansão internacional.
 - Exceções requerem: ADR (Architecture Decision Record) + aprovação Tech Lead
 
 ## Dívida técnica
-- Registrada em `TECH_DEBT.md` na raiz
+- Toda dívida técnica identificada é registrada como uma subfase (`PENDENTE`) na seção "Subfases percebidas durante a execução" da fase onde foi percebida
 - Priorizada na fase seguinte (máx 20% capacity)
-- Não bloqueia transição se critérios de aceitação atendidos
+- Não bloqueia transição de fase se critérios de aceitação da fase-mãe estiverem atendidos
 
 ---
 
-## Referência
-Artefatos de conclusão de fase (marcos, riscos, próximas ações) são registrados em `docs/phases/phases_mac.md`, conforme as regras definidas em `docs/phases.md`.
+## Artefatos de Conclusão de Fase
+Ao concluir uma fase, o desenvolvedor deve registrar manualmente em `docs/phases/phases_mac.md`:
+
+1. **Marcos Importantes (Milestones)** — Data real, status, comparação planejado vs. realizado
+2. **Riscos e Mitigações** — Riscos materializados, novos riscos descobertos, mitigações aplicadas
+
+> O agente de IA **não deve** escrever em `docs/phases/phases_mac.md`. O agente apenas gera conteúdo bruto para revisão; o desenvolvedor inclui manualmente.
+
+---
+
+## Referência Histórica
+
+Artefatos detalhados de todas as fases concluídas (marcos, riscos) estão em: `docs/phases/phases_mac.md`
 
 ---
