@@ -1,14 +1,12 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Upload, X, Image as ImageIcon, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { api } from '@/lib/api/client';
-import { formatCurrency } from '@/lib/utils';
+import { AlertCircle, Image as ImageIcon, Loader2, Upload, X } from 'lucide-react';
+import { useCallback, useRef, useState } from 'react';
 
 interface ImageUploadProps {
   value?: string[];
@@ -55,78 +53,81 @@ export function ImageUpload({
   const [error, setError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFiles = useCallback(async (files: FileList) => {
-    if (!files || files.length === 0) return;
+  const handleFiles = useCallback(
+    async (files: FileList) => {
+      if (!files || files.length === 0) return;
 
-    const newFiles = Array.from(files);
-    if (!multiple && newFiles.length > 1) {
-      newFiles.splice(1);
-    }
-
-    if (images.length + newFiles.length > maxFiles) {
-      setError(`Máximo de ${maxFiles} imagens permitidas`);
-      return;
-    }
-
-    setError('');
-    setUploading(true);
-    setUploadProgress(0);
-
-    try {
-      const formData = new FormData();
-      newFiles.forEach((file) => formData.append('files', file));
-
-      const queryParams = new URLSearchParams();
-      if (productId) queryParams.set('produto_id', productId);
-
-      // Simulate progress for better UX
-      const progressInterval = setInterval(() => {
-        setUploadProgress((prev) => Math.min(prev + 10, 90));
-      }, 100);
-
-      const response = await fetch(
-        `/api/admin/upload/multiple-product-images${queryParams.toString() ? `?${queryParams}` : ''}`,
-        {
-          method: 'POST',
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        }
-      );
-
-      clearInterval(progressInterval);
-      setUploadProgress(100);
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro no upload');
+      const newFiles = Array.from(files);
+      if (!multiple && newFiles.length > 1) {
+        newFiles.splice(1);
       }
 
-      const newImages: UploadedImage[] = data.images.map((img: any, index: number) => ({
-        url: img.url,
-        path: img.path,
-        fullPath: img.fullPath,
-        filename: img.filename,
-        mimetype: img.mimetype,
-        size: img.size,
-        isMain: !multiple && index === 0,
-      }));
+      if (images.length + newFiles.length > maxFiles) {
+        setError(`Máximo de ${maxFiles} imagens permitidas`);
+        return;
+      }
 
-      const updatedImages = [...images, ...newImages];
-      setImages(updatedImages);
-      onChange?.(updatedImages.map((img) => img.url));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao fazer upload');
-    } finally {
-      setUploading(false);
+      setError('');
+      setUploading(true);
       setUploadProgress(0);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+
+      try {
+        const formData = new FormData();
+        for (const file of newFiles) formData.append('files', file);
+
+        const queryParams = new URLSearchParams();
+        if (productId) queryParams.set('produto_id', productId);
+
+        // Simulate progress for better UX
+        const progressInterval = setInterval(() => {
+          setUploadProgress((prev) => Math.min(prev + 10, 90));
+        }, 100);
+
+        const response = await fetch(
+          `/api/admin/upload/multiple-product-images${queryParams.toString() ? `?${queryParams}` : ''}`,
+          {
+            method: 'POST',
+            body: formData,
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+            },
+          }
+        );
+
+        clearInterval(progressInterval);
+        setUploadProgress(100);
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Erro no upload');
+        }
+
+        const newImages: UploadedImage[] = data.images.map((img: any, index: number) => ({
+          url: img.url,
+          path: img.path,
+          fullPath: img.fullPath,
+          filename: img.filename,
+          mimetype: img.mimetype,
+          size: img.size,
+          isMain: !multiple && index === 0,
+        }));
+
+        const updatedImages = [...images, ...newImages];
+        setImages(updatedImages);
+        onChange?.(updatedImages.map((img) => img.url));
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erro ao fazer upload');
+      } finally {
+        setUploading(false);
+        setUploadProgress(0);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
       }
-    }
-  }, [images, multiple, maxFiles, productId, onChange]);
+    },
+    [images, multiple, maxFiles, productId, onChange]
+  );
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -136,7 +137,7 @@ export function ImageUpload({
 
   const removeImage = async (index: number) => {
     const image = images[index];
-    if (image && image.path) {
+    if (image?.path) {
       try {
         await api.delete(`/admin/upload/product-image?path=${encodeURIComponent(image.path)}`);
       } catch (error) {
@@ -234,7 +235,10 @@ export function ImageUpload({
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {images.map((image, index) => (
-                <div key={index} className="relative group aspect-square rounded-lg overflow-hidden border bg-gray-50">
+                <div
+                  key={index}
+                  className="relative group aspect-square rounded-lg overflow-hidden border bg-gray-50"
+                >
                   <div className="relative aspect-square overflow-hidden">
                     <img
                       src={image.url}

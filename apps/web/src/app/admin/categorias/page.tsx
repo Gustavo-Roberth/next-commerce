@@ -1,9 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -20,16 +25,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Search, MoreHorizontal, Edit, Trash2, Loader2, ChevronRight } from 'lucide-react';
 import { adminApi } from '@/lib/api/services';
 import type { Categoria } from '@/lib/api/types';
+import { ChevronRight, Edit, Loader2, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
 
 const statusColors: Record<string, string> = {
   true: 'bg-green-100 text-green-800',
@@ -44,7 +44,7 @@ export default function AdminCategoriasPage() {
   const [hasMore, setHasMore] = useState(false);
   const [search, setSearch] = useState('');
   const [ativaFilter, setAtivaFilter] = useState<boolean | ''>('');
-  const [paiFilter, setPaiFilter] = useState<string | null>(null);
+  const [paiFilter, _setPaiFilter] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const fetchCategorias = async (reset = false) => {
@@ -112,7 +112,11 @@ export default function AdminCategoriasPage() {
     }
   };
 
-  const buildTree = (categories: Categoria[], parentId: string | null = null, level = 0): React.ReactNode[] => {
+  const buildTree = (
+    categories: Categoria[],
+    parentId: string | null = null,
+    level = 0
+  ): React.ReactNode[] => {
     return categories
       .filter((c) => c.pai_id === parentId)
       .map((categoria) => (
@@ -190,7 +194,13 @@ export default function AdminCategoriasPage() {
                 className="pl-10"
               />
             </div>
-            <Select value={ativaFilter === true ? 'true' : ativaFilter === false ? 'false' : ''} onValueChange={(v) => { setAtivaFilter(v === 'true' ? true : v === 'false' ? false : ''); handleFilterChange(); }}>
+            <Select
+              value={ativaFilter === true ? 'true' : ativaFilter === false ? 'false' : ''}
+              onValueChange={(v) => {
+                setAtivaFilter(v === 'true' ? true : v === 'false' ? false : '');
+                handleFilterChange();
+              }}
+            >
               <SelectTrigger className="w-[160px]">
                 <SelectValue placeholder="Todas" />
               </SelectTrigger>

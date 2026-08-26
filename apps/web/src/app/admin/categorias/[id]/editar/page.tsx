@@ -1,12 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -15,11 +12,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, ArrowLeft, Save } from 'lucide-react';
-import Link from 'next/link';
-import { adminApi } from '@/lib/api/services';
+import { Textarea } from '@/components/ui/textarea';
 import { api } from '@/lib/api/client';
-import type { CreateCategoriaInput, UpdateCategoriaInput, Categoria } from '@/lib/api/types';
+import { adminApi } from '@/lib/api/services';
+import type { Categoria, UpdateCategoriaInput } from '@/lib/api/types';
+import { ArrowLeft, Loader2, Save } from 'lucide-react';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface CategoriaFormData {
   nome: string;
@@ -99,7 +99,7 @@ export default function AdminEditarCategoriaPage() {
     return nome
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\p{Diacritic}/gu, '')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
   };
@@ -140,9 +140,7 @@ export default function AdminEditarCategoriaPage() {
         </div>
       </div>
 
-      {error && (
-        <div className="rounded-lg bg-red-50 p-4 text-red-600 text-sm">{error}</div>
-      )}
+      {error && <div className="rounded-lg bg-red-50 p-4 text-red-600 text-sm">{error}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
@@ -204,7 +202,10 @@ export default function AdminEditarCategoriaPage() {
             <div className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
                 <Label htmlFor="pai_id">Categoria Pai</Label>
-                <Select value={formData.pai_id || ''} onValueChange={(v) => handleChange('pai_id', v)}>
+                <Select
+                  value={formData.pai_id || ''}
+                  onValueChange={(v) => handleChange('pai_id', v)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione uma categoria pai (opcional)" />
                   </SelectTrigger>
@@ -226,7 +227,9 @@ export default function AdminEditarCategoriaPage() {
                   id="ordem_exibicao"
                   type="number"
                   value={formData.ordem_exibicao || ''}
-                  onChange={(e) => handleChange('ordem_exibicao', parseInt(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleChange('ordem_exibicao', Number.parseInt(e.target.value) || 0)
+                  }
                   placeholder="0"
                 />
               </div>

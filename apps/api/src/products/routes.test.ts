@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { serializeProduto } from './routes.js';
 
 vi.mock('../lib/prisma.js', () => ({
@@ -16,8 +16,6 @@ vi.mock('../lib/prisma.js', () => ({
     },
   },
 }));
-
-import { prisma } from '../lib/prisma.js';
 
 describe('Product Routes', () => {
   beforeEach(() => {
@@ -73,14 +71,10 @@ describe('Product Routes', () => {
               { atributo_id: 'attr-1', nome: 'Cor', valor: 'Vermelho' },
               { atributo_id: 'attr-2', nome: 'Tamanho', valor: 'P' },
             ],
-            imagens: [
-              { url: 'img1.jpg', alt_text: 'Imagem 1', principal: true, ordem: 1 },
-            ],
+            imagens: [{ url: 'img1.jpg', alt_text: 'Imagem 1', principal: true, ordem: 1 }],
           },
         ],
-        imagens: [
-          { url: 'img-main.jpg', alt_text: 'Principal', principal: true, ordem: 1 },
-        ],
+        imagens: [{ url: 'img-main.jpg', alt_text: 'Principal', principal: true, ordem: 1 }],
         _count: { variacoes: 1, imagens: 1 },
       };
 

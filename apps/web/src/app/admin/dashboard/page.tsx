@@ -105,7 +105,7 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="h-64 flex items-end justify-around gap-2">
-              {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day, index) => (
+              {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day, _index) => (
                 <div key={day} className="flex flex-col items-center flex-1">
                   <div
                     className="w-full bg-primary rounded-t transition-all hover:bg-primary/80"

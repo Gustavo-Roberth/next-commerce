@@ -132,7 +132,7 @@ export async function adminOrderRoutes(app: FastifyInstance): Promise<void> {
 
       const hasMore = pedidos.length > limit;
       const items = hasMore ? pedidos.slice(0, -1) : pedidos;
-      const nextCursor = hasMore && items.length > 0 ? items[items.length - 1]!.id : null;
+      const nextCursor = hasMore && items.length > 0 ? items[items.length - 1]?.id : null;
 
       return reply.send({ data: items.map(serializePedido), nextCursor, total });
     }

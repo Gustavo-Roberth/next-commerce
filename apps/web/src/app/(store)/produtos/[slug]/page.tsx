@@ -3,10 +3,10 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useQuery } from '@tanstack/react-query';
 import { produtosApi } from '@/lib/api/services';
 import type { Produto, ProdutoImagem, ProdutoVariacao } from '@/lib/api/types';
 import { formatCurrency } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
@@ -47,6 +47,7 @@ function ImageGallery({
         <div className="flex gap-2 overflow-x-auto pb-2">
           {images.map((img) => (
             <button
+              type="button"
               key={img.id}
               onClick={() => onSelectImage(img)}
               className={`relative h-20 w-20 flex-shrink-0 rounded-md overflow-hidden border-2 transition-colors ${
@@ -164,6 +165,7 @@ function ProductDescription({ product }: { product: Produto }) {
   return (
     <div className="prose prose-muted max-w-none">
       {product.descricao_completa ? (
+        {/* biome-ignore lint/security/noDangerouslySetInnerHTML: conteúdo HTML confiável (rich text do admin) */}
         <div dangerouslySetInnerHTML={{ __html: product.descricao_completa }} />
       ) : (
         <p className="text-muted-foreground">Descrição completa não disponível.</p>

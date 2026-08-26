@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { serializePedido } from './routes.js';
 
 vi.mock('../lib/prisma.js', () => ({
@@ -25,8 +25,6 @@ vi.mock('../lib/prisma.js', () => ({
     },
   },
 }));
-
-import { prisma } from '../lib/prisma.js';
 
 describe('Order Routes', () => {
   beforeEach(() => {

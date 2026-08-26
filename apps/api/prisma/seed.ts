@@ -1,8 +1,11 @@
 import 'dotenv/config';
 import { hash } from 'node:crypto';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { type Prisma, PrismaClient } from '@/generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+});
 
 async function main() {
   console.log('🌱 Iniciando seed do banco de dados...');

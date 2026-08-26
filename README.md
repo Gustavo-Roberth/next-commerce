@@ -1,3 +1,49 @@
+# Notas de Atualização 0.0.10
+
+## Fase 0 — Correção e Atualização de Dependências
+### ✅ Concluído nesta fase
+
+**1. Atualização de dependências para versões `latest` estáveis**
+- Next.js 15 → **16.3.3** (App Router, RSC, Turbopack default)
+- React 19.0.0-rc.1 → **19.2.0** + `@types/react` `@types/react-dom` ^19
+- Prisma 5.22.0 → **7.10.0** (client 100% TS/WASM, `@prisma/adapter-pg`, `prisma.config.ts`)
+- Fastify plugins → latest (`@fastify/multipart` ^10.1.1 movido para `apps/api`)
+- Radix UI → latest (movido de raiz para `apps/web`)
+- pnpm 9.0.0 → **9.15.9** (`packageManager` + `engines.node` ≥20.9.0)
+- Husky 9.1.7, Biome 1.8
+
+**2. Migração Prisma 5 → 7 (API)**
+- Generator `prisma-client` com output customizado (`apps/api/src/generated/prisma`)
+- Driver adapter `@prisma/adapter-pg` (conexão direta PostgreSQL)
+- `prisma.config.ts` (migrations, introspection, seed)
+- Imports migrados: `@prisma/client` → `@/generated/prisma/client` (6 arquivos)
+- Seed atualizado com adapter
+- `postinstall: prisma generate` no `apps/api/package.json`
+
+**3. Next.js 16 + React 19 (Web)**
+- `next.config.ts`: removido `experimental.turbo` (SVG rule era dead code)
+- `playwright.config.ts`: `workers` tipado corretamente
+- `src/test/e2e/setup.ts`: `page.context().storageState()` (API correta)
+- `vitest.config.ts`: exclude `src/test/e2e/**` (Playwright specs)
+- Radix UI atualizado para latest em `apps/web`
+
+**4. Monorepo & CI**
+- `packageManager` = `pnpm@9.15.9` (root + CI)
+- `engines.node` ≥20.9.0
+- Radix/Fastify multipart movidos aos workspaces corretos
+- CI `.github/workflows/ci-cd.yml`: pnpm 9.15.9
+- `prisma.config.ts` tolerante a `DATABASE_URL` ausente (generate sem erro)
+
+### 🔧 Ajustes técnicos importantes
+- `noExplicitAny` mantido como `warn` no Biome (governança: evitar `any`)
+- 30 arquivos web reformatados pelo Biome (safe fixes)
+- Prisma generator alterado para `moduleFormat = "cjs"` (compatibilidade CommonJS API)
+
+### ⏳ Pendente
+Subfase 0.1 - Qualidade de Lint + Garantia de Execução
+
+---
+
 # Notas de Atualização 0.0.9
 
 ## FASE 1 — Fundação e MVP Loja

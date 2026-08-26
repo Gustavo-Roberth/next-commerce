@@ -91,6 +91,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <span className="font-bold text-xl">Admin</span>
           </Link>
           <button
+            type="button"
             className="lg:hidden p-2"
             onClick={() => setSidebarOpen(false)}
             aria-label="Fechar menu"
@@ -99,13 +100,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </button>
         </div>
 
-        <nav
-          className="flex-1 p-4 space-y-1 overflow-y-auto"
-          role="navigation"
-          aria-label="Navegação principal"
-        >
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto" aria-label="Navegação principal">
           {navigation.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.name}
@@ -148,6 +145,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className="flex-1 flex flex-col lg:ml-0">
         <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-white px-4 shadow-sm lg:px-8">
           <button
+            type="button"
             className="lg:hidden p-2"
             onClick={() => setSidebarOpen(true)}
             aria-label="Abrir menu"

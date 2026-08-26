@@ -71,9 +71,9 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 1 — Fundação e MVP Loja**
+🟢 **FASE 0 — Correção e Atualização de Versões de Dependênciasa**
 **Status: EM DESENVOLVIMENTO**
-**Início:** 2026-08-22 | **Fim estimado:** 2026-10-31
+**Início:** 2026-08-26 | **Fim estimado:** 2026-08-30
 
 Arquivo:
 - `/docs/phases/phases_00_10.md`

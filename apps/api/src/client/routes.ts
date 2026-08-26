@@ -44,7 +44,9 @@ export async function clientRoutes(app: FastifyInstance): Promise<void> {
 
       const principal = Boolean(body.principal);
 
-      const count = await prisma.endereco.count({ where: { usuario_id: userId, deleted_at: null } });
+      const count = await prisma.endereco.count({
+        where: { usuario_id: userId, deleted_at: null },
+      });
 
       const endereco = await prisma.endereco.create({
         data: {
@@ -89,7 +91,8 @@ export async function clientRoutes(app: FastifyInstance): Promise<void> {
       });
       if (!existente) return reply.code(404).send({ error: 'Endereço não encontrado' });
 
-      const principal = body.principal === undefined ? existente.principal : Boolean(body.principal);
+      const principal =
+        body.principal === undefined ? existente.principal : Boolean(body.principal);
 
       const atualizado = await prisma.endereco.update({
         where: { id },
@@ -98,13 +101,17 @@ export async function clientRoutes(app: FastifyInstance): Promise<void> {
           cep: (body.cep as string) ?? existente.cep,
           logradouro: (body.logradouro as string) ?? existente.logradouro,
           numero: (body.numero as string) ?? existente.numero,
-          complemento: body.complemento !== undefined ? ((body.complemento as string) || null) : existente.complemento,
+          complemento:
+            body.complemento !== undefined
+              ? (body.complemento as string) || null
+              : existente.complemento,
           bairro: (body.bairro as string) ?? existente.bairro,
           cidade: (body.cidade as string) ?? existente.cidade,
           uf: (body.uf as string) ?? existente.uf,
           pais: (body.pais as string) ?? existente.pais,
           principal,
-          apelido: body.apelido !== undefined ? ((body.apelido as string) || null) : existente.apelido,
+          apelido:
+            body.apelido !== undefined ? (body.apelido as string) || null : existente.apelido,
         },
       });
 

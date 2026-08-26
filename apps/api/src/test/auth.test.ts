@@ -1,4 +1,4 @@
-import type { Perfil, UsuarioPerfil } from '@prisma/client';
+import type { Perfil, UsuarioPerfil } from '@/generated/prisma/client';
 import { describe, expect, it } from 'vitest';
 import {
   buildPermissions,

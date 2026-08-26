@@ -3,12 +3,12 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { ApiError, api } from '@/lib/api/client';
 import type { Produto, ProdutoDestaque } from '@/lib/api/types';
 import { formatCurrency } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { api, ApiError } from '@/lib/api/client';
 
 interface ProductCardProps {
   product: Produto | ProdutoDestaque;

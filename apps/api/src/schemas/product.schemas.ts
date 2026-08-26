@@ -1,4 +1,4 @@
-import { ProductStatus } from '@prisma/client';
+import { ProductStatus } from '@/generated/prisma/client';
 import { z } from 'zod';
 
 export const createProdutoSchema = z.object({

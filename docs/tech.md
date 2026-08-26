@@ -7,7 +7,7 @@ Este documento representa a referência técnica oficial do projeto.
 
 ## Objetivo arquitetural
 Monorepo único com três workspaces:
-- `apps/web` — Frontend Next.js 15 (App Router)
+- `apps/web` — Frontend Next.js 16 (App Router)
 - `apps/api` — Backend Fastify + TypeScript
 - `packages/shared` — Tipos, schemas Zod, contratos de API
 
@@ -33,7 +33,7 @@ Aplicação: `apps/web`
 
 | Item | Tecnologia |
 |------|------------|
-| Framework | Next.js 15 (App Router, RSC) |
+| Framework | Next.js 16 (App Router, RSC) + React 19.2 |
 | Linguagem | TypeScript 5 (strict) |
 | Roteamento | Next.js App Router (file-based) |
 | UI | Tailwind CSS 4 + shadcn/ui (Radix UI) |
@@ -65,6 +65,11 @@ Aplicação: `apps/api`
 | Lint/Format | Biome |
 | Testes | Vitest |
 | Docs API | Scalar/OpenAPI (auto-gerado via schemas) |
+| pnpm | 9.15.9 (workspace protocol) |
+| Node.js | ≥20.9.0 |
+| Husky | 9.1.7 |
+| Biome | 1.8 |
+| pnpm-workspace | `pnpm-workspace.yaml` (apps/*, packages/*) |
 
 ### Persistência
 - **Banco**: Supabase PostgreSQL 16 (managed)

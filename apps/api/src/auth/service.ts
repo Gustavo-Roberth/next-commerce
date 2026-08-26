@@ -1,4 +1,4 @@
-import type { Perfil, Prisma, Usuario, UsuarioPerfil } from '@prisma/client';
+import type { Perfil, Prisma, Usuario, UsuarioPerfil } from '@/generated/prisma/client';
 import bcrypt from 'bcryptjs';
 import { type JWTPayload, SignJWT, jwtVerify } from 'jose';
 

@@ -46,7 +46,7 @@ export default function AdminNovoProdutoPage() {
   const router = useRouter();
 
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, _setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 

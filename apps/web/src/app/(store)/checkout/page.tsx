@@ -31,21 +31,21 @@ interface Endereco {
 export default function CheckoutPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [enderecoEntrega, setEnderecoEntrega] = useState<any>(null);
-  const [enderecoCobranca, setEnderecoCobranca] = useState<any>(null);
+  const [enderecoEntrega, _setEnderecoEntrega] = useState<Endereco | null>(null);
+  const [_enderecoCobranca, _setEnderecoCobranca] = useState<Endereco | null>(null);
   const [mesmoEndereco, setMesmoEndereco] = useState(true);
-  const [freteSelecionado, setFreteSelecionado] = useState<any>(null);
-  const [freteOpcoes, setFreteOpcoes] = useState<any[]>([]);
+  const [freteSelecionado, setFreteSelecionado] = useState<FreteOpcao | null>(null);
+  const [freteOpcoes, _setFreteOpcoes] = useState<FreteOpcao[]>([]);
   const [pagamentoGateway, setPagamentoGateway] = useState('MERCADO_PAGO');
   const [pagamentoMetodo, setPagamentoMetodo] = useState('PIX');
   const [pagamentoParcelas, setPagamentoParcelas] = useState(1);
-  const [cupom, setCupom] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [subtotal, setSubtotal] = useState(0);
-  const [freteValor, setFreteValor] = useState(0);
-  const [desconto, setDesconto] = useState(0);
+  const [_cupom, _setCupom] = useState('');
+  const [loading, _setLoading] = useState(false);
+  const [subtotal, _setSubtotal] = useState(0);
+  const [freteValor, _setFreteValor] = useState(0);
+  const [desconto, _setDesconto] = useState(0);
 
-  const total = subtotal - desconto + freteValor;
+  const _total = subtotal - desconto + freteValor;
 
   const nextStep = () => {
     if (step === 1 && !enderecoEntrega) return;

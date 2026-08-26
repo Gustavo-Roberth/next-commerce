@@ -1,12 +1,12 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the storage provider module
-let generateFilePathCallCount = 0;
+const _generateFilePathCallCount = 0;
 
 vi.mock('./storage.provider.js', () => ({
   validateImageFile: vi.fn((buffer: Buffer, mimeType: string) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const _allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+    const _maxSize = 5 * 1024 * 1024; // 5MB
 
     if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(mimeType)) {
       return { valid: false, error: 'Tipo de arquivo não permitido' };
@@ -18,10 +18,10 @@ vi.mock('./storage.provider.js', () => ({
 
     return { valid: true };
   }),
-generateFilePath: vi.fn((bucket: string, filename: string, entityId?: string) => {
-    const ext = filename.split('.').pop() || 'bin';
-    const uuid = Math.random().toString(16).substr(2, 12);
-    const timestamp = 1234567890;
+  generateFilePath: vi.fn((_bucket: string, filename: string, entityId?: string) => {
+    const _ext = filename.split('.').pop() || 'bin';
+    const _uuid = Math.random().toString(16).substr(2, 12);
+    const _timestamp = 1234567890;
     const prefix = entityId ? `${entityId}/` : '';
     return `${prefix}1234567890-${Math.random().toString(16).substr(2, 12)}-${filename}`;
   }),
@@ -33,11 +33,7 @@ generateFilePath: vi.fn((bucket: string, filename: string, entityId?: string) =>
   },
 }));
 
-import { 
-  validateImageFile, 
-  generateFilePath,
-  STORAGE_BUCKETS 
-} from './storage.provider.js';
+import { STORAGE_BUCKETS, generateFilePath, validateImageFile } from './storage.provider.js';
 
 describe('Storage Provider', () => {
   beforeEach(() => {

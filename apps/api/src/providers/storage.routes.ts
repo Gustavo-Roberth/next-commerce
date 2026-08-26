@@ -1,25 +1,13 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { authMiddleware, requireRole } from '../auth/middleware.js';
 import {
-  uploadFile,
+  STORAGE_BUCKETS,
   deleteFile,
   generateFilePath,
-  validateImageFile,
-  STORAGE_BUCKETS,
   initializeBuckets,
+  uploadFile,
+  validateImageFile,
 } from './storage.provider.js';
-
-interface UploadQuery {
-  produto_id?: string;
-}
-
-interface DeleteQuery {
-  path: string;
-}
-
-interface MultipleUploadQuery {
-  produto_id?: string;
-}
 
 export async function storageRoutes(app: FastifyInstance): Promise<void> {
   await initializeBuckets();

@@ -1,19 +1,14 @@
 'use client';
 
-import * as React from 'react';
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog';
-import { X } from 'lucide-react';
+import * as React from 'react';
 import { twMerge } from 'tailwind-merge';
 
-export interface AlertDialogProps extends React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Root> {}
+interface AlertDialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content> {}
 
 const AlertDialog = AlertDialogPrimitive.Root;
-
-interface AlertDialogTriggerProps extends React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Trigger> {}
-
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
-
-interface AlertDialogContentProps extends React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content> {}
 
 const AlertDialogContent = React.forwardRef<HTMLDivElement, AlertDialogContentProps>(
   ({ className, children, ...props }, ref) => (
@@ -38,10 +33,7 @@ interface AlertDialogHeaderProps extends React.ComponentPropsWithoutRef<'div'> {
 
 const AlertDialogHeader = ({ className, ...props }: AlertDialogHeaderProps) => (
   <div
-    className={twMerge(
-      'flex flex-col space-y-2 text-center sm:text-left',
-      className
-    )}
+    className={twMerge('flex flex-col space-y-2 text-center sm:text-left', className)}
     {...props}
   />
 );
@@ -51,11 +43,7 @@ interface AlertDialogTitleProps extends React.ComponentPropsWithoutRef<'h2'> {}
 
 const AlertDialogTitle = React.forwardRef<HTMLHeadingElement, AlertDialogTitleProps>(
   ({ className, ...props }, ref) => (
-    <h2
-      ref={ref}
-      className={twMerge('text-lg font-semibold', className)}
-      {...props}
-    />
+    <h2 ref={ref} className={twMerge('text-lg font-semibold', className)} {...props} />
   )
 );
 AlertDialogTitle.displayName = 'AlertDialogTitle';
@@ -64,16 +52,13 @@ interface AlertDialogDescriptionProps extends React.ComponentPropsWithoutRef<'p'
 
 const AlertDialogDescription = React.forwardRef<HTMLParagraphElement, AlertDialogDescriptionProps>(
   ({ className, ...props }, ref) => (
-    <p
-      ref={ref}
-      className={twMerge('text-sm text-muted-foreground', className)}
-      {...props}
-    />
+    <p ref={ref} className={twMerge('text-sm text-muted-foreground', className)} {...props} />
   )
 );
 AlertDialogDescription.displayName = 'AlertDialogDescription';
 
-interface AlertDialogActionProps extends React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> {}
+interface AlertDialogActionProps
+  extends React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> {}
 
 const AlertDialogAction = React.forwardRef<HTMLButtonElement, AlertDialogActionProps>(
   ({ className, ...props }, ref) => (
@@ -89,7 +74,8 @@ const AlertDialogAction = React.forwardRef<HTMLButtonElement, AlertDialogActionP
 );
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
 
-interface AlertDialogCancelProps extends React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel> {}
+interface AlertDialogCancelProps
+  extends React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel> {}
 
 const AlertDialogCancel = React.forwardRef<HTMLButtonElement, AlertDialogCancelProps>(
   ({ className, ...props }, ref) => (

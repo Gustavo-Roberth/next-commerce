@@ -80,7 +80,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     }
   };
 
-  const subtotal = cart?.subtotal_cents ? cart.subtotal_cents / 100 : 0;
+  const _subtotal = cart?.subtotal_cents ? cart.subtotal_cents / 100 : 0;
 
   if (!open) return null;
 

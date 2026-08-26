@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../lib/prisma.js', () => ({
   prisma: {
@@ -13,8 +13,6 @@ vi.mock('../lib/prisma.js', () => ({
     },
   },
 }));
-
-import { prisma } from '../lib/prisma.js';
 
 describe('Category Routes', () => {
   beforeEach(() => {
@@ -89,15 +87,15 @@ describe('Category Routes', () => {
       const validSlugs = ['categoria-teste', 'produtos', 'roupas-femininas', 'a1b2c3'];
       const invalidSlugs = ['Categoria Teste', 'categoria@teste', 'categoria.teste', ''];
 
-      validSlugs.forEach(slug => {
+      for (const slug of validSlugs) {
         expect(slug).toMatch(/^[a-z0-9-]+$/);
-      });
+      }
 
-      invalidSlugs.forEach(slug => {
+      for (const slug of invalidSlugs) {
         if (slug) {
           expect(slug).not.toMatch(/^[a-z0-9-]+$/);
         }
-      });
+      }
     });
 
     it('should validate hierarchy depth', () => {

@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { prisma } from '../lib/prisma.js';
 import { authMiddleware, requireRole } from '../auth/middleware.js';
+import { prisma } from '../lib/prisma.js';
 import {
   type AdminCategoriaListQuery,
   type CategoriaInput,

@@ -1,6 +1,5 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { serializeCart, getOrCreateCart, getCartWithItems } from './routes.js';
-import type { PrismaClient, Carrinho, ItemCarrinho, ProdutoVariacao, Produto } from '@prisma/client';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { getCartWithItems, getOrCreateCart, serializeCart } from './routes.js';
 
 vi.mock('../lib/prisma.js', () => ({
   prisma: {
@@ -108,7 +107,7 @@ describe('Cart Routes', () => {
   describe('getOrCreateCart', () => {
     const mockUserId = 'user-1';
     const mockLojaId = 'loja-1';
-    const mockSessionId = 'session-1';
+    const _mockSessionId = 'session-1';
 
     it('should return existing cart for authenticated user', async () => {
       const existingCart = {
@@ -205,7 +204,14 @@ describe('Cart Routes', () => {
               ativo: true,
               imagens: [{ url: 'img.jpg', principal: true }],
             },
-            produto: { id: 'prod-1', nome: 'Test', slug: 'test', sku: 'SKU-1', ativo: true, status: 'ATIVO' },
+            produto: {
+              id: 'prod-1',
+              nome: 'Test',
+              slug: 'test',
+              sku: 'SKU-1',
+              ativo: true,
+              status: 'ATIVO',
+            },
           },
         ],
       };

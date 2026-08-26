@@ -42,11 +42,11 @@ export const produtosApi = {
   }) => {
     const searchParams = new URLSearchParams();
     if (params) {
-      Object.entries(params).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(params)) {
         if (value !== undefined && value !== null) {
           searchParams.set(key, String(value));
         }
-      });
+      }
     }
     const query = searchParams.toString();
     return api.get<ProdutosListResponse>(`/produtos${query ? `?${query}` : ''}`);
@@ -71,11 +71,11 @@ export const categoriasApi = {
   }) => {
     const searchParams = new URLSearchParams();
     if (params) {
-      Object.entries(params).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(params)) {
         if (value !== undefined && value !== null) {
           searchParams.set(key, String(value));
         }
-      });
+      }
     }
     const query = searchParams.toString();
     return api.get<CategoriasListResponse>(`/categorias${query ? `?${query}` : ''}`);
@@ -118,11 +118,11 @@ export const pedidosApi = {
   }) => {
     const searchParams = new URLSearchParams();
     if (params) {
-      Object.entries(params).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(params)) {
         if (value !== undefined && value !== null) {
           searchParams.set(key, String(value));
         }
-      });
+      }
     }
     const query = searchParams.toString();
     return api.get<PedidosListResponse>(`/pedidos${query ? `?${query}` : ''}`);
@@ -152,11 +152,11 @@ export const adminApi = {
     }) => {
       const searchParams = new URLSearchParams();
       if (params) {
-        Object.entries(params).forEach(([key, value]) => {
+        for (const [key, value] of Object.entries(params)) {
           if (value !== undefined && value !== null) {
             searchParams.set(key, String(value));
           }
-        });
+        }
       }
       const query = searchParams.toString();
       return api.get<AdminCategoriaListResponse>(`/admin/categorias${query ? `?${query}` : ''}`);
@@ -187,11 +187,11 @@ export const adminApi = {
     }) => {
       const searchParams = new URLSearchParams();
       if (params) {
-        Object.entries(params).forEach(([key, value]) => {
+        for (const [key, value] of Object.entries(params)) {
           if (value !== undefined && value !== null) {
             searchParams.set(key, String(value));
           }
-        });
+        }
       }
       const query = searchParams.toString();
       return api.get<AdminProdutoListResponse>(`/admin/produtos${query ? `?${query}` : ''}`);
@@ -218,11 +218,11 @@ export const adminApi = {
     }) => {
       const searchParams = new URLSearchParams();
       if (params) {
-        Object.entries(params).forEach(([key, value]) => {
+        for (const [key, value] of Object.entries(params)) {
           if (value !== undefined && value !== null) {
             searchParams.set(key, String(value));
           }
-        });
+        }
       }
       const query = searchParams.toString();
       return api.get<AdminPedidoListResponse>(`/admin/pedidos${query ? `?${query}` : ''}`);

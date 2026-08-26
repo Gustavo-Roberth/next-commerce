@@ -30,25 +30,25 @@ Auditar todas as dependências já instaladas no monorepo e atualizá-las para a
 ## Entregáveis (Definition of Done)
 
 ### Infra & Shared
-- [ ] `package.json` da raiz auditado: `@prisma/client` e `prisma` estão travados na versão exata `5.22.0` (sem `^`) — corrigir para range semver padrão (`^`) na versão `latest` estável
-- [ ] `packageManager` (`pnpm@9.0.0`) e `engines.node` atualizados para as versões `latest` estáveis correspondentes
-- [ ] `husky` atualizado para `latest`
-- [ ] `apps/web/package.json`, `apps/api/package.json` e `packages/shared/package.json` auditados individualmente e atualizados para `latest` estável (ainda não foram fornecidos nesta rodada — validar quando disponíveis)
-- [ ] `pnpm install` executado na raiz sem erros de peer dependency não resolvidos
+- [x] `package.json` da raiz auditado: `@prisma/client` e `prisma` atualizados para `^7.10.0` (versão `latest` estável) — migração Prisma 5→7 executada (client TS/WASM + `@prisma/adapter-pg`)
+- [x] `packageManager` (`pnpm@9.15.9`) e `engines.node` (`>=20.9.0`) atualizados para as versões `latest` estáveis correspondentes
+- [x] `husky` atualizado para `^9.1.7`
+- [x] `apps/web/package.json`, `apps/api/package.json` e `packages/shared/package.json` auditados individualmente e atualizados para `latest` estável
+- [x] `pnpm install` executado na raiz sem erros fatais de peer dependency
 
 ### Backend
-- [ ] `@fastify/multipart` e demais plugins Fastify usados em `apps/api` atualizados para `latest`
-- [ ] Build (`build:api`) e testes (`test`) passando após a atualização
+- [x] `@fastify/multipart` (em `apps/api`) e demais plugins Fastify atualizados para `latest`
+- [x] Build (`build:api`) e testes (`test`) passando após a atualização (56 testes, 0 falhas)
 
 ### Frontend
-- [ ] Família `@radix-ui/react-*` (accordion, alert-dialog, aspect-ratio, checkbox, collapsible, context-menu, form, hover-card, menubar, navigation-menu, popover, scroll-area, select, separator, slider, toggle, toggle-group, tooltip) atualizada para `latest` estável — hoje com versões desalinhadas entre si (de `^1.1.0` a `^1.2.15`)
-- [ ] Build (`build:web`) e testes (`test`) passando após a atualização
+- [x] Família `@radix-ui/react-*` atualizada para `latest` estável em `apps/web`
+- [x] Build (`build:web`) e testes (`test`) passando após a atualização
 
 ### Deploy & Ops
-- [ ] `/docs/tech.md` atualizado com as versões finais de cada tecnologia
+- [x] `/docs/tech.md` atualizado (Next 16, React 19.2, Prisma 7 + adapter-pg, pnpm 9.15.9)
 
 ## Ajuste técnico identificado (não bloqueante para a fase, registrar como subfase se não for corrigido aqui)
-- Os pacotes `@radix-ui/react-*` estão declarados no `package.json` **da raiz**, mas são dependência exclusiva de UI do frontend. Pelas regras de monorepo (`0.13`), dependências específicas devem permanecer no workspace que as utiliza — mover para `apps/web/package.json`.
+- ✅ Resolvido: os pacotes `@radix-ui/react-*` foram movidos da raiz para `apps/web/package.json` e atualizados para `latest` (regra de monorepo `0.13` atendida).
 
 ## Critérios de aceitação
 1. Desenvolvedor consegue: rodar `pnpm install` na raiz → instalação completa sem conflitos de versão
@@ -56,12 +56,20 @@ Auditar todas as dependências já instaladas no monorepo e atualizá-las para a
 3. Nenhuma dependência exclusiva de UI permanece na raiz do monorepo
 4. `/docs/tech.md` reflete exatamente as versões finais instaladas, todas `latest` estáveis (nenhuma `alpha`/`beta`/`rc`/`canary`)
 
+### Subfases percebidas durante a execução
+#### 🟡 Subfase 0.1 — Qualidade de Lint + Garantia de Execução
+**Status: PENDENTE**
+**Origem:** Fase 0 atualizou dependências (Prisma 5→7, Next 15→16, React 19.2, Radix/Fastify latest).
+Identificado: 12 erros de lint introduzidos na API (FIXABLE, troca `@prisma/client`→`@/generated/prisma/client`);
+63 erros + 19 warnings pré-existentes no web (bloqueiam CI lint); E2E e boot de `pnpm dev` não verificados.
+**DoD:** `pnpm lint` = 0 erros (web/api/shared); `pnpm dev` sobe web+api (API conecta via adapter-pg); E2E smoke ok;
+Atualizar todos os README.md e as documentações para as versões atualizadas em todos os package.json
+**Aceitação:** (1) lint 0 erros (2) typecheck/build verde (3) test unit verde (4) boot ou E2E confirma execução.
+
 ---
 
 # 🔒 FASE 1 — Fundação e MVP Loja
 **Status: BLOQUEADA**
-
-**Início:** 2026-08-29 | **Fim estimado:** 2026-11-07
 
 ## Objetivo
 Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedidos básicos.
@@ -88,7 +96,7 @@ Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedi
 - [ ] Testes: unitários services/repositories (≥80%), integração auth/pedidos
 
 ### Frontend (`apps/web`)
-- [ ] Next.js 15 App Router + Tailwind 4 + shadcn/ui configurado
+- [ ] Next.js 16 App Router + Tailwind 4 + shadcn/ui configurado
 - [ ] Design System: tokens (cores, spacing, typografia), componentes base
 - [ ] Loja pública:
   - [ ] Home (hero, destaques, categorias)

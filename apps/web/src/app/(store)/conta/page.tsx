@@ -40,9 +40,7 @@ export default function ContaPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-2">Minha Conta</h1>
-      <p className="text-muted-foreground mb-8">
-        Olá, {me?.nome_completo || me?.email}
-      </p>
+      <p className="text-muted-foreground mb-8">Olá, {me?.nome_completo || me?.email}</p>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Link href="/conta/pedidos">
@@ -80,9 +78,7 @@ export default function ContaPage() {
             <CardHeader>
               <CardTitle className="text-lg">Perfil</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              Edite seus dados
-            </CardContent>
+            <CardContent className="text-sm text-muted-foreground">Edite seus dados</CardContent>
           </Card>
         </Link>
       </div>

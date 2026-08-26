@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const prisma = {
   pedido: { create: vi.fn(), findUnique: vi.fn() },
@@ -29,13 +29,18 @@ describe('Checkout Routes', () => {
       ];
 
       // Simulate the logic
-      const options = mockFreteOptions.filter(o => o.valor_cents >= 0);
+      const options = mockFreteOptions.filter((o) => o.valor_cents >= 0);
       expect(options).toHaveLength(3);
       expect(options[0].nome).toBe('PAC');
     });
 
     it('should handle free shipping', async () => {
-      const freeOption = { nome: 'Frete Grátis', tipo: 'GRATIS_VALOR', prazo_dias: 5, valor_cents: 0 };
+      const freeOption = {
+        nome: 'Frete Grátis',
+        tipo: 'GRATIS_VALOR',
+        prazo_dias: 5,
+        valor_cents: 0,
+      };
       expect(freeOption.valor_cents).toBe(0);
       expect(freeOption.tipo).toBe('GRATIS_VALOR');
     });
@@ -56,8 +61,9 @@ describe('Checkout Routes', () => {
         valor_minimo_pedido_cents: 5000,
       };
 
-      const isValid = mockCupom.ativo && 
-        new Date() >= mockCupom.valido_de && 
+      const isValid =
+        mockCupom.ativo &&
+        new Date() >= mockCupom.valido_de &&
         new Date() <= mockCupom.valido_ate &&
         mockCupom.uso_atual < mockCupom.uso_maximo_total;
 
@@ -94,7 +100,7 @@ describe('Checkout Routes', () => {
 
     it('should calculate fixed discount', async () => {
       const mockCupom = { tipo: 'VALOR_FIXO', valor: 500 }; // R$ 5,00
-      const subtotal = 10000;
+      const _subtotal = 10000;
       const discount = mockCupom.valor;
       expect(discount).toBe(500);
     });
@@ -106,12 +112,19 @@ describe('Checkout Routes', () => {
         id: 'cart-1',
         itens: [
           { produto_id: 'prod-1', variacao_id: 'var-1', quantidade: 2, preco_unitario_cents: 5000 },
-          { produto_id: 'prod-2', variacao_id: 'var-2', quantidade: 1, preco_unitario_cents: 10000 },
+          {
+            produto_id: 'prod-2',
+            variacao_id: 'var-2',
+            quantidade: 1,
+            preco_unitario_cents: 10000,
+          },
         ],
       };
 
-      const subtotal = mockCart.itens.reduce((acc, item) => 
-        acc + (item.preco_unitario_cents * item.quantidade), 0);
+      const subtotal = mockCart.itens.reduce(
+        (acc, item) => acc + item.preco_unitario_cents * item.quantidade,
+        0
+      );
 
       expect(subtotal).toBe(20000); // (5000*2) + (10000*1) = 20000
     });

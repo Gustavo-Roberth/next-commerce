@@ -8,10 +8,6 @@ import { ArrowRight, Minus, Plus, Trash2, Truck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-interface Props {
-  searchParams: Promise<{}>;
-}
-
 async function getCart(): Promise<CarrinhoResponse | null> {
   try {
     return await carrinhoApi.get();
@@ -68,6 +64,7 @@ export default async function CarrinhoPage() {
                       </p>
                       <div className="flex items-center gap-2 mt-3">
                         <button
+                          type="button"
                           className="p-1 rounded border hover:bg-muted"
                           aria-label="Diminuir quantidade"
                         >
@@ -75,6 +72,7 @@ export default async function CarrinhoPage() {
                         </button>
                         <span className="w-8 text-center">{item.quantidade}</span>
                         <button
+                          type="button"
                           className="p-1 rounded border hover:bg-muted"
                           aria-label="Aumentar quantidade"
                         >
@@ -86,6 +84,7 @@ export default async function CarrinhoPage() {
                       </div>
                     </div>
                     <button
+                      type="button"
                       className="text-muted-foreground hover:text-destructive"
                       aria-label="Remover item"
                     >

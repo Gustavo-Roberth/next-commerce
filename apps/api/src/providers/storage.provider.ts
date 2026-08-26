@@ -1,5 +1,5 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { randomUUID } from 'crypto';
+import { type SupabaseClient, createClient } from '@supabase/supabase-js';
 
 let supabaseClient: SupabaseClient | null = null;
 
@@ -24,7 +24,7 @@ export const STORAGE_BUCKETS = {
   USER_AVATARS: 'user-avatars',
 } as const;
 
-export type StorageBucket = typeof STORAGE_BUCKETS[keyof typeof STORAGE_BUCKETS];
+export type StorageBucket = (typeof STORAGE_BUCKETS)[keyof typeof STORAGE_BUCKETS];
 
 interface UploadOptions {
   bucket: StorageBucket;
@@ -47,12 +47,10 @@ export async function uploadFile({
   contentType,
   upsert = false,
 }: UploadOptions): Promise<UploadResult> {
-  const { data, error } = await getSupabase().storage
-    .from(bucket)
-    .upload(path, file, {
-      contentType,
-      upsert,
-    });
+  const { data, error } = await getSupabase().storage.from(bucket).upload(path, file, {
+    contentType,
+    upsert,
+  });
 
   if (error) {
     throw new Error(`Upload failed: ${error.message}`);
@@ -92,7 +90,7 @@ export async function createSignedUrl(
 }
 
 export function generateFilePath(
-  bucket: StorageBucket,
+  _bucket: StorageBucket,
   originalName: string,
   entityId?: string
 ): string {
@@ -104,12 +102,18 @@ export function generateFilePath(
   return `${prefix}${timestamp}-${uuid}-${safeName}.${ext}`;
 }
 
-export function validateImageFile(file: Buffer, contentType: string): { valid: boolean; error?: string } {
+export function validateImageFile(
+  file: Buffer,
+  contentType: string
+): { valid: boolean; error?: string } {
   const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
   const maxSize = 5 * 1024 * 1024; // 5MB
 
   if (!allowedTypes.includes(contentType)) {
-    return { valid: false, error: `Tipo de arquivo não permitido. Permitidos: ${allowedTypes.join(', ')}` };
+    return {
+      valid: false,
+      error: `Tipo de arquivo não permitido. Permitidos: ${allowedTypes.join(', ')}`,
+    };
   }
 
   if (file.length > maxSize) {
@@ -123,14 +127,16 @@ export async function initializeBuckets(): Promise<void> {
   const buckets = Object.values(STORAGE_BUCKETS);
 
   for (const bucket of buckets) {
-    const { data, error } = await getSupabase().storage.getBucket(bucket);
-    if (error && error.message.includes('not found')) {
+    const { data: _data, error } = await getSupabase().storage.getBucket(bucket);
+    if (error?.message.includes('not found')) {
       const { error: createError } = await getSupabase().storage.createBucket(bucket, {
-        public: bucket === STORAGE_BUCKETS.PRODUCT_IMAGES || bucket === STORAGE_BUCKETS.USER_AVATARS,
+        public:
+          bucket === STORAGE_BUCKETS.PRODUCT_IMAGES || bucket === STORAGE_BUCKETS.USER_AVATARS,
         fileSizeLimit: 5242880, // 5MB
-        allowedMimeTypes: bucket === STORAGE_BUCKETS.PRODUCT_IMAGES || bucket === STORAGE_BUCKETS.USER_AVATARS
-          ? ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
-          : ['application/pdf', 'application/xml', 'text/xml'],
+        allowedMimeTypes:
+          bucket === STORAGE_BUCKETS.PRODUCT_IMAGES || bucket === STORAGE_BUCKETS.USER_AVATARS
+            ? ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
+            : ['application/pdf', 'application/xml', 'text/xml'],
       });
       if (createError) {
         console.error(`Failed to create bucket ${bucket}:`, createError);

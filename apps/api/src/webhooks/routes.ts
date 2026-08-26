@@ -44,12 +44,12 @@ export async function webhookRoutes(app: FastifyInstance): Promise<void> {
         id,
         status,
         external_reference,
-        payment_method_id,
-        payment_type_id,
-        transaction_amount,
+        payment_method_id: _payment_method_id,
+        payment_type_id: _payment_type_id,
+        transaction_amount: _transaction_amount,
         date_approved,
-        date_created,
-        date_last_updated,
+        date_created: _date_created,
+        date_last_updated: _date_last_updated,
       } = body;
 
       if (!external_reference) {
@@ -70,7 +70,7 @@ export async function webhookRoutes(app: FastifyInstance): Promise<void> {
         where: { idempotency_key: external_reference, event_type: 'PAYMENT_APPROVED' },
       });
 
-      if (existingEvent && existingEvent.processed) {
+      if (existingEvent?.processed) {
         return reply.send({ received: true });
       }
 

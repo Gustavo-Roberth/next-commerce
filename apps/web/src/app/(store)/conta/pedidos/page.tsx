@@ -67,10 +67,7 @@ export default function PedidosPage() {
         <div className="space-y-3">
           {pedidos.map((pedido) => (
             <div key={pedido.id} data-testid="order-row">
-              <Link
-                href={`/conta/pedidos/${pedido.id}`}
-                className="block"
-              >
+              <Link href={`/conta/pedidos/${pedido.id}`} className="block">
                 <Card className="hover:shadow-md transition-shadow">
                   <CardContent className="flex items-center justify-between p-4">
                     <div>

@@ -1,5 +1,7 @@
 'use client';
 
+import { ImageUpload } from '@/components/admin/ImageUpload';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,18 +13,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { api } from '@/lib/api/client';
 import { adminApi } from '@/lib/api/services';
-import type { Categoria, CreateProdutoInput, UpdateProdutoInput, ProdutoVariacao, ProdutoAtributo } from '@/lib/api/types';
-import { ArrowLeft, Loader2, Save, Plus, Trash2, Edit, Image, Tag, DollarSign, X, Image as ImageIcon } from 'lucide-react';
+import type {
+  Categoria,
+  CreateProdutoInput,
+  ProdutoAtributo,
+  ProdutoVariacao,
+  UpdateProdutoInput,
+} from '@/lib/api/types';
+import { formatCurrency } from '@/lib/utils';
+import {
+  ArrowLeft,
+  Edit,
+  Image as ImageIcon,
+  Loader2,
+  Plus,
+  Save,
+  Tag,
+  Trash2,
+  X,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { formatCurrency } from '@/lib/utils';
-import { ImageUpload } from '@/components/admin/ImageUpload';
 
 interface ProdutoFormData extends Partial<CreateProdutoInput> {
   nome: string;
@@ -144,18 +160,22 @@ export default function AdminProdutoEditarPage() {
       if (data.variacoes?.[0]?.atributos) {
         // Extract unique attributes from variations
         const attrMap = new Map<string, ProdutoAtributo>();
-        data.variacoes.forEach((v) => {
-          v.atributos?.forEach((a) => {
+        for (const v of data.variacoes ?? []) {
+          for (const a of v.atributos ?? []) {
             if (!attrMap.has(a.atributo_id)) {
-              attrMap.set(a.atributo_id, { atributo_id: a.atributo_id, nome: a.nome, valores: [a.valor] });
+              attrMap.set(a.atributo_id, {
+                atributo_id: a.atributo_id,
+                nome: a.nome,
+                valores: [a.valor],
+              });
             } else {
               const existing = attrMap.get(a.atributo_id)!;
               if (!existing.valores.includes(a.valor)) {
                 existing.valores.push(a.valor);
               }
             }
-          });
-        });
+          }
+        }
         setAtributos(Array.from(attrMap.values()));
       }
     } catch (error) {
@@ -170,9 +190,9 @@ export default function AdminProdutoEditarPage() {
   const openVariacaoForm = (variacao?: ProdutoVariacao) => {
     if (variacao) {
       const attrs: Record<string, string> = {};
-      variacao.atributos?.forEach((a) => {
+      for (const a of variacao.atributos ?? []) {
         attrs[a.atributo_id] = a.valor;
-      });
+      }
       setEditingVariacao(variacao);
       setVariacaoForm({
         sku: variacao.sku,
@@ -547,7 +567,7 @@ export default function AdminProdutoEditarPage() {
         {isEditing && (
           <Card>
             <CardHeader>
-<CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2">
                 <ImageIcon className="h-5 w-5" />
                 Imagens do Produto
               </CardTitle>
@@ -608,7 +628,11 @@ export default function AdminProdutoEditarPage() {
                           <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                             <span>{formatCurrency((variacao.preco_cents || 0) / 100)}</span>
                             <Badge
-                              className={variacao.ativo ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}
+                              className={
+                                variacao.ativo
+                                  ? 'bg-green-100 text-green-800'
+                                  : 'bg-gray-100 text-gray-800'
+                              }
                             >
                               {variacao.ativo ? 'Ativa' : 'Inativa'}
                             </Badge>
@@ -662,9 +686,17 @@ export default function AdminProdutoEditarPage() {
                   </Button>
                 </div>
               </div>
-              <form onSubmit={(e) => { e.preventDefault(); saveVariacao(); }} className="p-6 space-y-4">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  saveVariacao();
+                }}
+                className="p-6 space-y-4"
+              >
                 {variacaoFormError && (
-                  <div className="rounded-lg bg-red-50 p-3 text-red-600 text-sm">{variacaoFormError}</div>
+                  <div className="rounded-lg bg-red-50 p-3 text-red-600 text-sm">
+                    {variacaoFormError}
+                  </div>
                 )}
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
@@ -672,7 +704,9 @@ export default function AdminProdutoEditarPage() {
                     <Input
                       id="var_sku"
                       value={variacaoForm.sku}
-                      onChange={(e) => setVariacaoForm((prev) => ({ ...prev, sku: e.target.value.toUpperCase() }))}
+                      onChange={(e) =>
+                        setVariacaoForm((prev) => ({ ...prev, sku: e.target.value.toUpperCase() }))
+                      }
                       placeholder="CAM-001-PRETA"
                     />
                   </div>
@@ -681,7 +715,9 @@ export default function AdminProdutoEditarPage() {
                     <Input
                       id="var_nome"
                       value={variacaoForm.nome}
-                      onChange={(e) => setVariacaoForm((prev) => ({ ...prev, nome: e.target.value }))}
+                      onChange={(e) =>
+                        setVariacaoForm((prev) => ({ ...prev, nome: e.target.value }))
+                      }
                       placeholder="Ex: Vermelho / GG"
                     />
                   </div>
@@ -692,7 +728,12 @@ export default function AdminProdutoEditarPage() {
                     id="var_preco"
                     type="number"
                     value={variacaoForm.preco_cents}
-                    onChange={(e) => setVariacaoForm((prev) => ({ ...prev, preco_cents: parseInt(e.target.value) || 0 }))}
+                    onChange={(e) =>
+                      setVariacaoForm((prev) => ({
+                        ...prev,
+                        preco_cents: Number.parseInt(e.target.value) || 0,
+                      }))
+                    }
                     placeholder="9990"
                   />
                 </div>
@@ -732,7 +773,9 @@ export default function AdminProdutoEditarPage() {
                       type="checkbox"
                       id="var_ativo"
                       checked={variacaoForm.ativo}
-                      onChange={(e) => setVariacaoForm((prev) => ({ ...prev, ativo: e.target.checked }))}
+                      onChange={(e) =>
+                        setVariacaoForm((prev) => ({ ...prev, ativo: e.target.checked }))
+                      }
                     />
                     <Label htmlFor="var_ativo">Ativa</Label>
                   </div>

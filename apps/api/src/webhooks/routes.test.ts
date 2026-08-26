@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../lib/prisma.js', () => ({
   prisma: {
@@ -54,7 +54,7 @@ describe('Webhook Routes', () => {
         where: { idempotency_key: 'key-123' },
       });
 
-      if (existingEvent && existingEvent.processed) {
+      if (existingEvent?.processed) {
         expect(existingEvent.processed).toBe(true);
       }
     });

@@ -47,7 +47,8 @@
       "coverage",
       ".turbo",
       ".vercel",
-      "*.log"
+      "*.log",
+      "**/generated/**"
     ]
   },
   "overrides": [

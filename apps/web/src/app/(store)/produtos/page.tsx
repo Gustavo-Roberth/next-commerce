@@ -1,22 +1,17 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
-import { Suspense } from 'react';
 import { ProductCard, ProductGrid } from '@/components/store/ProductCard';
 import { categoriasApi, produtosApi } from '@/lib/api/services';
-import type {
-  CategoriasListResponse,
-  ProdutoDestaque,
-  ProdutosListResponse,
-} from '@/lib/api/types';
+import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 function ProductListSkeleton() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {Array.from({ length: 8 }).map((_, i) => (
         <ProductCard
-          key={i}
+          key={`skeleton-${i}`}
           product={{
             id: `skeleton-${i}`,
             nome: 'Carregando...',
@@ -52,7 +47,7 @@ function ProdutosContent() {
     placeholderData: (previousData) => previousData,
   });
 
-  const { data: categorias, isLoading: categoriasLoading } = useQuery({
+  const { data: categorias, isLoading: _categoriasLoading } = useQuery({
     queryKey: ['categorias', { ativa: true, limit: 50 }],
     queryFn: () => categoriasApi.list({ ativa: true, limit: 50 }),
   });
@@ -122,7 +117,7 @@ function ProdutosContent() {
         </aside>
 
         <main className="lg:col-span-3 space-y-8">
-          {(!destaquesLoading && (destaquesData?.length ?? 0) > 0) && (
+          {!destaquesLoading && (destaquesData?.length ?? 0) > 0 && (
             <section>
               <h2 className="text-xl font-semibold mb-4">Em Destaque</h2>
               <ProductGrid products={destaquesData ?? []} />

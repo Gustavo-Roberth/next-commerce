@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { api } from '@/lib/api/client';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Endereco {
   id: string;
@@ -36,7 +36,7 @@ export default function EnderecosPage() {
     uf: '',
   });
 
-  async function load() {
+  const load = useCallback(async () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
       router.replace('/login');
@@ -50,12 +50,11 @@ export default function EnderecosPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [router]);
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [load]);
 
   const handleChange = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -92,23 +91,53 @@ export default function EnderecosPage() {
             <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="cep">CEP</Label>
-                <Input id="cep" name="cep" value={form.cep} onChange={handleChange('cep')} required />
+                <Input
+                  id="cep"
+                  name="cep"
+                  value={form.cep}
+                  onChange={handleChange('cep')}
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="logradouro">Logradouro</Label>
-                <Input id="logradouro" name="logradouro" value={form.logradouro} onChange={handleChange('logradouro')} required />
+                <Input
+                  id="logradouro"
+                  name="logradouro"
+                  value={form.logradouro}
+                  onChange={handleChange('logradouro')}
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="numero">Número</Label>
-                <Input id="numero" name="numero" value={form.numero} onChange={handleChange('numero')} required />
+                <Input
+                  id="numero"
+                  name="numero"
+                  value={form.numero}
+                  onChange={handleChange('numero')}
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="bairro">Bairro</Label>
-                <Input id="bairro" name="bairro" value={form.bairro} onChange={handleChange('bairro')} required />
+                <Input
+                  id="bairro"
+                  name="bairro"
+                  value={form.bairro}
+                  onChange={handleChange('bairro')}
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="cidade">Cidade</Label>
-                <Input id="cidade" name="cidade" value={form.cidade} onChange={handleChange('cidade')} required />
+                <Input
+                  id="cidade"
+                  name="cidade"
+                  value={form.cidade}
+                  onChange={handleChange('cidade')}
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="uf">UF</Label>
