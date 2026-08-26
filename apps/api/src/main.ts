@@ -11,6 +11,7 @@ import { adminRoutes } from './admin/routes.js';
 import { adminCategoryRoutes } from './categories/admin.routes.js';
 import { registerAuthMiddleware } from './auth/middleware.js';
 import { authRoutes } from './auth/routes.js';
+import { clientRoutes } from './client/routes.js';
 import { cartRoutes } from './cart/routes.js';
 import { categoryRoutes } from './categories/routes.js';
 import { checkoutRoutes } from './checkout/routes.js';
@@ -87,6 +88,7 @@ async function initialize() {
     return { status: 'ok', timestamp: new Date().toISOString() };
   });
 
+  await app.register(authRoutes, { prefix: '/api/v1' });
   await app.register(adminRoutes, { prefix: '/api/v1' });
   await app.register(categoryRoutes, { prefix: '/api/v1' });
   await app.register(adminCategoryRoutes, { prefix: '/api/v1' });
@@ -98,6 +100,7 @@ async function initialize() {
   await app.register(adminOrderRoutes, { prefix: '/api/v1' });
   await app.register(storageRoutes, { prefix: '/api/v1' });
   await app.register(webhookRoutes, { prefix: '/api/v1' });
+  await app.register(clientRoutes, { prefix: '/api/v1' });
 
   const port = Number(process.env.PORT) || 3001;
   await app.listen({ port, host: '0.0.0.0' });

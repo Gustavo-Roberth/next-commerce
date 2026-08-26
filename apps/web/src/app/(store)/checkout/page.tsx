@@ -28,7 +28,7 @@ interface Endereco {
   uf: string;
 }
 
-export function CheckoutPage() {
+export default function CheckoutPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [enderecoEntrega, setEnderecoEntrega] = useState<any>(null);

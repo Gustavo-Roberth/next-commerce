@@ -1,5 +1,6 @@
+import 'dotenv/config';
 import { hash } from 'node:crypto';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -9,7 +10,7 @@ async function main() {
   // 1. Criar Perfis de Sistema
   console.log('📋 Criando perfis de sistema...');
 
-  const perfisSistema = [
+  const perfisSistema: Prisma.PerfilCreateInput[] = [
     {
       codigo: 'ADMIN',
       nome: 'Administrador',
@@ -221,18 +222,23 @@ async function main() {
   console.log(`  ✅ Usuário admin criado: ${adminUser.id}`);
 
   // 6.1 Associar Admin à Loja Demo com perfil ADMIN
+  const adminPerfil = await prisma.perfil.findUnique({ where: { codigo: 'ADMIN' } });
+  if (!adminPerfil) {
+    throw new Error('Perfil ADMIN não encontrado após a criação dos perfis de sistema');
+  }
+
   await prisma.usuarioPerfil.upsert({
     where: {
       usuario_id_perfil_id_loja_id: {
         usuario_id: adminUser.id,
-        perfil_id: (await prisma.perfil.findUnique({ where: { codigo: 'ADMIN' } }))?.id,
+        perfil_id: adminPerfil.id,
         loja_id: lojaDemo.id,
       },
     },
     update: {},
     create: {
       usuario_id: adminUser.id,
-      perfil_id: (await prisma.perfil.findUnique({ where: { codigo: 'ADMIN' } }))?.id,
+      perfil_id: adminPerfil.id,
       loja_id: lojaDemo.id,
       ativo: true,
     },

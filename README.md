@@ -194,7 +194,19 @@
 **26. shadcn/ui Components (nice to have)**
 - `Accordion`, `AlertDialog`, `Checkbox`, `ScrollArea`, `Progress` components ✅
 
-**27. Quality Gates — todos verdes**
+**27. E2E Playwright Tests**
+- Purchase Flow - Home → Search → Product → Cart → Checkout → PIX Payment → Confirmation
+- Admin Flow - Login admin → Dashboard → Orders → Change Status (Paid/Shipped/Delivered)
+- Client Account - Register → Verify Email → Login → Orders → Addresses
+
+**28. CI/CD Pipeline**
+- GitHub Actions: lint, typecheck, test, build, db migrate check
+- Coverage gate: ≥80% coverage on backend services/repos
+
+**29. Criação da migration inicial**
+- Criação da primeira migration: criação de tabelas das entidades e relacionamentos já conhecidos, com o modelo de banco de dados relacional
+
+**30. Quality Gates — todos verdes**
 - lint ✅ | typecheck ✅ | test ✅ (31 testes) | build ✅
 
 ### 🔧 Ajustes técnicos importantes
