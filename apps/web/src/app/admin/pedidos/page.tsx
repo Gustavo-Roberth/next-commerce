@@ -194,7 +194,7 @@ export default function AdminPedidosPage() {
           </form>
 
           <div className="overflow-x-auto">
-            <Table>
+            <Table data-testid="orders-table">
               <TableHeader>
                 <TableRow>
                   <TableHead>Pedido</TableHead>
@@ -221,7 +221,7 @@ export default function AdminPedidosPage() {
                   </TableRow>
                 ) : (
                   pedidos.map((pedido) => (
-                    <TableRow key={pedido.id}>
+                    <TableRow key={pedido.id} data-testid="order-row">
                       <TableCell>
                         <div>
                           <p className="font-medium">#{pedido.numero_sequencial}</p>

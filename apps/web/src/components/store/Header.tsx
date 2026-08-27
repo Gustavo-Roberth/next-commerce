@@ -67,13 +67,18 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => setCartOpen(true)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setCartOpen(true)}
+              data-testid="cart-button"
+            >
               <ShoppingCart className="h-5 w-5" />
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" data-testid="user-menu">
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>

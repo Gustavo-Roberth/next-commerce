@@ -268,6 +268,8 @@ export default function CheckoutPage() {
   }
 
   function renderStep4() {
+    const showPix = pagamentoMetodo === 'PIX';
+
     return (
       <Card>
         <CardHeader>
@@ -303,7 +305,13 @@ export default function CheckoutPage() {
 
           <div className="border rounded-lg p-4">
             <h4 className="font-medium mb-2">Forma de Pagamento</h4>
-            <p className="text-sm text-muted-foreground">PIX via Mercado Pago</p>
+            <p className="text-sm text-muted-foreground">
+              {pagamentoMetodo === 'PIX'
+                ? 'PIX via Mercado Pago'
+                : pagamentoMetodo === 'CARTAO_CREDITO'
+                  ? 'Cartão de Crédito'
+                  : 'Boleto Bancário'}
+            </p>
           </div>
 
           <div className="border rounded-lg p-4">
@@ -312,6 +320,74 @@ export default function CheckoutPage() {
               Rua Exemplo, 123 - Centro, São Paulo/SP - 01000-000
             </p>
           </div>
+
+          {showPix && (
+            <div className="border rounded-lg p-4" data-testid="pix-qr-code">
+              <h4 className="font-medium mb-3">Pague com PIX</h4>
+              <div className="text-center space-y-3">
+                <div className="bg-white p-4 rounded-lg border inline-block">
+                  <div className="bg-black text-white font-mono text-xs px-3 py-2 rounded">
+                    00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913NextCommerce6009SAO
+                    PAULO62070503***6304ABCD
+                  </div>
+                  <div className="mt-3 flex items-center justify-center gap-2">
+                    <div className="w-48 h-48 bg-white">
+                      <svg
+                        width="192"
+                        height="192"
+                        viewBox="0 0 192 192"
+                        aria-label="QR Code PIX para pagamento"
+                        role="img"
+                      >
+                        <title>QR Code PIX</title>
+                        <rect width="192" height="192" fill="white" />
+                        <path d="M32 32h128v128H32z" fill="none" stroke="black" strokeWidth="8" />
+                        <rect x="48" y="48" width="16" height="16" fill="black" />
+                        <rect x="72" y="48" width="16" height="16" fill="black" />
+                        <rect x="96" y="48" width="16" height="16" fill="black" />
+                        <rect x="120" y="48" width="16" height="16" fill="black" />
+                        <rect x="144" y="48" width="16" height="16" fill="black" />
+                        <rect x="48" y="72" width="16" height="16" fill="black" />
+                        <rect x="72" y="72" width="16" height="16" fill="black" />
+                        <rect x="96" y="72" width="16" height="16" fill="black" />
+                        <rect x="120" y="72" width="16" height="16" fill="black" />
+                        <rect x="144" y="72" width="16" height="16" fill="black" />
+                        <rect x="48" y="96" width="16" height="16" fill="black" />
+                        <rect x="72" y="96" width="16" height="16" fill="black" />
+                        <rect x="96" y="96" width="16" height="16" fill="black" />
+                        <rect x="120" y="96" width="16" height="16" fill="black" />
+                        <rect x="144" y="96" width="16" height="16" fill="black" />
+                        <rect x="48" y="120" width="16" height="16" fill="black" />
+                        <rect x="72" y="120" width="16" height="16" fill="black" />
+                        <rect x="96" y="120" width="16" height="16" fill="black" />
+                        <rect x="120" y="120" width="16" height="16" fill="black" />
+                        <rect x="144" y="120" width="16" height="16" fill="black" />
+                        <rect x="48" y="144" width="16" height="16" fill="black" />
+                        <rect x="72" y="144" width="16" height="16" fill="black" />
+                        <rect x="96" y="144" width="16" height="16" fill="black" />
+                        <rect x="120" y="144" width="16" height="16" fill="black" />
+                        <rect x="144" y="144" width="16" height="16" fill="black" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Escaneie o QR Code ou copie o código PIX
+                </p>
+                <button
+                  type="button"
+                  className="text-sm text-primary hover:underline"
+                  onClick={() =>
+                    navigator.clipboard.writeText(
+                      '00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913NextCommerce6009SAO PAULO62070503***6304ABCD'
+                    )
+                  }
+                >
+                  Copiar código PIX
+                </button>
+              </div>
+            </div>
+          )}
 
           <Button className="w-full" size="lg" onClick={() => router.push('/pedido/confirmado')}>
             <Lock className="h-4 w-4 mr-2" />

@@ -71,7 +71,7 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 0.2 — Verificação E2E + Conexão DB**
+🟢 **FASE 0.3 — Alinhamento de data-testids para E2E Smoke**
 **Status: EM DESENVOLVIMENTO**
 **Início:** 2026-08-26 | **Fim estimado:** 2026-08-30
 

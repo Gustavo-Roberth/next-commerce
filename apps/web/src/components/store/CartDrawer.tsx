@@ -85,7 +85,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col">
+    <div className="fixed inset-0 z-50 flex flex-col" data-testid="cart-drawer">
       <button
         type="button"
         aria-label="Fechar carrinho"
@@ -117,7 +117,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
           ) : (
             <div className="space-y-4">
               {cart.itens.map((item) => (
-                <div key={item.id} className="flex gap-3">
+                <div key={item.id} className="flex gap-3" data-testid="cart-item">
                   <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-muted">
                     {item.variacao.imagens[0] ? (
                       <img

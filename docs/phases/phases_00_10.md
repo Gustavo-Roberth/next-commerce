@@ -1,6 +1,6 @@
 # Phases - NextCommerce
-## Fase ativa: FASE 0.2 — Verificação E2E + Conexão DB
-**Início:** 2026-08-22 | **Fim estimado:** 2026-08-29 | **Status:** EM DESENVOLVIMENTO
+## Fase ativa: FASE 0.3 — Alinhamento de data-testids para E2E Smoke
+**Início:** 2026-08-27 | **Fim estimado:** 2026-08-29 | **Status:** EM DESENVOLVIMENTO
 
 ---
 
@@ -96,8 +96,8 @@ Zerar os erros de lint em todo o monorepo (web, api, shared), confirmar que a ap
 
 ---
 
-# 🟢 FASE 0.2 — Verificação E2E + Conexão DB
-**Status: EM DESENVOLVIMENTO**
+# ⚪ FASE 0.2 — Verificação E2E + Conexão DB
+**Status: CONCLUÍDA**
 
 ## Objetivo
 Executar o fluxo E2E smoke (`pnpm test:e2e`) e confirmar a conexão da API ao banco via `@prisma/adapter-pg` em um ambiente com PostgreSQL/Supabase acessível.
@@ -110,24 +110,44 @@ Executar o fluxo E2E smoke (`pnpm test:e2e`) e confirmar a conexão da API ao ba
 1. Desenvolvedor consegue: rodar `pnpm dev` → API conecta ao banco e serve dados reais
 2. Fluxo E2E smoke confirma a aplicação funcional de ponta a ponta
 
-## Subfases percebidas durante a execução
+---
 
-### 🔒 Subfase 0.3 — Alinhamento de data-testids para E2E Smoke
-**Status: PENDENTE**
+# 🟢 FASE 0.3 — Alinhamento de data-testids para E2E Smoke
+**Status: EM DESENVOLVIMENTO**
 
-#### Objetivo
+## Objetivo
 Adicionar atributos `data-testid` nos componentes da UI para que os testes E2E existentes localizem os elementos corretamente (product-card, cart-button, cart-item, orders-table, order-row, user-menu, pix-qr-code, favorite-item, etc.).
 
-#### Entregáveis
+## Entregáveis
 - [ ] `data-testid="product-card"` nos cards de produto (store + admin)
 - [ ] `data-testid="cart-button"` / `cart-item` / `cart-drawer` no carrinho
 - [ ] `data-testid="orders-table"` / `order-row` / `user-menu` no admin
 - [ ] `data-testid="pix-qr-code"` no checkout
 - [ ] `data-testid="favorite-item"` / `order-row` / `order-items` / `order-timeline` na área do cliente
 
-#### Critérios de aceitação
+## Critérios de aceitação
 1. `pnpm test:e2e` passa em todos os 3 suites (purchase-flow, admin-flow, client-account)
 2. Seletores baseados em `data-testid` funcionam sem depender de textos em português
+
+---
+
+# 🔒 FASE 0.4 — E2E Smoke: Auth Flow + Test Data Setup
+**Status: PENDENTE**
+
+## Objetivo
+Completar a infraestrutura para E2E smoke 100% verde: implementar fluxo de autenticação real nos testes, configurar dados de teste persistentes (usuários, produtos, pedidos) e garantir que a API esteja acessível no ambiente de teste Playwright.
+
+## Entregáveis
+- [ ] Fixture de autenticação Playwright (login prévio via API, storage state)
+- [ ] Dados de teste seedados via script dedicado para E2E (usuários, produtos, pedidos com status variados)
+- [ ] API rodando em background durante `pnpm test:e2e` (health check + readiness)
+- [ ] Testes de registration/login/password-reset funcionando com dados reais
+- [ ] Cleanup de dados de teste entre suites (isolamento)
+
+## Critérios de aceitação
+1. `pnpm test:e2e` passa em todos os 3 suites (purchase-flow, admin-flow, client-account) sem timeouts
+2. Testes não dependem de estado compartilhado entre si
+3. Auth flow (login, logout, registro, recuperação senha) validado end-to-end
 
 ---
 
@@ -333,8 +353,8 @@ IA nativa, marketplace de apps, white-label, expansão internacional.
 
 ---
 
-## Governança de fases
-### Transição de fase
+# 📌 Governança de fases
+## Transição de fase
 - Apenas quando **todos** critérios de aceitação da fase atual atendidos
 - Aprovação: Tech Lead + Product Owner
 - Documentação atualizada (`phases.md`, `CHANGELOG.md`)

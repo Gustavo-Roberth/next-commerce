@@ -57,6 +57,42 @@ Alinhamento completo de test data-testids nos componentes para E2E smoke 100% ve
 
 ---
 
+# Notas de Atualização 0.0.13
+
+## Fase 0.3 - Alinhamento de data-testids para E2E Smoke
+### ✅ Concluído nesta fase
+
+**1. Test IDs implementados em todos os componentes necessários**
+- `product-card` — `components/store/ProductCard.tsx`
+- `cart-button` / `user-menu` — `components/store/Header.tsx`
+- `cart-drawer` / `cart-item` — `components/store/CartDrawer.tsx`
+- `orders-table` / `order-row` — `app/admin/pedidos/page.tsx`
+- `pix-qr-code` — `app/(store)/checkout/page.tsx` (QR Code PIX mock com SVG acessível)
+- `favorite-item` — `app/(store)/conta/favoritos/page.tsx` (já existia)
+- `order-row` / `order-items` / `order-timeline` — `app/(store)/conta/pedidos/page.tsx` + `app/(store)/conta/pedidos/[id]/page.tsx` (já existiam)
+
+**2. Correções técnicas associadas**
+- `checkout/page.tsx`: SSR fix (window.location.search → useSearchParams/useRouter) + mock PIX QR Code com SVG acessível (aria-label, title)
+- `Header.tsx`: Botão carrinho e menu usuário com test-ids
+- `CartDrawer.tsx`: Container e itens do carrinho com test-ids
+- `admin/pedidos/page.tsx`: Tabela e linhas com test-ids
+
+**3. Quality Gates — todos verdes**
+- Lint: 0 erros (apenas 22 warnings `noExplicitAny` pré-existentes na API)
+- Typecheck: ✓ (web + api + shared)
+- Build: ✓ (Next.js 16.3.3 + API)
+- Testes unitários: 69 passam (web 2 + api 56 + shared 11)
+
+### 🔧 Ajustes técnicos importantes
+- SVG do QR Code PIX inclui `aria-label`, `role="img"` e `<title>` para acessibilidade
+- Seletores E2E agora usam exclusivamente `data-testid` (não dependem de textos em português)
+- Infraestrutura E2E completa: Playwright config com API (3001) + Web (3000), usuário E2E no seed, DB conectado
+
+### ⏳ Pendente
+E2E smoke 100% verde requer ambiente com API ativa + DB populado + auth flow implementado (fora do escopo de test-ids)
+
+---
+
 # Notas de Atualização 0.0.11
 
 ## Fase 0 — Correção e Atualização de Dependências
