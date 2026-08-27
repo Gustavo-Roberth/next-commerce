@@ -24,34 +24,34 @@ export function Footer() {
               Plataforma completa de e-commerce para pequenos lojistas. Venda online com facilidade.
             </p>
             <div className="flex gap-4">
-              <a
-                href="#"
+              <button
+                type="button"
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
+              </button>
+              <button
+                type="button"
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
+              </button>
+              <button
+                type="button"
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label="Twitter"
               >
                 <Twitter className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
+              </button>
+              <button
+                type="button"
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label="YouTube"
               >
                 <Youtube className="h-5 w-5" />
-              </a>
+              </button>
             </div>
           </div>
 

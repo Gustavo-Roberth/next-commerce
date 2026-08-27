@@ -84,15 +84,15 @@ export default function AdminNovoProdutoPage() {
     }
   };
 
-  const handleChange = (field: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleChange = (field: string, value: unknown) => {
+    setFormData((prev) => ({ ...prev, [field]: value }) as typeof formData);
   };
 
   const generateSlug = (nome: string) => {
     return nome
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\p{Diacritic}/gu, '')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
   };
@@ -107,8 +107,8 @@ export default function AdminNovoProdutoPage() {
       await adminApi.produtos.create({ ...formData, loja_id } as CreateProdutoInput);
       router.push('/admin/produtos');
       router.refresh();
-    } catch (err: any) {
-      setError(err.data?.error || 'Erro ao criar produto');
+    } catch (err) {
+      setError((err as { data?: { error?: string } })?.data?.error ?? 'Erro ao criar produto');
     } finally {
       setSubmitting(false);
     }

@@ -119,6 +119,7 @@ export function Header() {
           </div>
 
           <button
+            type="button"
             className="md:hidden p-2"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Menu"

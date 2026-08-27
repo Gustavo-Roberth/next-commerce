@@ -97,13 +97,13 @@ export function ImageUpload({
         clearInterval(progressInterval);
         setUploadProgress(100);
 
-        const data = await response.json();
+        const data = (await response.json()) as { images: UploadedImage[]; error?: string };
 
         if (!response.ok) {
           throw new Error(data.error || 'Erro no upload');
         }
 
-        const newImages: UploadedImage[] = data.images.map((img: any, index: number) => ({
+        const newImages: UploadedImage[] = data.images.map((img, index: number) => ({
           url: img.url,
           path: img.path,
           fullPath: img.fullPath,
@@ -236,7 +236,7 @@ export function ImageUpload({
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {images.map((image, index) => (
                 <div
-                  key={index}
+                  key={image.path}
                   className="relative group aspect-square rounded-lg overflow-hidden border bg-gray-50"
                 >
                   <div className="relative aspect-square overflow-hidden">

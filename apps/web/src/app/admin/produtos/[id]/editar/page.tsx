@@ -38,7 +38,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface ProdutoFormData extends Partial<CreateProdutoInput> {
   nome: string;
@@ -111,26 +111,16 @@ export default function AdminProdutoEditarPage() {
   });
   const [variacaoFormError, setVariacaoFormError] = useState('');
 
-  useEffect(() => {
-    fetchCategorias();
-  }, []);
-
-  useEffect(() => {
-    if (isEditing) {
-      fetchProduto();
-    }
-  }, [isEditing, produtoId]);
-
-  const fetchCategorias = async () => {
+  const fetchCategorias = useCallback(async () => {
     try {
       const data = await api.get<{ data: Categoria[] }>('/categorias?ativa=true&limit=100');
       setCategorias(data.data);
     } catch (error) {
       console.error('Erro ao buscar categorias:', error);
     }
-  };
+  }, []);
 
-  const fetchProduto = async () => {
+  const fetchProduto = useCallback(async () => {
     setLoading(true);
     try {
       const data = await adminApi.produtos.getById(produtoId);
@@ -139,7 +129,7 @@ export default function AdminProdutoEditarPage() {
         slug: data.slug,
         sku: data.sku,
         categoria_id: data.categoria_id,
-        descricao_curta: data.descricao_curta || '',
+        descricao_curta: data.descricao_completa || '',
         descricao_completa: data.descricao_completa || '',
         codigo_barras: data.codigo_barras || '',
         ncm: data.ncm || '',
@@ -169,8 +159,8 @@ export default function AdminProdutoEditarPage() {
                 valores: [a.valor],
               });
             } else {
-              const existing = attrMap.get(a.atributo_id)!;
-              if (!existing.valores.includes(a.valor)) {
+              const existing = attrMap.get(a.atributo_id);
+              if (existing && !existing.valores.includes(a.valor)) {
                 existing.valores.push(a.valor);
               }
             }
@@ -184,7 +174,17 @@ export default function AdminProdutoEditarPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [produtoId]);
+
+  useEffect(() => {
+    fetchCategorias();
+  }, [fetchCategorias]);
+
+  useEffect(() => {
+    if (isEditing) {
+      fetchProduto();
+    }
+  }, [isEditing, fetchProduto]);
 
   // Variation management functions
   const openVariacaoForm = (variacao?: ProdutoVariacao) => {
@@ -245,8 +245,10 @@ export default function AdminProdutoEditarPage() {
       if (data.variacoes) {
         setVariacoes(data.variacoes);
       }
-    } catch (err: any) {
-      setVariacaoFormError(err.data?.error || 'Erro ao salvar variação');
+    } catch (err) {
+      setVariacaoFormError(
+        (err as { data?: { error?: string } })?.data?.error ?? 'Erro ao salvar variação'
+      );
     }
   };
 
@@ -261,15 +263,15 @@ export default function AdminProdutoEditarPage() {
     }
   };
 
-  const handleChange = (field: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleChange = (field: string, value: unknown) => {
+    setFormData((prev) => ({ ...prev, [field]: value }) as typeof formData);
   };
 
   const generateSlug = (nome: string) => {
     return nome
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\p{Diacritic}/gu, '')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
   };
@@ -285,8 +287,8 @@ export default function AdminProdutoEditarPage() {
       }
       router.push('/admin/produtos');
       router.refresh();
-    } catch (err: any) {
-      setError(err.data?.error || 'Erro ao salvar produto');
+    } catch (err) {
+      setError((err as { data?: { error?: string } })?.data?.error ?? 'Erro ao salvar produto');
     } finally {
       setSubmitting(false);
     }

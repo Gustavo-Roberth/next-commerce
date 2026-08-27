@@ -165,8 +165,10 @@ function ProductDescription({ product }: { product: Produto }) {
   return (
     <div className="prose prose-muted max-w-none">
       {product.descricao_completa ? (
-        {/* biome-ignore lint/security/noDangerouslySetInnerHTML: conteúdo HTML confiável (rich text do admin) */}
-        <div dangerouslySetInnerHTML={{ __html: product.descricao_completa }} />
+        <div
+          /* biome-ignore lint/security/noDangerouslySetInnerHtml: conteúdo HTML confiável (rich text do admin) */
+          dangerouslySetInnerHTML={{ __html: product.descricao_completa }}
+        />
       ) : (
         <p className="text-muted-foreground">Descrição completa não disponível.</p>
       )}
@@ -202,7 +204,7 @@ export default async function ProdutoDetalhePage({ params }: Props) {
     notFound();
   }
 
-  const product = data!;
+  const product = data;
 
   return (
     <div className="container mx-auto px-4 py-8">

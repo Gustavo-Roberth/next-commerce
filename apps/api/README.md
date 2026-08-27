@@ -7,7 +7,7 @@ Backend Fastify da plataforma NextCommerce: API REST para todo o domínio de e-c
 - **Arquitetura**: Modular (routes → controllers → services → repositories)
 - **Validação**: Zod (schemas de `@nextcommerce/shared`)
 - **Auth**: Supabase Auth (JWT verification via JWKS)
-- **ORM**: Prisma 6 (PostgreSQL)
+- **ORM**: Prisma 7 (PostgreSQL) + `@prisma/adapter-pg`
 - **Banco**: Supabase (PostgreSQL 16, Auth, Storage, Realtime)
 - **Cache/Queue**: Redis (Upstash) — sessions, rate limit, cache
 - **Jobs**: node-cron (conciliação, alertas, relatórios)
@@ -212,8 +212,8 @@ STRIPE_SECRET_KEY="..."
 - `/docs/behavior.md` — Comportamento funcional
 - `/docs/entities.md` — Modelo de domínio
 - `/docs/tech.md` — Arquitetura técnica (seção Backend)
-- `/docs/phases.md` — Roadmap (Fase 1 ativa)
+- `/docs/phases.md` — Roadmap (Fase 0.1 ativa)
 
 ## Contraparte
-**Frontend**: `apps/web` (Next.js 15 + TanStack Query)
+**Frontend**: `apps/web` (Next.js 16 + TanStack Query)
 Contratos compartilhados: `@nextcommerce/shared` (tipos, schemas Zod)

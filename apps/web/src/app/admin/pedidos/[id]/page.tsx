@@ -34,7 +34,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const statusLabels: Record<string, string> = {
   CRIADO: 'Criado',
@@ -99,11 +99,7 @@ export default function AdminPedidoDetalhePage() {
   const [observacoes, setObservacoes] = useState('');
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchPedido();
-  }, [pedidoId]);
-
-  const fetchPedido = async () => {
+  const fetchPedido = useCallback(async () => {
     setLoading(true);
     try {
       const data = await api.get<Pedido>(`/admin/pedidos/${pedidoId}`);
@@ -115,7 +111,11 @@ export default function AdminPedidoDetalhePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pedidoId]);
+
+  useEffect(() => {
+    fetchPedido();
+  }, [fetchPedido]);
 
   const handleStatusChange = async () => {
     if (!newStatus || newStatus === pedido?.status) return;
@@ -128,8 +128,8 @@ export default function AdminPedidoDetalhePage() {
         observacoes_internas: observacoes,
       });
       router.refresh();
-    } catch (err: any) {
-      setError(err.data?.error || 'Erro ao atualizar status');
+    } catch (err) {
+      setError((err as { data?: { error?: string } })?.data?.error ?? 'Erro ao atualizar status');
     } finally {
       setUpdating(false);
     }

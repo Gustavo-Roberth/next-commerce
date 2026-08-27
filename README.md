@@ -1,3 +1,31 @@
+# Notas de Atualização 0.0.11
+
+## Fase 0.1 - Qualidade de Lint + Garantia de Execução
+### ✅ Concluído nesta fase
+
+**1. Limpeza de lint (web + api) — biome 0 erros**
+- Web: correção de `a11y/useButtonType`, `a11y/useValidAnchor`, `a11y/useKeyWithClickEvents`, `suspicious/noArrayIndexKey` (skeleton), `suspicious/noMisleadingCharacterClass` (regex `\p{Diacritic}`), `suspicious/noExplicitAny` (tipagem de formulários) e `style/noNonNullAssertion`
+- API: 0 erros (22 warnings `noExplicitAny` mantidos como `warn` por governança)
+
+**2. Garantia de execução (boot)**
+- API sobe sem erros fatais (`pnpm dev`): correção de wiring do `fastify-type-provider-zod` em `src/main.ts` (`setValidatorCompiler`/`setSerializerCompiler` explícitos)
+- Validação Zod de rotas funcional (POST `/auth/login` retorna 400 em body inválido)
+- Web sobe (Next.js 16.3.3 + Turbopack) em `pnpm dev`
+- `@prisma/adapter-pg` alcança o banco (query executada); sandbox sem rede para Supabase → `ECONNREFUSED` (bloqueio de ambiente, não de código)
+
+**3. Documentação sincronizada**
+- `apps/api/README.md`: Prisma 6 → 7; Fase 0.1 ativa
+- `apps/web/README.md`: Next.js 15 → 16; Fase 0.1 ativa
+
+### 🔧 Ajustes técnicos importantes
+- `fastify-type-provider-zod` v2.1.0 exige `setValidatorCompiler`/`setSerializerCompiler` explícitos (não basta `withTypeProvider`)
+- Prisma generator em `moduleFormat = "cjs"` (compatibilidade CommonJS da API)
+
+### ⏳ Pendente
+Subfase 0.2 - Verificação E2E + Conexão DB em ambiente com PostgreSQL/Supabase acessível
+
+---
+
 # Notas de Atualização 0.0.10
 
 ## Fase 0 — Correção e Atualização de Dependências

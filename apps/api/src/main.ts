@@ -7,6 +7,11 @@ import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import { config } from 'dotenv';
 import Fastify from 'fastify';
+import {
+  type ZodTypeProvider,
+  serializerCompiler,
+  validatorCompiler,
+} from 'fastify-type-provider-zod';
 import { adminRoutes } from './admin/routes.js';
 import { registerAuthMiddleware } from './auth/middleware.js';
 import { authRoutes } from './auth/routes.js';
@@ -27,6 +32,10 @@ config();
 const app = Fastify({
   logger: true,
 });
+
+app.setValidatorCompiler(validatorCompiler);
+app.setSerializerCompiler(serializerCompiler);
+app.withTypeProvider<ZodTypeProvider>();
 
 async function initialize() {
   await app.register(cors, {

@@ -86,14 +86,19 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col">
-      <div className="fixed inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
+      <button
+        type="button"
+        aria-label="Fechar carrinho"
+        className="fixed inset-0 bg-black/50"
+        onClick={onClose}
+      />
       <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-background shadow-xl flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between border-b p-4">
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-primary" />
             <CardTitle className="text-lg">Carrinho</CardTitle>
           </div>
-          <button onClick={onClose} className="p-1 hover:bg-muted rounded-md">
+          <button type="button" onClick={onClose} className="p-1 hover:bg-muted rounded-md">
             <X className="h-5 w-5" />
           </button>
         </CardHeader>
@@ -134,6 +139,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                     </p>
                     <div className="flex items-center gap-2 mt-2">
                       <button
+                        type="button"
                         onClick={() => updateQuantity(item.id, item.quantidade - 1)}
                         disabled={item.quantidade <= 1}
                         className="p-1 rounded border hover:bg-muted disabled:opacity-50"
@@ -142,12 +148,14 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                       </button>
                       <span className="w-8 text-center">{item.quantidade}</span>
                       <button
+                        type="button"
                         onClick={() => updateQuantity(item.id, item.quantidade + 1)}
                         className="p-1 rounded border hover:bg-muted"
                       >
                         <Plus className="h-4 w-4" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => removeItem(item.id)}
                         className="ml-auto p-1 text-muted-foreground hover:text-destructive"
                       >

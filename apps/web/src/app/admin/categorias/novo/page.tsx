@@ -62,8 +62,8 @@ export default function AdminNovaCategoriaPage() {
     }
   };
 
-  const handleChange = (field: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleChange = (field: string, value: unknown) => {
+    setFormData((prev) => ({ ...prev, [field]: value }) as CategoriaFormData);
   };
 
   const generateSlug = (nome: string) => {
@@ -85,8 +85,8 @@ export default function AdminNovaCategoriaPage() {
       await adminApi.categorias.create({ ...formData, loja_id } as CreateCategoriaInput);
       router.push('/admin/categorias');
       router.refresh();
-    } catch (err: any) {
-      setError(err.data?.error || 'Erro ao criar categoria');
+    } catch (err) {
+      setError((err as { data?: { error?: string } })?.data?.error ?? 'Erro ao criar categoria');
     } finally {
       setSubmitting(false);
     }

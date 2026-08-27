@@ -1,5 +1,5 @@
 # Phases - NextCommerce
-## Fase ativa: FASE 0 — Correção e Atualização de Versões de Dependências
+## Fase ativa: FASE 0.1 — Qualidade de Lint + Garantia de Execução
 **Início:** 2026-08-22 | **Fim estimado:** 2026-08-29 | **Status:** EM DESENVOLVIMENTO
 
 ---
@@ -19,10 +19,9 @@
 
 ---
 
-# 🟢 FASE 0 — Correção e Atualização de Versões de Dependências
-**Status: EM DESENVOLVIMENTO**
-
-**Início:** 2026-08-22 | **Fim estimado:** 2026-08-29
+# ⚪ FASE 0 — Correção e Atualização de Versões de Dependências
+**Status: CONCLUÍDA**
+**Início:** 2026-08-26 | **Fim estimado:** 2026-08-29 | **Concluído:** 2026-08-26
 
 ## Objetivo
 Auditar todas as dependências já instaladas no monorepo e atualizá-las para a maior versão estável disponível (`latest`), corrigindo inconsistências de versionamento introduzidas na geração inicial do projeto, antes de iniciar a implementação de funcionalidades (Fase 1). Nenhuma funcionalidade de produto é implementada nesta fase.
@@ -56,15 +55,60 @@ Auditar todas as dependências já instaladas no monorepo e atualizá-las para a
 3. Nenhuma dependência exclusiva de UI permanece na raiz do monorepo
 4. `/docs/tech.md` reflete exatamente as versões finais instaladas, todas `latest` estáveis (nenhuma `alpha`/`beta`/`rc`/`canary`)
 
-### Subfases percebidas durante a execução
-#### 🟡 Subfase 0.1 — Qualidade de Lint + Garantia de Execução
+---
+
+# 🟢 FASE 0.1 — Qualidade de Lint + Garantia de Execução
+**Status: EM DESENVOLVIMENTO**
+**Início:** 2026-08-26 | **Fim estimado:** 2026-08-29
+
+## Origem
+A Fase 0 atualizou as dependências do monorepo (Prisma 5→7, Next 15→16, React 19.2, Radix/Fastify `latest`). Essa atualização introduziu erros de lint na API e expôs erros/warnings pré-existentes no web que bloqueiam o CI. Além disso, o boot de `pnpm dev` e o fluxo E2E ainda não foram verificados após as mudanças da Fase 0.
+
+## Objetivo
+Zerar os erros de lint em todo o monorepo (web, api, shared), confirmar que a aplicação sobe corretamente em ambiente de desenvolvimento (`pnpm dev`) com a API conectando via `adapter-pg`, validar o fluxo E2E smoke, e atualizar toda a documentação (READMEs e docs técnicos) para refletir as versões finais instaladas na Fase 0. Nenhuma funcionalidade de produto é implementada nesta fase.
+
+## Entregáveis (Definition of Done)
+
+### Backend (API)
+- [ ] 12 erros de lint corrigidos (FIXABLE) — troca de import `@prisma/client` → `@/generated/prisma/client`
+- [ ] `pnpm lint` em `apps/api` = 0 erros
+
+### Frontend (Web)
+- [ ] 63 erros de lint pré-existentes corrigidos em `apps/web`
+- [ ] 19 warnings pré-existentes corrigidos ou triados em `apps/web`
+- [ ] `pnpm lint` em `apps/web` = 0 erros
+
+### Execução & Integração
+- [ ] `pnpm dev` verificado: web e api sobem simultaneamente sem erros fatais
+- [ ] API confirma conexão ao banco via `@prisma/adapter-pg`
+- [ ] Fluxo E2E smoke executado com sucesso
+
+### Deploy & Ops
+- [ ] Todos os `README.md` do monorepo atualizados para as versões finais dos respectivos `package.json`
+- [ ] Documentações técnicas adicionais (além de `/docs/tech.md`, já coberto na Fase 0) revisadas e sincronizadas com as versões atuais
+
+## Critérios de aceitação
+1. Desenvolvedor consegue: rodar `pnpm lint` na raiz → 0 erros em `web`, `api` e `shared`
+2. Desenvolvedor consegue: rodar `pnpm build` e `pnpm test` (typecheck/build/unit) → sucesso sem regressões
+3. Desenvolvedor consegue: rodar `pnpm dev` → web e api sobem corretamente, API conectada ao banco via `adapter-pg`
+4. Fluxo E2E smoke confirma que a aplicação está funcional de ponta a ponta
+5. Todos os `README.md` e documentações refletem exatamente as versões instaladas na Fase 0
+
+---
+
+# 🔒 FASE 0.2 — Verificação E2E + Conexão DB
 **Status: PENDENTE**
-**Origem:** Fase 0 atualizou dependências (Prisma 5→7, Next 15→16, React 19.2, Radix/Fastify latest).
-Identificado: 12 erros de lint introduzidos na API (FIXABLE, troca `@prisma/client`→`@/generated/prisma/client`);
-63 erros + 19 warnings pré-existentes no web (bloqueiam CI lint); E2E e boot de `pnpm dev` não verificados.
-**DoD:** `pnpm lint` = 0 erros (web/api/shared); `pnpm dev` sobe web+api (API conecta via adapter-pg); E2E smoke ok;
-Atualizar todos os README.md e as documentações para as versões atualizadas em todos os package.json
-**Aceitação:** (1) lint 0 erros (2) typecheck/build verde (3) test unit verde (4) boot ou E2E confirma execução.
+
+## Objetivo
+Executar o fluxo E2E smoke (`pnpm test:e2e`) e confirmar a conexão da API ao banco via `@prisma/adapter-pg` em um ambiente com PostgreSQL/Supabase acessível.
+
+## Entregáveis
+- [ ] `pnpm dev` com API conectada ao banco (query real sem `ECONNREFUSED`)
+- [ ] Fluxo E2E smoke (`pnpm test:e2e`) passando ponta a ponta
+
+## Critérios de aceitação
+1. Desenvolvedor consegue: rodar `pnpm dev` → API conecta ao banco e serve dados reais
+2. Fluxo E2E smoke confirma a aplicação funcional de ponta a ponta
 
 ---
 
@@ -131,7 +175,6 @@ Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedi
 
 # 🔒 FASE 2 — Design e Polimento Visual
 **Status: BLOQUEADA**
-
 **Início:** 2026-11-07 | **Fim estimado:** 2026-11-28
 
 ## Objetivo
@@ -164,7 +207,6 @@ Aplicar uma camada de polimento visual, motion e microinterações sobre o MVP d
 
 # 🔒 FASE 3 — Gestão Completa + Admin
 **Status: BLOQUEADA**
-
 **Início:** 2026-11-28 | **Fim estimado:** 2027-02-06
 
 ## Objetivo
@@ -200,7 +242,6 @@ Operação completa: estoque real, relatórios, NF-e, configurações ricas, mul
 
 # 🔒 FASE 4 — Escala e Multi-loja
 **Status: BLOQUEADA**
-
 **Início:** 2027-02-06 | **Fim estimado:** 2027-04-17
 
 ## Objetivo
@@ -238,7 +279,6 @@ Multi-tenant real, sincronização marketplaces, API pública para parceiros.
 
 # 🔒 FASE 5 — Inteligência e Ecossistema
 **Status: BLOQUEADA**
-
 **Início:** 2027-04-17 | **Fim estimado:** 2027-06-26
 
 ## Objetivo

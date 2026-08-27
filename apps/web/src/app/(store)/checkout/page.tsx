@@ -319,13 +319,13 @@ export default function CheckoutPage() {
           </Button>
           <p className="text-center text-xs text-muted-foreground">
             Ao confirmar, você concorda com nossos{' '}
-            <a href="#" className="underline">
+            <button type="button" className="underline">
               Termos de Uso
-            </a>{' '}
+            </button>{' '}
             e{' '}
-            <a href="#" className="underline">
+            <button type="button" className="underline">
               Política de Privacidade
-            </a>
+            </button>
             .
           </p>
         </CardContent>

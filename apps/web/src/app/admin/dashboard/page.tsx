@@ -105,15 +105,18 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="h-64 flex items-end justify-around gap-2">
-              {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day, _index) => (
-                <div key={day} className="flex flex-col items-center flex-1">
-                  <div
-                    className="w-full bg-primary rounded-t transition-all hover:bg-primary/80"
-                    style={{ height: `${Math.random() * 100 + 20}%` }}
-                  />
-                  <span className="text-xs text-muted-foreground mt-2">{day}</span>
-                </div>
-              ))}
+              {(() => {
+                const demoHeights = [40, 65, 50, 80, 35, 90, 60];
+                return ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day, index) => (
+                  <div key={day} className="flex flex-col items-center flex-1">
+                    <div
+                      className="w-full bg-primary rounded-t transition-all hover:bg-primary/80"
+                      style={{ height: `${demoHeights[index]}%` }}
+                    />
+                    <span className="text-xs text-muted-foreground mt-2">{day}</span>
+                  </div>
+                ));
+              })()}
             </div>
           </CardContent>
         </Card>

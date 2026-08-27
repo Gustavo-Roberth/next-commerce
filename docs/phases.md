@@ -71,7 +71,7 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 0 — Correção e Atualização de Versões de Dependênciasa**
+🟢 **FASE 0.1 — Qualidade de Lint + Garantia de Execução**
 **Status: EM DESENVOLVIMENTO**
 **Início:** 2026-08-26 | **Fim estimado:** 2026-08-30
 
@@ -226,10 +226,10 @@ Para cada fase, obrigatoriamente:
 
 **Início:** YYYY-MM-DD | **Fim estimado:** YYYY-MM-DD
 
-#### Objetivo
+### Objetivo
 Descrição clara do objetivo da fase.
 
-#### Entregáveis (Definition of Done)
+### Entregáveis (Definition of Done)
 Subdividido por camada (apenas as aplicáveis):
 - `### Infra & Shared`
 - `### Backend`
@@ -248,16 +248,16 @@ Toda fase pode conter, ao final do seu conteúdo, uma seção `## Subfases perce
 Uma subfase segue **exatamente a aparência de uma fase padrão**, em miniatura — sem tag de origem, sem categorização especial:
 
 ```markdown
-### 🔒 Subfase X.Y — Nome da subfase
+# 🔒 FASE X.Y — Nome da subfase
 **Status: PENDENTE**
 
-#### Objetivo
+## Objetivo
 Descrição clara do objetivo da subfase.
 
-#### Entregáveis
+## Entregáveis
 - [ ] Item técnico claro
 
-#### Critérios de aceitação
+## Critérios de aceitação
 1. Papel consegue: ação → resultado observável
 ```
 

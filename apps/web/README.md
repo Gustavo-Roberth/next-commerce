@@ -1,9 +1,9 @@
 # NextCommerce — Frontend (apps/web)
 
-Frontend Next.js 15 da plataforma NextCommerce: loja pública + painel administrativo.
+Frontend Next.js 16 da plataforma NextCommerce: loja pública + painel administrativo.
 
 ## Stack
-- **Framework**: Next.js 15 (App Router, React Server Components)
+- **Framework**: Next.js 16 (App Router, React Server Components)
 - **Linguagem**: TypeScript 5 (strict)
 - **UI**: Tailwind CSS 4 + shadcn/ui (Radix UI) + Lucide React
 - **Estado servidor**: TanStack Query v5
@@ -123,7 +123,7 @@ Feature services consomem `api.ts`:
 - `/docs/behavior.md` — Comportamento funcional
 - `/docs/entities.md` — Modelo de domínio
 - `/docs/tech.md` — Arquitetura técnica (seção Frontend)
-- `/docs/phases.md` — Roadmap (Fase 1 ativa)
+- `/docs/phases.md` — Roadmap (Fase 0.1 ativa)
 
 ## Contraparte
 **Backend/API**: `apps/api` (Fastify + Prisma + Supabase)

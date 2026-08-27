@@ -6,14 +6,16 @@ import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
+const SKELETON_IDS = Array.from({ length: 8 }, (_, i) => `skeleton-${i}`);
+
 function ProductListSkeleton() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {Array.from({ length: 8 }).map((_, i) => (
+      {SKELETON_IDS.map((id) => (
         <ProductCard
-          key={`skeleton-${i}`}
+          key={id}
           product={{
-            id: `skeleton-${i}`,
+            id,
             nome: 'Carregando...',
             slug: 'carregando',
             sku: 'SKU000',
