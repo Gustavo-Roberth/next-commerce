@@ -1,7 +1,11 @@
 import 'dotenv/config';
-import { hash } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import { type Prisma, PrismaClient } from '@/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+
+function hashPassword(password: string): string {
+  return createHash('sha256').update(password).digest('hex');
+}
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
@@ -210,7 +214,7 @@ async function main() {
 
   // 6. Criar Usuário Admin Demo
   console.log('👤 Criando usuário admin demo...');
-  const senhaHash = await hash('Admin@123', 'sha256');
+  const senhaHash = hashPassword('Admin@123');
   const adminUser = await prisma.usuario.upsert({
     where: { email: 'admin@demo.com' },
     update: {},
@@ -247,6 +251,40 @@ async function main() {
     },
   });
   console.log('  ✅ Perfil ADMIN associado à loja demo');
+
+  // 6.2 Criar Usuário Admin para E2E Tests
+  console.log('👤 Criando usuário admin E2E...');
+  const e2eSenhaHash = hashPassword('admin123456');
+  const e2eAdminUser = await prisma.usuario.upsert({
+    where: { email: 'admin@nextcommerce.com' },
+    update: {},
+    create: {
+      email: 'admin@nextcommerce.com',
+      nome_completo: 'Admin E2E',
+      senha_hash: e2eSenhaHash,
+      ativo: true,
+      email_verificado_em: new Date(),
+    },
+  });
+  console.log(`  ✅ Usuário admin E2E criado: ${e2eAdminUser.id}`);
+
+  await prisma.usuarioPerfil.upsert({
+    where: {
+      usuario_id_perfil_id_loja_id: {
+        usuario_id: e2eAdminUser.id,
+        perfil_id: adminPerfil.id,
+        loja_id: lojaDemo.id,
+      },
+    },
+    update: {},
+    create: {
+      usuario_id: e2eAdminUser.id,
+      perfil_id: adminPerfil.id,
+      loja_id: lojaDemo.id,
+      ativo: true,
+    },
+  });
+  console.log('  ✅ Perfil ADMIN associado ao usuário E2E');
 
   // 7. Criar Produtos de Exemplo
   console.log('📦 Criando produtos de exemplo...');

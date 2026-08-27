@@ -3,7 +3,7 @@
 import { ProductCard, ProductGrid } from '@/components/store/ProductCard';
 import { categoriasApi, produtosApi } from '@/lib/api/services';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
 const SKELETON_IDS = Array.from({ length: 8 }, (_, i) => `skeleton-${i}`);
@@ -31,10 +31,21 @@ function ProductListSkeleton() {
 
 function ProdutosContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const search = searchParams.get('search') || '';
   const categoria = searchParams.get('categoria') || '';
   const sort = searchParams.get('sort') || '';
   const cursor = searchParams.get('page') || '';
+
+  const handleSortChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set('sort', value);
+    } else {
+      params.delete('sort');
+    }
+    router.push(`/produtos?${params.toString()}`);
+  };
 
   const { data: produtos, isLoading: produtosLoading } = useQuery({
     queryKey: ['produtos', search, categoria, sort, cursor],
@@ -95,17 +106,9 @@ function ProdutosContent() {
             <div className="border-t pt-6">
               <h3 className="font-semibold mb-3">Ordenar</h3>
               <select
-                defaultValue={new URLSearchParams(window.location.search).get('sort') || ''}
+                value={sort}
+                onChange={(e) => handleSortChange(e.target.value)}
                 className="w-full border rounded-md px-3 py-2 text-sm bg-background"
-                onChange={(e) => {
-                  const params = new URLSearchParams(window.location.search);
-                  if (e.target.value) {
-                    params.set('sort', e.target.value);
-                  } else {
-                    params.delete('sort');
-                  }
-                  window.location.search = params.toString();
-                }}
               >
                 <option value="">Relevância</option>
                 <option value="preco_asc">Menor preço</option>

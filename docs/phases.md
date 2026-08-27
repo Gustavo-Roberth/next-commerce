@@ -71,7 +71,7 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 0.1 — Qualidade de Lint + Garantia de Execução**
+🟢 **FASE 0.2 — Verificação E2E + Conexão DB**
 **Status: EM DESENVOLVIMENTO**
 **Início:** 2026-08-26 | **Fim estimado:** 2026-08-30
 

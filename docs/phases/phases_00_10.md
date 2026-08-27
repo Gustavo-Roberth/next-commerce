@@ -1,5 +1,5 @@
 # Phases - NextCommerce
-## Fase ativa: FASE 0.1 — Qualidade de Lint + Garantia de Execução
+## Fase ativa: FASE 0.2 — Verificação E2E + Conexão DB
 **Início:** 2026-08-22 | **Fim estimado:** 2026-08-29 | **Status:** EM DESENVOLVIMENTO
 
 ---
@@ -57,8 +57,8 @@ Auditar todas as dependências já instaladas no monorepo e atualizá-las para a
 
 ---
 
-# 🟢 FASE 0.1 — Qualidade de Lint + Garantia de Execução
-**Status: EM DESENVOLVIMENTO**
+# ⚪ FASE 0.1 — Qualidade de Lint + Garantia de Execução
+**Status: CONCLUÍDA**
 **Início:** 2026-08-26 | **Fim estimado:** 2026-08-29
 
 ## Origem
@@ -96,8 +96,8 @@ Zerar os erros de lint em todo o monorepo (web, api, shared), confirmar que a ap
 
 ---
 
-# 🔒 FASE 0.2 — Verificação E2E + Conexão DB
-**Status: PENDENTE**
+# 🟢 FASE 0.2 — Verificação E2E + Conexão DB
+**Status: EM DESENVOLVIMENTO**
 
 ## Objetivo
 Executar o fluxo E2E smoke (`pnpm test:e2e`) e confirmar a conexão da API ao banco via `@prisma/adapter-pg` em um ambiente com PostgreSQL/Supabase acessível.
@@ -109,6 +109,25 @@ Executar o fluxo E2E smoke (`pnpm test:e2e`) e confirmar a conexão da API ao ba
 ## Critérios de aceitação
 1. Desenvolvedor consegue: rodar `pnpm dev` → API conecta ao banco e serve dados reais
 2. Fluxo E2E smoke confirma a aplicação funcional de ponta a ponta
+
+## Subfases percebidas durante a execução
+
+### 🔒 Subfase 0.3 — Alinhamento de data-testids para E2E Smoke
+**Status: PENDENTE**
+
+#### Objetivo
+Adicionar atributos `data-testid` nos componentes da UI para que os testes E2E existentes localizem os elementos corretamente (product-card, cart-button, cart-item, orders-table, order-row, user-menu, pix-qr-code, favorite-item, etc.).
+
+#### Entregáveis
+- [ ] `data-testid="product-card"` nos cards de produto (store + admin)
+- [ ] `data-testid="cart-button"` / `cart-item` / `cart-drawer` no carrinho
+- [ ] `data-testid="orders-table"` / `order-row` / `user-menu` no admin
+- [ ] `data-testid="pix-qr-code"` no checkout
+- [ ] `data-testid="favorite-item"` / `order-row` / `order-items` / `order-timeline` na área do cliente
+
+#### Critérios de aceitação
+1. `pnpm test:e2e` passa em todos os 3 suites (purchase-flow, admin-flow, client-account)
+2. Seletores baseados em `data-testid` funcionam sem depender de textos em português
 
 ---
 

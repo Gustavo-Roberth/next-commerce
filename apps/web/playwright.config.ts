@@ -33,10 +33,18 @@ export default defineConfig({
       dependencies: ['setup'],
     },
   ],
-  webServer: {
-    command: 'npx next dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-  },
+  webServer: [
+    {
+      command: 'pnpm --filter @nextcommerce/api dev',
+      url: 'http://localhost:3001/health',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+    },
+    {
+      command: 'pnpm --filter @nextcommerce/web dev',
+      url: 'http://localhost:3000',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+    },
+  ],
 });

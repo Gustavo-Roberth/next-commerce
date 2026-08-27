@@ -7,8 +7,8 @@ test.describe('Admin Flow', () => {
 
   test('admin login and dashboard access', async ({ page }) => {
     // Login as admin
-    await page.fill('input[name="email"]', 'admin@nextcommerce.com');
-    await page.fill('input[name="password"]', 'admin123456');
+    await page.fill('#email', 'admin@nextcommerce.com');
+    await page.fill('#password', 'admin123456');
     await page.click('button:has-text("Entrar")');
 
     // Wait for dashboard
@@ -22,8 +22,8 @@ test.describe('Admin Flow', () => {
 
   test('view orders list and filter', async ({ page }) => {
     await page.goto('/admin/login');
-    await page.fill('input[name="email"]', 'admin@nextcommerce.com');
-    await page.fill('input[name="password"]', 'admin123456');
+    await page.fill('#email', 'admin@nextcommerce.com');
+    await page.fill('#password', 'admin123456');
     await page.click('button:has-text("Entrar")');
 
     await page.goto('/admin/pedidos');
@@ -41,8 +41,8 @@ test.describe('Admin Flow', () => {
 
   test('view order details and change status', async ({ page }) => {
     await page.goto('/admin/login');
-    await page.fill('input[name="email"]', 'admin@nextcommerce.com');
-    await page.fill('input[name="password"]', 'admin123456');
+    await page.fill('#email', 'admin@nextcommerce.com');
+    await page.fill('#password', 'admin123456');
     await page.click('button:has-text("Entrar")');
 
     await page.goto('/admin/pedidos');
@@ -63,8 +63,8 @@ test.describe('Admin Flow', () => {
 
   test('admin logout', async ({ page }) => {
     await page.goto('/admin/login');
-    await page.fill('input[name="email"]', 'admin@nextcommerce.com');
-    await page.fill('input[name="password"]', 'admin123456');
+    await page.fill('#email', 'admin@nextcommerce.com');
+    await page.fill('#password', 'admin123456');
     await page.click('button:has-text("Entrar")');
 
     await page.click('[data-testid="user-menu"]');

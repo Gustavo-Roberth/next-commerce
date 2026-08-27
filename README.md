@@ -26,7 +26,38 @@ Subfase 0.2 - Verificação E2E + Conexão DB em ambiente com PostgreSQL/Supabas
 
 ---
 
-# Notas de Atualização 0.0.10
+# Notas de Atualização 0.0.12
+
+## Fase 0.2 - Verificação E2E + Conexão DB
+### ✅ Concluído nesta fase
+
+**1. Conexão DB verificada via `@prisma/adapter-pg`**
+- `pnpm db:seed` executa com sucesso: 5 perfis, 1 loja demo, 5 categorias, 1 depósito, 1 config frete, 2 usuários admin (demo + E2E), 2 produtos com variações/estoque, 1 cupom
+- Query real executada sem `ECONNREFUSED` (sandbox consegue acessar Supabase via pooler)
+- Seed corrigido: hash de senha usando `createHash('sha256')` (API nativa `node:crypto`)
+
+**2. E2E smoke infraestrutura pronta**
+- Playwright config atualizado para subir API (porta 3001) + Web (porta 3000) simultâneos
+- Usuário E2E `admin@nextcommerce.com` / `admin123456` adicionado ao seed
+- SSR fix em `produtos/page.tsx`: `window.location.search` → `useSearchParams` + `useRouter`
+- Seletores E2E corrigidos: `input[name="email"]` → `#email` / `#password` (admin login)
+- Testes unitários: 69 passam (web 2 + api 56 + shared 11)
+- Quality gates: lint 0 erros, typecheck ✓, build ✓
+
+**3. Correções técnicas**
+- `NEXT_PUBLIC_API_URL` adicionado ao `.env` para cliente web
+- Admin login page usa `id` attributes; testes ajustados para `#email` / `#password`
+
+### 🔧 Ajustes técnicos importantes
+- Sandbox consegue acessar Supabase via pooler (porta 6543) — seed confirma conectividade real
+- E2E tests têm mismatches de UI (test data-testids ausentes em componentes), mas infraestrutura API+DB+Playwright operacional
+
+### ⏳ Pendente
+Alinhamento completo de test data-testids nos componentes para E2E smoke 100% verde
+
+---
+
+# Notas de Atualização 0.0.11
 
 ## Fase 0 — Correção e Atualização de Dependências
 ### ✅ Concluído nesta fase

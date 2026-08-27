@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('Purchase Flow', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/produtos');
   });
 
   test('complete purchase flow - anonymous user', async ({ page }) => {
