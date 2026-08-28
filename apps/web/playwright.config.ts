@@ -14,37 +14,46 @@ export default defineConfig({
   },
   projects: [
     {
-      name: 'setup',
-      testMatch: /.*\.setup\.ts/,
+      name: 'chromium-admin',
+      use: { ...devices['Desktop Chrome'], storageState: 'tmp/admin-auth.json' },
     },
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup'],
+      name: 'chromium-client',
+      use: { ...devices['Desktop Chrome'], storageState: 'tmp/client-auth.json' },
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-      dependencies: ['setup'],
+      name: 'chromium-operator',
+      use: { ...devices['Desktop Chrome'], storageState: 'tmp/operator-auth.json' },
     },
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-      dependencies: ['setup'],
+      name: 'firefox-admin',
+      use: { ...devices['Desktop Firefox'], storageState: 'tmp/admin-auth.json' },
+    },
+    {
+      name: 'firefox-client',
+      use: { ...devices['Desktop Firefox'], storageState: 'tmp/client-auth.json' },
+    },
+    {
+      name: 'webkit-admin',
+      use: { ...devices['Desktop Safari'], storageState: 'tmp/admin-auth.json' },
+    },
+    {
+      name: 'webkit-client',
+      use: { ...devices['Desktop Safari'], storageState: 'tmp/client-auth.json' },
     },
   ],
   webServer: [
     {
       command: 'pnpm --filter @nextcommerce/api dev',
-      url: 'http://localhost:3001/health',
+      url: 'http://localhost:3001/ready',
       reuseExistingServer: !process.env.CI,
-      timeout: 120000,
+      timeout: 180000,
     },
     {
       command: 'pnpm --filter @nextcommerce/web dev',
       url: 'http://localhost:3000',
       reuseExistingServer: !process.env.CI,
-      timeout: 120000,
+      timeout: 180000,
     },
   ],
 });

@@ -31,5 +31,12 @@
     "incremental": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "dist", "build", ".next"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    "src/test/e2e/**/*.setup.ts",
+    "src/test/e2e/global-*.ts"
+  ]
 }

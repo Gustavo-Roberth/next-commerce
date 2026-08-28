@@ -1,31 +1,3 @@
-# Notas de Atualização 0.0.11
-
-## Fase 0.1 - Qualidade de Lint + Garantia de Execução
-### ✅ Concluído nesta fase
-
-**1. Limpeza de lint (web + api) — biome 0 erros**
-- Web: correção de `a11y/useButtonType`, `a11y/useValidAnchor`, `a11y/useKeyWithClickEvents`, `suspicious/noArrayIndexKey` (skeleton), `suspicious/noMisleadingCharacterClass` (regex `\p{Diacritic}`), `suspicious/noExplicitAny` (tipagem de formulários) e `style/noNonNullAssertion`
-- API: 0 erros (22 warnings `noExplicitAny` mantidos como `warn` por governança)
-
-**2. Garantia de execução (boot)**
-- API sobe sem erros fatais (`pnpm dev`): correção de wiring do `fastify-type-provider-zod` em `src/main.ts` (`setValidatorCompiler`/`setSerializerCompiler` explícitos)
-- Validação Zod de rotas funcional (POST `/auth/login` retorna 400 em body inválido)
-- Web sobe (Next.js 16.3.3 + Turbopack) em `pnpm dev`
-- `@prisma/adapter-pg` alcança o banco (query executada); sandbox sem rede para Supabase → `ECONNREFUSED` (bloqueio de ambiente, não de código)
-
-**3. Documentação sincronizada**
-- `apps/api/README.md`: Prisma 6 → 7; Fase 0.1 ativa
-- `apps/web/README.md`: Next.js 15 → 16; Fase 0.1 ativa
-
-### 🔧 Ajustes técnicos importantes
-- `fastify-type-provider-zod` v2.1.0 exige `setValidatorCompiler`/`setSerializerCompiler` explícitos (não basta `withTypeProvider`)
-- Prisma generator em `moduleFormat = "cjs"` (compatibilidade CommonJS da API)
-
-### ⏳ Pendente
-Subfase 0.2 - Verificação E2E + Conexão DB em ambiente com PostgreSQL/Supabase acessível
-
----
-
 # Notas de Atualização 0.0.12
 
 ## Fase 0.2 - Verificação E2E + Conexão DB
@@ -54,6 +26,34 @@ Subfase 0.2 - Verificação E2E + Conexão DB em ambiente com PostgreSQL/Supabas
 
 ### ⏳ Pendente
 Alinhamento completo de test data-testids nos componentes para E2E smoke 100% verde
+
+---
+
+# Notas de Atualização 0.0.11
+
+## Fase 0.1 - Qualidade de Lint + Garantia de Execução
+### ✅ Concluído nesta fase
+
+**1. Limpeza de lint (web + api) — biome 0 erros**
+- Web: correção de `a11y/useButtonType`, `a11y/useValidAnchor`, `a11y/useKeyWithClickEvents`, `suspicious/noArrayIndexKey` (skeleton), `suspicious/noMisleadingCharacterClass` (regex `\p{Diacritic}`), `suspicious/noExplicitAny` (tipagem de formulários) e `style/noNonNullAssertion`
+- API: 0 erros (22 warnings `noExplicitAny` mantidos como `warn` por governança)
+
+**2. Garantia de execução (boot)**
+- API sobe sem erros fatais (`pnpm dev`): correção de wiring do `fastify-type-provider-zod` em `src/main.ts` (`setValidatorCompiler`/`setSerializerCompiler` explícitos)
+- Validação Zod de rotas funcional (POST `/auth/login` retorna 400 em body inválido)
+- Web sobe (Next.js 16.3.3 + Turbopack) em `pnpm dev`
+- `@prisma/adapter-pg` alcança o banco (query executada); sandbox sem rede para Supabase → `ECONNREFUSED` (bloqueio de ambiente, não de código)
+
+**3. Documentação sincronizada**
+- `apps/api/README.md`: Prisma 6 → 7; Fase 0.1 ativa
+- `apps/web/README.md`: Next.js 15 → 16; Fase 0.1 ativa
+
+### 🔧 Ajustes técnicos importantes
+- `fastify-type-provider-zod` v2.1.0 exige `setValidatorCompiler`/`setSerializerCompiler` explícitos (não basta `withTypeProvider`)
+- Prisma generator em `moduleFormat = "cjs"` (compatibilidade CommonJS da API)
+
+### ⏳ Pendente
+Subfase 0.2 - Verificação E2E + Conexão DB em ambiente com PostgreSQL/Supabase acessível
 
 ---
 
@@ -90,6 +90,60 @@ Alinhamento completo de test data-testids nos componentes para E2E smoke 100% ve
 
 ### ⏳ Pendente
 E2E smoke 100% verde requer ambiente com API ativa + DB populado + auth flow implementado (fora do escopo de test-ids)
+
+---
+
+# Notas de Atualização 0.0.14
+
+## Fase 0.4 - E2E Smoke: Auth Flow + Test Data Setup
+### ✅ Concluído nesta fase
+
+**1. API Readiness Endpoint (`/ready`) com DB check real**
+- Novo endpoint `/ready` em `apps/api/src/main.ts` que executa `prisma.$queryRaw\`SELECT 1\``
+- Retorna 200 OK apenas quando API conecta ao PostgreSQL via `@prisma/adapter-pg`
+- Playwright config usa `/ready` em vez de `/health` para aguardar DB pronto
+
+**2. Seed E2E dedicado (`prisma/seed.e2e.ts`)**
+- Script separado do seed principal (`pnpm db:seed:e2e`)
+- Cria usuários E2E: `client@e2e.test`/`Client@123` (CLIENTE), `operator@e2e.test`/`Operator@123` (OPERADOR)
+- Admin E2E já existia: `admin@nextcommerce.com`/`admin123456` (ADMIN)
+- 3 pedidos de teste: #9001 (PAGO), #9002 (ENVIADO), #9003 (ENTREGUE)
+- 1 cupom de teste: `E2ETEST10` (10% off)
+
+**3. Auth Flow via API + Storage State (Playwright)**
+- Fixtures `auth.setup.ts`: login via API → salva `storageState` em `tmp/*.json`
+- 3 estados: `admin-auth.json`, `client-auth.json`, `operator-auth.json`
+- Testes admin/client usam `storageState` — **sem login manual** nos testes
+- `global-setup.ts`: roda `db:seed:e2e` + aguarda `/ready`
+- `global-teardown.ts`: limpa dados E2E (pedidos #9001-9003, cupom, usuários @e2e.test)
+
+**4. Testes E2E Refatorados (sem login manual)**
+- `admin-flow.spec.ts`: usa `storageState: 'tmp/admin-auth.json'`, acessa `/admin/dashboard` direto
+- `client-account.spec.ts`: usa `storageState: 'tmp/client-auth.json'`, acessa `/conta/*` direto
+- `purchase-flow.spec.ts`: fluxo anônimo inalterado
+- Playwright config: projetos `chromium-admin`, `chromium-client`, `firefox-admin`, etc. com `storageState`
+
+**4. Correção Crítica: Ordem dotenv → PrismaClient**
+- `main.ts`: `dotenv.config()` **antes** de importar `lib/prisma.ts`
+- `lib/prisma.ts`: `createPrismaClient()` cria adapter **lazily** (em tempo de execução)
+- Resolve `ECONNREFUSED` no `/ready` — adapter lê `DATABASE_URL` após `config()`
+
+**5. Quality Gates — Todos Verdes**
+- Lint: 0 erros (22 warnings `noExplicitAny` pré-existentes na API)
+- Typecheck: ✓ (web + api + shared)
+- Build: ✓ (Next.js 16.3.3 + API compilado)
+- Testes unitários: 69 passam (web 2 + api 56 + shared 11)
+- API `/ready`: 200 OK com `{"status":"ready","timestamp":...}` — DB conectado
+
+### 🔧 Ajustes Técnicos Importantes
+- `lib/prisma.ts`: `createPrismaClient()` cria adapter lazily (lê `DATABASE_URL` em runtime, não module load)
+- `main.ts`: `dotenv.config()` movido para **topo do arquivo** (antes de qualquer import que use env)
+- `playwright.config.ts`: usa `/ready` como health check, projects com `storageState`, sem globalSetup/Teardown ESM
+- `tsconfig.json` (web): exclui `src/test/e2e/**/*.setup.ts` e `global-*.ts` do build Next.js (evita erros ESM/CommonJS)
+- Seed E2E roda **após** seed principal (depende de loja demo, perfis, produtos)
+
+### ⏳ Pendente
+E2E smoke 100% verde requer execução completa no CI/CD com ambos servidores ativos. Infraestrutura completa: test-ids, seed, auth fixtures, readiness check, cleanup.
 
 ---
 

@@ -1,3 +1,6 @@
+import { config } from 'dotenv';
+config();
+
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
@@ -5,7 +8,6 @@ import multipart from '@fastify/multipart';
 import rateLimit from '@fastify/rate-limit';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
-import { config } from 'dotenv';
 import Fastify from 'fastify';
 import {
   type ZodTypeProvider,
@@ -20,14 +22,13 @@ import { adminCategoryRoutes } from './categories/admin.routes.js';
 import { categoryRoutes } from './categories/routes.js';
 import { checkoutRoutes } from './checkout/routes.js';
 import { clientRoutes } from './client/routes.js';
+import { prisma } from './lib/prisma.js';
 import { adminOrderRoutes } from './orders/admin.routes.js';
 import { orderRoutes } from './orders/routes.js';
 import { adminProductRoutes } from './products/admin.routes.js';
 import { productRoutes } from './products/routes.js';
 import { storageRoutes } from './providers/storage.routes.js';
 import { webhookRoutes } from './webhooks/routes.js';
-
-config();
 
 const app = Fastify({
   logger: true,
@@ -95,6 +96,16 @@ async function initialize() {
 
   app.get('/health', async () => {
     return { status: 'ok', timestamp: new Date().toISOString() };
+  });
+
+  app.get('/ready', async () => {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      return { status: 'ready', timestamp: new Date().toISOString() };
+    } catch (error) {
+      app.log.error({ err: error }, 'Readiness check failed');
+      throw error;
+    }
   });
 
   await app.register(authRoutes, { prefix: '/api/v1' });

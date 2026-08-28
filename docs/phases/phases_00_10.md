@@ -1,5 +1,5 @@
 # Phases - NextCommerce
-## Fase ativa: FASE 0.3 — Alinhamento de data-testids para E2E Smoke
+## Fase ativa: FASE 0.4 — E2E Smoke: Auth Flow + Test Data Setup
 **Início:** 2026-08-27 | **Fim estimado:** 2026-08-29 | **Status:** EM DESENVOLVIMENTO
 
 ---
@@ -112,8 +112,8 @@ Executar o fluxo E2E smoke (`pnpm test:e2e`) e confirmar a conexão da API ao ba
 
 ---
 
-# 🟢 FASE 0.3 — Alinhamento de data-testids para E2E Smoke
-**Status: EM DESENVOLVIMENTO**
+# ⚪ FASE 0.3 — Alinhamento de data-testids para E2E Smoke
+**Status: CONCLUÍDA**
 
 ## Objetivo
 Adicionar atributos `data-testid` nos componentes da UI para que os testes E2E existentes localizem os elementos corretamente (product-card, cart-button, cart-item, orders-table, order-row, user-menu, pix-qr-code, favorite-item, etc.).
@@ -131,8 +131,8 @@ Adicionar atributos `data-testid` nos componentes da UI para que os testes E2E e
 
 ---
 
-# 🔒 FASE 0.4 — E2E Smoke: Auth Flow + Test Data Setup
-**Status: PENDENTE**
+# 🟢 FASE 0.4 — E2E Smoke: Auth Flow + Test Data Setup
+**Status: EM DESENVOLVIMENTO**
 
 ## Objetivo
 Completar a infraestrutura para E2E smoke 100% verde: implementar fluxo de autenticação real nos testes, configurar dados de teste persistentes (usuários, produtos, pedidos) e garantir que a API esteja acessível no ambiente de teste Playwright.
