@@ -5,7 +5,7 @@
   "scripts": {
     "dev:web": "pnpm --filter @nextcommerce/web dev",
     "dev:api": "pnpm --filter @nextcommerce/api dev",
-    "dev": "pnpm run dev:web & pnpm run dev:api",
+    "dev": "concurrently -n web,api -c blue,green \"pnpm run dev:web\" \"pnpm run dev:api\"",
     "build": "pnpm --filter @nextcommerce/web build && pnpm --filter @nextcommerce/api build",
     "build:web": "pnpm --filter @nextcommerce/web build",
     "build:api": "pnpm --filter @nextcommerce/api build",
@@ -22,6 +22,7 @@
     "prepare": "husky install"
   },
   "devDependencies": {
+    "concurrently": "^9.1.0",
     "husky": "^9.1.7",
     "pnpm": "^9.0.0"
   },

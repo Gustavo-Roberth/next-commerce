@@ -1,5 +1,8 @@
 {
   "extends": ["../../biome.json"],
+  "files": {
+    "ignore": ["next-env.d.ts", ".next/**"]
+  },
   "linter": {
     "rules": {
       "correctness": {
