@@ -45,7 +45,7 @@ const statusColors: Record<string, string> = {
   PAGO: 'bg-green-100 text-green-800',
   SEPARANDO: 'bg-purple-100 text-purple-800',
   ENVIADO: 'bg-indigo-100 text-indigo-800',
-  ENTREGUE: 'bg-gray-100 text-gray-800',
+  ENTREGUE: 'bg-muted text-foreground',
   CANCELADO: 'bg-red-100 text-red-800',
 };
 
@@ -247,7 +247,7 @@ export default function AdminPedidosPage() {
                       </TableCell>
                       <TableCell className="text-center">
                         <Badge
-                          className={statusColors[pedido.status] || 'bg-gray-100 text-gray-800'}
+                          className={statusColors[pedido.status] || 'bg-muted text-foreground'}
                         >
                           <span className="flex items-center gap-1">
                             {statusIcons[pedido.status]}

@@ -44,7 +44,7 @@ const statusLabels: Record<string, string> = {
 
 const statusColors: Record<string, string> = {
   ATIVO: 'bg-green-100 text-green-800',
-  INATIVO: 'bg-gray-100 text-gray-800',
+  INATIVO: 'bg-muted text-foreground',
   RASCUNHO: 'bg-yellow-100 text-yellow-800',
   ARQUIVADO: 'bg-red-100 text-red-800',
 };
@@ -198,7 +198,7 @@ export default function AdminProdutosPage() {
                     <TableRow key={produto.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
+                          <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
                             {produto.imagens?.[0] ? (
                               <img
                                 src={produto.imagens[0].url}
@@ -206,7 +206,7 @@ export default function AdminProdutosPage() {
                                 className="h-full w-full object-cover"
                               />
                             ) : (
-                              <span className="text-gray-400">Sem img</span>
+                              <span className="text-muted-foreground">Sem img</span>
                             )}
                           </div>
                           <div>
@@ -228,7 +228,7 @@ export default function AdminProdutosPage() {
                       </TableCell>
                       <TableCell className="text-center">
                         <Badge
-                          className={statusColors[produto.status] || 'bg-gray-100 text-gray-800'}
+                          className={statusColors[produto.status] || 'bg-muted text-foreground'}
                         >
                           {statusLabels[produto.status] || produto.status}
                         </Badge>

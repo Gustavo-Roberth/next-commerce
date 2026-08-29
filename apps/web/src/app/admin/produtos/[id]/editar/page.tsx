@@ -345,7 +345,7 @@ export default function AdminProdutoEditarPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/admin/produtos" className="p-2 hover:bg-gray-100 rounded-lg">
+        <Link href="/admin/produtos" className="p-2 hover:bg-accent rounded-lg">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
@@ -650,10 +650,10 @@ export default function AdminProdutoEditarPage() {
                   {variacoes.map((variacao) => (
                     <div
                       key={variacao.id}
-                      className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                      className="flex items-center justify-between p-4 border rounded-lg bg-muted hover:bg-accent transition-colors"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
+                        <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
                           {variacao.imagens?.[0] ? (
                             <img
                               src={variacao.imagens[0].url}
@@ -661,7 +661,7 @@ export default function AdminProdutoEditarPage() {
                               className="h-full w-full object-cover"
                             />
                           ) : (
-                            <Tag className="h-6 w-6 text-gray-400" />
+                            <Tag className="h-6 w-6 text-muted-foreground" />
                           )}
                         </div>
                         <div>
@@ -673,7 +673,7 @@ export default function AdminProdutoEditarPage() {
                               className={
                                 variacao.ativo
                                   ? 'bg-green-100 text-green-800'
-                                  : 'bg-gray-100 text-gray-800'
+                                  : 'bg-muted text-foreground'
                               }
                             >
                               {variacao.ativo ? 'Ativa' : 'Inativa'}
@@ -725,7 +725,7 @@ export default function AdminProdutoEditarPage() {
             ref={dialogRef}
             onKeyDown={handleVariacaoDialogKeyDown}
           >
-            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="bg-card rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b">
                 <div className="flex items-center justify-between">
                   <h3 id="variacao-dialog-title" className="text-lg font-semibold">

@@ -60,7 +60,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-muted px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
@@ -90,7 +90,7 @@ export default function LoginPage() {
                 required
                 disabled={loading}
                 autoComplete="email"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full rounded-md border border-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
@@ -106,7 +106,7 @@ export default function LoginPage() {
                 required
                 disabled={loading}
                 autoComplete="current-password"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full rounded-md border border-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
@@ -114,7 +114,7 @@ export default function LoginPage() {
               <label className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
-                  className="rounded border-gray-300 accent-primary focus-visible:ring-2 focus-visible:ring-ring"
+                  className="rounded border-input accent-primary focus-visible:ring-2 focus-visible:ring-ring"
                 />
                 Lembrar-me
               </label>

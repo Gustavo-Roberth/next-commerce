@@ -195,7 +195,7 @@ export function ImageUpload({
           id="image-upload"
         />
         <Label htmlFor="image-upload" className="cursor-pointer">
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+          <div className="border-2 border-dashed border-input rounded-lg p-6 text-center">
             <input
               type="file"
               ref={fileInputRef}
@@ -206,13 +206,13 @@ export function ImageUpload({
             />
             {images.length === 0 && (
               <div className="flex flex-col items-center gap-2">
-                <Upload className="h-12 w-12 text-gray-400" />
-                <p className="text-gray-600">
+                <Upload className="h-12 w-12 text-muted-foreground" />
+                <p className="text-muted-foreground">
                   {multiple
                     ? `Arraste até ${maxFiles} imagens ou clique para selecionar`
                     : 'Clique ou arraste uma imagem'}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Formatos: JPEG, PNG, WebP, AVIF | Máx. 5MB por arquivo
                 </p>
               </div>
@@ -223,7 +223,7 @@ export function ImageUpload({
         {images.length > 0 && (
           <div className="mt-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-medium text-gray-700">
+              <p className="text-sm font-medium text-foreground">
                 {images.length}/{maxFiles} imagens
               </p>
               {uploading && (
@@ -237,7 +237,7 @@ export function ImageUpload({
               {images.map((image, index) => (
                 <div
                   key={image.path}
-                  className="relative group aspect-square rounded-lg overflow-hidden border bg-gray-50"
+                  className="relative group aspect-square rounded-lg overflow-hidden border bg-muted"
                 >
                   <div className="relative aspect-square overflow-hidden">
                     <img
@@ -289,7 +289,7 @@ export function ImageUpload({
             </div>
 
             {uploading && (
-              <div className="mt-4 flex items-center gap-2 text-sm text-gray-600">
+              <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>Enviando imagens... {uploadProgress}%</span>
               </div>

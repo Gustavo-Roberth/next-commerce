@@ -103,7 +103,7 @@ export default function AdminNovaCategoriaPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/admin/categorias" className="p-2 hover:bg-gray-100 rounded-lg">
+        <Link href="/admin/categorias" className="p-2 hover:bg-accent rounded-lg">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>

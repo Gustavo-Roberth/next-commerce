@@ -1,3 +1,24 @@
+# Notas de Atualização 0.0.17
+
+## Fase 2.1 - Tema Escuro (Dark Mode) Toggle
+### ✅ Concluído nesta fase
+
+**1. ThemeProvider + variant**
+- `next-themes` instalado; `ThemeProvider` (attribute=class, defaultTheme=system, enableSystem, disableTransitionOnChange) no root layout com `suppressHydrationWarning` no `<html>` ✅
+- `@custom-variant dark (&:where(.dark, .dark *));` em `globals.css` → utilitários `dark:` respondem à classe `.dark` no Tailwind v4 ✅
+
+**2. Toggle de tema**
+- `ThemeToggle` (sol/lua) na Header com persistência de preferência (localStorage via next-themes) e guard de hidratação ✅
+
+**3. Revisão visual dark mode**
+- Cores hardcoded (`bg-gray-*`, `bg-white`, `text-gray-*`, `border-gray-*`) convertidas para tokens semânticos (`bg-card`, `bg-muted`, `text-muted-foreground`, `border-input`, `bg-accent`) em loja + admin; overlays `bg-black/*`, QR PIX (`bg-black text-white`) e coração de favorito preservados ✅
+
+### 🔧 Ajustes técnicos importantes
+- `typecheck` ✅ · `build` (21 rotas) ✅ · testes unitários 2/2 ✅ · `lint` limpo nos fontes (1 erro restante em `next-env.d.ts` gerado pelo Next, pré-existente e fora do escopo)
+- `data-testid` preservados em todas as telas
+
+---
+
 # Notas de Atualização 0.0.16
 
 ## Fase 2 - Design e Polimento Visual

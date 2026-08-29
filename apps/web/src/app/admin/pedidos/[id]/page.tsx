@@ -54,7 +54,7 @@ const statusColors: Record<string, string> = {
   PAGO: 'bg-green-100 text-green-800',
   SEPARANDO: 'bg-purple-100 text-purple-800',
   ENVIADO: 'bg-indigo-100 text-indigo-800',
-  ENTREGUE: 'bg-gray-100 text-gray-800',
+  ENTREGUE: 'bg-muted text-foreground',
   CANCELADO: 'bg-red-100 text-red-800',
 };
 
@@ -275,7 +275,7 @@ export default function AdminPedidoDetalhePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/admin/pedidos" className="p-2 hover:bg-gray-100 rounded-lg">
+        <Link href="/admin/pedidos" className="p-2 hover:bg-accent rounded-lg">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div className="flex-1">
@@ -283,7 +283,7 @@ export default function AdminPedidoDetalhePage() {
             <h1 className="text-3xl font-bold tracking-tight">
               Pedido #{pedido.numero_sequencial}
             </h1>
-            <Badge className={statusColors[pedido.status] || 'bg-gray-100 text-gray-800'}>
+            <Badge className={statusColors[pedido.status] || 'bg-muted text-foreground'}>
               <span className="flex items-center gap-1">
                 {statusIcons[pedido.status]}
                 {statusLabels[pedido.status] || pedido.status}
@@ -311,7 +311,7 @@ export default function AdminPedidoDetalhePage() {
               <div className="space-y-3">
                 {pedido.itens.map((item) => (
                   <div key={item.id} className="flex items-center gap-4 p-3 border rounded-lg">
-                    <div className="h-16 w-16 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <div className="h-16 w-16 rounded-lg bg-muted flex items-center justify-center overflow-hidden flex-shrink-0">
                       {item.variacao?.imagens?.[0] ? (
                         <img
                           src={item.variacao.imagens[0].url}
@@ -319,7 +319,7 @@ export default function AdminPedidoDetalhePage() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <Package className="h-8 w-8 text-gray-400" />
+                        <Package className="h-8 w-8 text-muted-foreground" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -373,7 +373,7 @@ export default function AdminPedidoDetalhePage() {
               </div>
 
               {pedido.cupom && (
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                <div className="mt-4 p-3 bg-muted rounded-lg">
                   <p className="text-sm">
                     <span className="font-medium">Cupom aplicado:</span> {pedido.cupom.codigo} (
                     {pedido.cupom.nome})
@@ -393,7 +393,7 @@ export default function AdminPedidoDetalhePage() {
             <CardContent>
               {pagamento ? (
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
                     <Badge
                       className={
                         pagamento.status === 'APROVADO'
@@ -467,7 +467,7 @@ export default function AdminPedidoDetalhePage() {
                   <div key={evento.id} className="flex gap-3">
                     <div className="flex flex-col items-center flex-shrink-0">
                       <div className="h-2 w-2 rounded-full bg-primary" />
-                      <div className="h-full w-0.5 bg-gray-200" />
+                      <div className="h-full w-0.5 bg-muted" />
                     </div>
                     <div className="flex-1 pt-1">
                       <div className="flex items-center justify-between">

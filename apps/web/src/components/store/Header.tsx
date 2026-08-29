@@ -12,6 +12,7 @@ import { Menu, Search, ShoppingCart, Store, User, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { CartDrawer } from './CartDrawer';
+import { ThemeToggle } from './theme-toggle';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -77,6 +78,8 @@ export function Header() {
             >
               <ShoppingCart className="h-5 w-5" />
             </Button>
+
+            <ThemeToggle />
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

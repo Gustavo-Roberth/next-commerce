@@ -62,7 +62,7 @@ export function ProductCard({ product }: ProductCardProps) {
           onClick={toggleFavorite}
           disabled={favLoading}
           {...(reduce ? {} : { whileTap: { scale: 0.85 } })}
-          className="absolute top-2 left-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow hover:bg-white disabled:opacity-60"
+          className="absolute top-2 left-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-background/90 shadow hover:bg-background disabled:opacity-60"
         >
           <motion.span
             key={favorited ? 'on' : 'off'}
@@ -70,7 +70,7 @@ export function ProductCard({ product }: ProductCardProps) {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 500, damping: 18 }}
             aria-hidden
-            className={favorited ? 'text-red-500' : 'text-gray-500'}
+            className={favorited ? 'text-red-500' : 'text-muted-foreground'}
           >
             {favorited ? '♥' : '♡'}
           </motion.span>

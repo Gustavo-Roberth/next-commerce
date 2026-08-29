@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ThemeProvider } from '@/components/theme-provider';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { Toaster } from 'sonner';
 
@@ -14,12 +15,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <body>
-        <QueryProvider>
-          <main id="conteudo">{children}</main>
-        </QueryProvider>
-        <Toaster richColors position="top-right" closeButton />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryProvider>
+            <main id="conteudo">{children}</main>
+          </QueryProvider>
+          <Toaster richColors position="top-right" closeButton />
+        </ThemeProvider>
       </body>
     </html>
   );

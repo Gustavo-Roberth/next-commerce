@@ -88,9 +88,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-muted">
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-white border-r transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-card border-r transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         aria-label="Sidebar"
@@ -120,7 +120,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   isActive
                     ? 'bg-primary text-primary-foreground'
-                    : 'text-gray-700 hover:bg-gray-100'
+                    : 'text-foreground hover:bg-accent'
                 }`}
               >
                 <item.icon className="h-5 w-5" aria-hidden="true" />
@@ -156,7 +156,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       </aside>
 
       <div className="flex-1 flex flex-col lg:ml-0">
-        <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-white px-4 shadow-sm lg:px-8">
+        <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-card px-4 shadow-sm lg:px-8">
           <button
             type="button"
             className="lg:hidden p-2"
@@ -179,7 +179,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-4 text-sm text-gray-600">
+            <div className="hidden sm:flex items-center gap-4 text-sm text-muted-foreground">
               {stats && (
                 <>
                   <span>

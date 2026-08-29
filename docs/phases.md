@@ -71,7 +71,7 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 2 — Design e Polimento Visual**
+🟢 **FASE 2.1 — Tema Escuro (Dark Mode) Toggle**
 **Status: EM DESENVOLVIMENTO**
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
 

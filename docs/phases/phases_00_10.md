@@ -1,5 +1,5 @@
 # Phases - NextCommerce
-## Fase ativa: FASE 2 — Design e Polimento Visual
+## Fase ativa: FASE 2.1 — Tema Escuro (Dark Mode) Toggle
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Status:** EM DESENVOLVIMENTO
 
 ---
@@ -265,8 +265,8 @@ Realizar deploy em ambiente de staging (Vercel + Render + Supabase), configurar 
 
 ---
 
-# 🟢 FASE 2 — Design e Polimento Visual
-**Status: EM DESENVOLVIMENTO**
+# ⚪ FASE 2 — Design e Polimento Visual
+**Status: CONCLUÍDA**
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
 
 ## Objetivo
@@ -275,18 +275,18 @@ Aplicar uma camada de polimento visual, motion e microinterações sobre o MVP d
 ## Entregáveis (Definition of Done)
 
 ### Frontend (`apps/web`)
-- [ ] Biblioteca de animação (ex: Framer Motion) integrada ao Design System
-- [ ] Microinterações: hover em cards de produto, feedback visual ao adicionar ao carrinho, abertura do drawer do carrinho, transição entre imagens na galeria do produto
-- [ ] Transições de página suaves entre listagem → detalhe → carrinho → checkout (sem "saltos" de layout)
-- [ ] Estados de carregamento (skeletons) em: listagem de produtos, detalhe de produto, checkout, pedidos
-- [ ] Estados vazios ilustrados: carrinho vazio, busca sem resultado, sem pedidos
-- [ ] Revisão de hierarquia tipográfica, espaçamento e cor aplicada a todas as telas já existentes (loja e admin básico)
-- [ ] Auditoria de responsividade (mobile, tablet, desktop) em todas as telas da Fase 1
-- [ ] Auditoria de acessibilidade básica (contraste, foco visível, labels em formulários, navegação por teclado)
-- [ ] Home revisitada: hero com destaque visual mais forte, entrada animada de categorias/destaques
+- [x] Biblioteca de animação (ex: Framer Motion) integrada ao Design System
+- [x] Microinterações: hover em cards de produto, feedback visual ao adicionar ao carrinho, abertura do drawer do carrinho, transição entre imagens na galeria do produto
+- [x] Transições de página suaves entre listagem → detalhe → carrinho → checkout (sem "saltos" de layout)
+- [x] Estados de carregamento (skeletons) em: listagem de produtos, detalhe de produto, checkout, pedidos
+- [x] Estados vazios ilustrados: carrinho vazio, busca sem resultado, sem pedidos
+- [x] Revisão de hierarquia tipográfica, espaçamento e cor aplicada a todas as telas já existentes (loja e admin básico)
+- [x] Auditoria de responsividade (mobile, tablet, desktop) em todas as telas da Fase 1
+- [x] Auditoria de acessibilidade básica (contraste, foco visível, labels em formulários, navegação por teclado)
+- [x] Home revisitada: hero com destaque visual mais forte, entrada animada de categorias/destaques
 
 ### Infra & Shared
-- [ ] Tokens de motion (duração e easing padrão) formalizados junto ao Design System, ao lado dos tokens de cor/spacing/tipografia já existentes
+- [x] Tokens de motion (duração e easing padrão) formalizados junto ao Design System, ao lado dos tokens de cor/spacing/tipografia já existentes
 
 ## Critérios de aceitação
 1. Cliente percebe transições suaves ao navegar entre as telas da loja, sem "saltos" de layout perceptíveis
@@ -295,18 +295,17 @@ Aplicar uma camada de polimento visual, motion e microinterações sobre o MVP d
 4. Tokens de motion (duração/easing) documentados e reutilizados de forma consistente entre componentes
 5. Auditoria de acessibilidade não encontra bloqueadores críticos (contraste insuficiente, foco não visível)
 
-## Subfases percebidas durante a execução
-
-# 🔒 FASE 2.1 — Tema Escuro (Dark Mode) Toggle
-**Status: PENDENTE**
+# 🟢 FASE 2.1 — Tema Escuro (Dark Mode) Toggle
+**Status: EM DESENVOLVIMENTO**
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
 
 ## Objetivo
 Os tokens de cor do modo escuro (`--*` sob `.dark` em `apps/web/src/app/globals.css`) estão definidos, mas não há `ThemeProvider` nem toggle de tema — o dark mode está inativo. Adicionar um `ThemeProvider` (ex: next-themes) e um toggle de tema na Header para ativar o modo escuro de forma consistente, respeitando os tokens já existentes. Não altera contratos de API.
 
 ## Entregáveis
-- [ ] `ThemeProvider` configurado no root layout (sem alterar contratos de API)
-- [ ] Toggle de tema na Header (ícone sol/lua) com persistência de preferência
-- [ ] Revisão visual de todas as telas da Fase 1 sob dark mode (contraste/tokens)
+- [x] `ThemeProvider` configurado no root layout (sem alterar contratos de API)
+- [x] Toggle de tema na Header (ícone sol/lua) com persistência de preferência
+- [x] Revisão visual de todas as telas da Fase 1 sob dark mode (contraste/tokens)
 
 ## Critérios de aceitação
 1. Usuário consegue: alternar tema → UI aplica tokens `.dark` sem quebra de layout

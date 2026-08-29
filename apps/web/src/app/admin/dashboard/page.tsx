@@ -191,7 +191,7 @@ export default function AdminDashboardPage() {
                 <div key={item.label} className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">{item.label}</span>
                   <div className="flex items-center gap-2">
-                    <div className="h-4 w-24 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-4 w-24 bg-muted rounded-full overflow-hidden">
                       <div
                         className={`h-full ${item.color} rounded-full`}
                         style={{ width: `${item.value * 3}%` }}
@@ -214,7 +214,7 @@ export default function AdminDashboardPage() {
           <div className="grid gap-4 md:grid-cols-3">
             <a
               href="/admin/produtos/novo"
-              className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-3 p-4 border rounded-lg hover:bg-muted transition-colors"
             >
               <Package className="h-8 w-8 text-primary" />
               <div>
@@ -224,7 +224,7 @@ export default function AdminDashboardPage() {
             </a>
             <a
               href="/admin/pedidos"
-              className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-3 p-4 border rounded-lg hover:bg-muted transition-colors"
             >
               <ShoppingCart className="h-8 w-8 text-primary" />
               <div>
@@ -234,7 +234,7 @@ export default function AdminDashboardPage() {
             </a>
             <a
               href="/admin/produtos"
-              className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-3 p-4 border rounded-lg hover:bg-muted transition-colors"
             >
               <Package className="h-8 w-8 text-primary" />
               <div>

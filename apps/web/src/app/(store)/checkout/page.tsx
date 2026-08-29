@@ -327,13 +327,13 @@ export default function CheckoutPage() {
             <div className="border rounded-lg p-4" data-testid="pix-qr-code">
               <h4 className="font-medium mb-3">Pague com PIX</h4>
               <div className="text-center space-y-3">
-                <div className="bg-white p-4 rounded-lg border inline-block">
+                <div className="bg-card p-4 rounded-lg border inline-block">
                   <div className="bg-black text-white font-mono text-xs px-3 py-2 rounded">
                     00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913NextCommerce6009SAO
                     PAULO62070503***6304ABCD
                   </div>
                   <div className="mt-3 flex items-center justify-center gap-2">
-                    <div className="w-48 h-48 bg-white">
+                    <div className="w-48 h-48 bg-card">
                       <svg
                         width="192"
                         height="192"

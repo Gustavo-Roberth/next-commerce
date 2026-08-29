@@ -34,7 +34,7 @@ import { useState } from 'react';
 
 const statusColors: Record<string, string> = {
   true: 'bg-green-100 text-green-800',
-  false: 'bg-gray-100 text-gray-800',
+  false: 'bg-muted text-foreground',
 };
 
 export default function AdminCategoriasPage() {
