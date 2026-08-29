@@ -12,6 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ApiError, api } from '@/lib/api/client';
+import { setUserPerfis } from '@/lib/auth';
 import { AlertCircle, Loader2, Store } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -46,6 +47,7 @@ export default function AdminLoginPage() {
 
       localStorage.setItem('access_token', response.access_token);
       localStorage.setItem('refresh_token', response.refresh_token);
+      setUserPerfis(response.user.perfis);
 
       const isAdmin = response.user.perfis.some(
         (p) => p.codigo === 'ADMIN' || p.codigo === 'GESTOR' || p.codigo === 'OPERADOR'

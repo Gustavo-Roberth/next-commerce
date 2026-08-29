@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { api } from '@/lib/api/client';
 import { formatCurrency } from '@/lib/utils';
 import {
+  Boxes,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -73,6 +74,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Produtos', href: '/admin/produtos', icon: Package },
     { name: 'Pedidos', href: '/admin/pedidos', icon: ShoppingCart },
+    { name: 'Estoque', href: '/admin/estoque', icon: Boxes },
   ];
 
   if (loading) {

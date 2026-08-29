@@ -1,5 +1,5 @@
 # Phases - NextCommerce
-## Fase ativa: FASE 3 — Gestão Completa + Admin
+## Fase ativa: FASE 3.1 — Estoque: Telas Admin
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Status:** EM DESENVOLVIMENTO
 
 ---
@@ -316,8 +316,8 @@ Os tokens de cor do modo escuro (`--*` sob `.dark` em `apps/web/src/app/globals.
 
 ---
 
-# 🟢 FASE 3 — Gestão Completa + Admin
-**Status: EM DESENVOLVIMENTO**
+# ⚪ FASE 3 — Gestão Completa + Admin
+**Status: CONCLUÍDA**
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Concluído:** 2026-08-29
 
 ## Objetivo
@@ -349,8 +349,8 @@ Operação completa: estoque real, relatórios, NF-e, configurações ricas, mul
 3. Gestor consegue: dashboard tempo real + relatórios agendados por e-mail
 4. NF-e emitida automaticamente ao marcar "Enviado"
 
-# 🔒 FASE 3.1 — Estoque: Telas Admin
-**Status: PENDENTE**
+# 🟢 FASE 3.1 — Estoque: Telas Admin
+**Status: EM DESENVOLVIMENTO**
 **Início:** _ | **Fim estimado:** _
 
 ## Origem

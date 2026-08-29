@@ -1,3 +1,28 @@
+# Notas de Atualização 0.0.19
+
+## Fase 3.1 - Estoque: Telas Admin
+### ✅ Concluído nesta fase
+
+**1. Camada de dados e serviços de estoque**
+- Tipos e métodos `adminApi.depositos` e `adminApi.estoque` em `src/lib/api` (dashboard, list, movimento, transferência, inventário) ✅
+- Helper de RBAC `src/lib/auth.ts` (`hasPerfil`) + persistência de `perfis` no login do admin ✅
+- Navegação "Estoque" adicionada ao menu do admin (`app/admin/layout.tsx`) ✅
+
+**2. Telas admin de estoque (`apps/web`)**
+- Página `/admin/estoque`: dashboard de alertas (baixo/zerado), CRUD de depósitos, saldo por variação com filtros (depósito, somente baixo, somente zerado) ✅
+- Dialogs: depósito (criar/editar), entrada de mercadoria (NF), saída, transferência entre depósitos, inventário físico ✅
+- RBAC visual: exclusão de depósito visível apenas para ADMIN/GESTOR ✅
+- Estados de carregamento (skeleton) e vazio tratados em todas as listas ✅
+
+### 🔧 Ajustes técnicos importantes
+- Telas consomem as rotas `/admin/estoque*` implementadas na Fase 3; o backend segue como source of truth para regras (reserva atômica, recálculo de custo médio, auditoria)
+- Padrão de fetch manual (`useState` + `adminApi`) seguido do admin existente; formulários validados no cliente e revalidados no backend
+
+### ⏳ Pendente (Fase 3)
+FASE 3.2 NF-e · FASE 3.3 Relatórios · FASE 3.4 Configurações · FASE 3.5 Rastreamento · FASE 3.6 Jobs agendados · FASE 3.7 Auditoria
+
+---
+
 # Notas de Atualização 0.0.18
 
 ## Fase 3 - Gestão Completa + Admin

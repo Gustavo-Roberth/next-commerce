@@ -15,14 +15,23 @@ import type {
   CheckoutInput,
   CheckoutResponse,
   CreateCategoriaInput,
+  CreateDepositoInput,
+  CreateMovimentoInput,
   CreateProdutoInput,
+  Deposito,
+  EstoqueDashboard,
+  EstoqueItem,
+  EstoqueListResponse,
+  InventarioEstoqueInput,
   Pedido,
   PedidosListResponse,
   Produto,
   ProdutoDestaqueResponse,
   ProdutosListResponse,
+  TransferenciaEstoqueInput,
   UpdateCartItemInput,
   UpdateCategoriaInput,
+  UpdateDepositoInput,
   UpdatePedidoStatusInput,
   UpdateProdutoInput,
 } from './types';
@@ -232,5 +241,53 @@ export const adminApi = {
 
     atualizarStatus: (id: string, input: UpdatePedidoStatusInput) =>
       api.put<{ id: string; status: string }>(`/admin/pedidos/${id}/status`, input),
+  },
+
+  depositos: {
+    list: () => api.get<Deposito[]>('/admin/depositos'),
+
+    getById: (id: string) => api.get<Deposito>(`/admin/depositos/${id}`),
+
+    create: (input: CreateDepositoInput) => api.post<Deposito>('/admin/depositos', input),
+
+    update: (id: string, input: UpdateDepositoInput) =>
+      api.put<Deposito>(`/admin/depositos/${id}`, input),
+
+    remove: (id: string) => api.delete<{ message: string }>(`/admin/depositos/${id}`),
+  },
+
+  estoque: {
+    dashboard: () => api.get<EstoqueDashboard>('/admin/estoque/dashboard'),
+
+    list: (params?: {
+      cursor?: string;
+      limit?: number;
+      variacao_id?: string;
+      deposito_id?: string;
+      apenas_baixo?: boolean;
+      apenas_zerado?: boolean;
+    }) => {
+      const searchParams = new URLSearchParams();
+      if (params) {
+        for (const [key, value] of Object.entries(params)) {
+          if (value !== undefined && value !== null) {
+            searchParams.set(key, String(value));
+          }
+        }
+      }
+      const query = searchParams.toString();
+      return api.get<EstoqueListResponse>(`/admin/estoque${query ? `?${query}` : ''}`);
+    },
+
+    getById: (id: string) => api.get<EstoqueItem>(`/admin/estoque/${id}`),
+
+    movimento: (input: CreateMovimentoInput) =>
+      api.post<{ id: string }>('/admin/estoque/movimentos', input),
+
+    transferencia: (input: TransferenciaEstoqueInput) =>
+      api.post<{ message: string }>('/admin/estoque/transferencia', input),
+
+    inventario: (input: InventarioEstoqueInput) =>
+      api.post<{ message: string }>('/admin/estoque/inventario', input),
   },
 };

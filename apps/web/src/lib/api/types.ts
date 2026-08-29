@@ -412,3 +412,110 @@ export interface UpdatePedidoStatusInput {
   status: string;
   observacoes_internas?: string;
 }
+
+export interface Deposito {
+  id: string;
+  loja_id: string;
+  nome: string;
+  codigo: string;
+  endereco_completo: string;
+  padrao: boolean;
+  ativo: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DepositoListResponse {
+  data: Deposito[];
+  nextCursor: string | null;
+  total: number;
+}
+
+export interface EstoqueItem {
+  id: string;
+  loja_id: string;
+  variacao_id: string;
+  deposito_id: string;
+  quantidade_fisica: number;
+  quantidade_reservada: number;
+  quantidade_minima: number;
+  quantidade_maxima: number | null;
+  custo_medio_cents: number;
+  disponivel: number;
+  created_at: string;
+  variacao?: { sku: string; nome: string } | null;
+}
+
+export interface EstoqueListResponse {
+  data: EstoqueItem[];
+  nextCursor: string | null;
+  total: number;
+}
+
+export interface EstoqueDashboard {
+  total_itens: number;
+  quantidade_baixa: number;
+  quantidade_zerada: number;
+  total_fisico: number;
+}
+
+export interface CreateDepositoInput {
+  nome: string;
+  codigo: string;
+  endereco_completo: string;
+  padrao?: boolean;
+}
+
+export interface UpdateDepositoInput {
+  nome?: string;
+  codigo?: string;
+  endereco_completo?: string;
+  padrao?: boolean;
+  ativo?: boolean;
+}
+
+export type EstoqueMovimentoTipoValue =
+  | 'ENTRADA_COMPRA'
+  | 'ENTRADA_DEVOLUCAO'
+  | 'ENTRADA_AJUSTE'
+  | 'SAIDA_VENDA'
+  | 'SAIDA_PERDA'
+  | 'SAIDA_DOACAO'
+  | 'SAIDA_AJUSTE';
+
+export type EstoqueReferenciaTipoValue =
+  | 'PEDIDO'
+  | 'NOTA_COMPRA'
+  | 'AJUSTE'
+  | 'INVENTARIO'
+  | 'TRANSFERENCIA';
+
+export interface CreateMovimentoInput {
+  variacao_id: string;
+  deposito_id: string;
+  tipo: EstoqueMovimentoTipoValue;
+  quantidade: number;
+  custo_unitario_cents?: number;
+  referencia_tipo: EstoqueReferenciaTipoValue;
+  referencia_id?: string;
+  observacao?: string;
+}
+
+export interface TransferenciaEstoqueInput {
+  variacao_id: string;
+  deposito_origem_id: string;
+  deposito_destino_id: string;
+  quantidade: number;
+  observacao?: string;
+}
+
+export interface InventarioItemInput {
+  variacao_id: string;
+  quantidade_contada: number;
+}
+
+export interface InventarioEstoqueInput {
+  deposito_id: string;
+  itens: InventarioItemInput[];
+  observacao?: string;
+}
