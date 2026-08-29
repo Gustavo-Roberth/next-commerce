@@ -1,9 +1,12 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api/client';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+const SKELETON_KEYS = ['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5', 'sk-6', 'sk-7', 'sk-8'];
 
 interface PedidoItem {
   id: string;
@@ -54,7 +57,56 @@ export default function PedidoDetalhePage() {
   }, [params.id, router]);
 
   if (loading) {
-    return <div className="container mx-auto px-4 py-8">Carregando...</div>;
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Skeleton className="h-9 w-48 mb-6" />
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-40" />
+              </CardHeader>
+              <CardContent data-testid="order-items" className="space-y-3">
+                {SKELETON_KEYS.slice(0, 3).map((key) => (
+                  <div key={key} className="flex justify-between border-b pb-3 last:border-0">
+                    <div className="space-y-2">
+                      <Skeleton className="h-5 w-48" />
+                      <Skeleton className="h-4 w-32" />
+                    </div>
+                    <Skeleton className="h-5 w-20" />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-24" />
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-24" />
+              </CardHeader>
+              <CardContent data-testid="order-timeline" className="space-y-3">
+                {SKELETON_KEYS.slice(0, 3).map((key) => (
+                  <div key={key} className="space-y-2">
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-3 w-28" />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!pedido) {

@@ -1,10 +1,15 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api/client';
+import { PackageOpen } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+const SKELETON_KEYS = ['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5', 'sk-6', 'sk-7', 'sk-8'];
 
 interface Pedido {
   id: string;
@@ -51,16 +56,37 @@ export default function PedidosPage() {
       <h1 className="text-3xl font-bold mb-6">Meus Pedidos</h1>
 
       {loading ? (
-        <p className="text-muted-foreground">Carregando...</p>
+        <div className="space-y-3">
+          {SKELETON_KEYS.slice(0, 4).map((key) => (
+            <div key={key} data-testid="order-row">
+              <Card>
+                <CardContent className="flex items-center justify-between p-4">
+                  <div className="space-y-2">
+                    <Skeleton className="h-5 w-32" />
+                    <Skeleton className="h-4 w-40" />
+                  </div>
+                  <div className="space-y-2 text-right">
+                    <Skeleton className="h-5 w-24" />
+                    <Skeleton className="h-4 w-28" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ))}
+        </div>
       ) : pedidos.length === 0 ? (
         <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            Você ainda não fez nenhum pedido.
-            <div className="mt-4">
-              <Link href="/produtos" className="text-primary hover:underline">
-                Comece a comprar
-              </Link>
+          <CardContent className="py-16 flex flex-col items-center text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+              <PackageOpen className="h-8 w-8 text-muted-foreground" />
             </div>
+            <h2 className="mt-4 text-xl font-semibold">Você ainda não fez nenhum pedido</h2>
+            <p className="mt-1 text-muted-foreground">
+              Quando você finalizar uma compra, ela aparecerá aqui.
+            </p>
+            <Link href="/produtos" className="mt-6">
+              <Button>Comece a comprar</Button>
+            </Link>
           </CardContent>
         </Card>
       ) : (

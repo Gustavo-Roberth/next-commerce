@@ -65,13 +65,13 @@ export function Footer() {
                 Todos os Produtos
               </Link>
               <Link
-                href="/categorias"
+                href="/produtos"
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >
                 Categorias
               </Link>
               <Link
-                href="/ofertas"
+                href="/produtos"
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >
                 Ofertas

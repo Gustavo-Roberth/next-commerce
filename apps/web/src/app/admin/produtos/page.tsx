@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -28,9 +29,11 @@ import {
 import { api } from '@/lib/api/client';
 import type { Produto } from '@/lib/api/types';
 import { formatCurrency } from '@/lib/utils';
-import { Edit, Loader2, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
+import { Edit, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+
+const SKELETON_KEYS = ['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5', 'sk-6', 'sk-7', 'sk-8'];
 
 const statusLabels: Record<string, string> = {
   ATIVO: 'Ativo',
@@ -168,8 +171,20 @@ export default function AdminProdutosPage() {
               <TableBody>
                 {loading && produtos.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+                    <TableCell colSpan={7} className="py-4">
+                      <div className="space-y-3">
+                        {SKELETON_KEYS.slice(0, 5).map((key) => (
+                          <div key={key} className="flex items-center gap-4">
+                            <Skeleton className="h-10 w-10 rounded-lg" />
+                            <Skeleton className="h-4 w-48" />
+                            <Skeleton className="h-4 w-24" />
+                            <Skeleton className="h-4 w-28" />
+                            <Skeleton className="h-4 w-16" />
+                            <Skeleton className="h-6 w-20 rounded-full" />
+                            <Skeleton className="h-8 w-8 rounded" />
+                          </div>
+                        ))}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ) : produtos.length === 0 ? (

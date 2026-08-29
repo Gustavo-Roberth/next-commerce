@@ -1,10 +1,13 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api/client';
 import { formatCurrency } from '@/lib/utils';
-import { Loader2, Package, ShoppingCart, TrendingUp, Truck } from 'lucide-react';
+import { Package, ShoppingCart, TrendingUp, Truck } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
+const SKELETON_KEYS = ['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5', 'sk-6', 'sk-7', 'sk-8'];
 
 interface StatCardProps {
   title: string;
@@ -58,8 +61,58 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <Skeleton className="h-9 w-48" />
+          <Skeleton className="h-5 w-40" />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {SKELETON_KEYS.slice(0, 4).map((key) => (
+            <Card key={key}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-10 w-10 rounded-lg" />
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Skeleton className="h-7 w-20" />
+                <Skeleton className="h-3 w-32" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+          <Card className="col-span-4">
+            <CardHeader>
+              <Skeleton className="h-6 w-56" />
+            </CardHeader>
+            <CardContent>
+              <div className="h-64 flex items-end justify-around gap-2">
+                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day) => (
+                  <div key={day} className="flex flex-col items-center flex-1">
+                    <Skeleton className="w-full rounded-t" style={{ height: '60%' }} />
+                    <Skeleton className="h-3 w-8 mt-2" />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="col-span-3">
+            <CardHeader>
+              <Skeleton className="h-6 w-48" />
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {SKELETON_KEYS.slice(0, 6).map((key) => (
+                <div key={key} className="flex items-center justify-between">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-28" />
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }

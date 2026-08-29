@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { QueryProvider } from '@/providers/QueryProvider';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: 'NextCommerce',
@@ -18,6 +19,7 @@ export default function RootLayout({
         <QueryProvider>
           <main id="conteudo">{children}</main>
         </QueryProvider>
+        <Toaster richColors position="top-right" closeButton />
       </body>
     </html>
   );

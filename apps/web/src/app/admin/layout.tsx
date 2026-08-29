@@ -10,7 +10,17 @@ import {
 import { Input } from '@/components/ui/input';
 import { api } from '@/lib/api/client';
 import { formatCurrency } from '@/lib/utils';
-import { LayoutDashboard, LogOut, Package, ShoppingCart, Store, Truck, User } from 'lucide-react';
+import {
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Package,
+  Search,
+  ShoppingCart,
+  Store,
+  User,
+  X,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
@@ -96,7 +106,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             onClick={() => setSidebarOpen(false)}
             aria-label="Fechar menu"
           >
-            <Truck className="h-6 w-6" />
+            <X className="h-6 w-6" />
           </button>
         </div>
 
@@ -125,12 +135,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="w-full justify-between">
                 <span>Usuário Admin</span>
-                <Truck className="h-4 w-4" />
+                <User className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem asChild>
-                <Link href="/admin/perfil" className="flex w-full items-center px-2 py-1.5 text-sm">
+                <Link
+                  href="/admin/dashboard"
+                  className="flex w-full items-center px-2 py-1.5 text-sm"
+                >
                   Meu Perfil
                 </Link>
               </DropdownMenuItem>
@@ -150,13 +163,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             onClick={() => setSidebarOpen(true)}
             aria-label="Abrir menu"
           >
-            <Truck className="h-6 w-6" />
+            <Menu className="h-6 w-6" />
           </button>
 
           <div className="flex-1 flex items-center gap-4">
             <div className="relative w-full max-w-md hidden sm:block">
-              <Input type="search" placeholder="Buscar produtos, pedidos..." className="pl-10" />
-              <Truck className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Buscar produtos, pedidos..."
+                className="pl-10"
+                aria-label="Buscar"
+              />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             </div>
           </div>
 
@@ -183,7 +201,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem asChild>
                   <Link
-                    href="/admin/perfil"
+                    href="/admin/dashboard"
                     className="flex w-full items-center px-2 py-1.5 text-sm"
                   >
                     Meu Perfil

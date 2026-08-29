@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -27,7 +28,7 @@ import {
 } from '@/components/ui/table';
 import { adminApi } from '@/lib/api/services';
 import type { Categoria } from '@/lib/api/types';
-import { ChevronRight, Edit, Loader2, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
+import { ChevronRight, Edit, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -227,11 +228,45 @@ export default function AdminCategoriasPage() {
               </TableHeader>
               <TableBody>
                 {loading && categorias.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-                    </TableCell>
-                  </TableRow>
+                  [
+                    { level: 0, width: 'w-48' },
+                    { level: 1, width: 'w-40' },
+                    { level: 1, width: 'w-44' },
+                    { level: 2, width: 'w-36' },
+                    { level: 0, width: 'w-52' },
+                  ].map((row) => (
+                    <TableRow
+                      key={`cat-${row.level}-${row.width}`}
+                      style={{ paddingLeft: `${row.level * 20 + 16}px` }}
+                    >
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {row.level > 0 && (
+                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                          )}
+                          <Skeleton className={`h-4 ${row.width}`} />
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-24" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-32" />
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Skeleton className="h-6 w-16 rounded-full mx-auto" />
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Skeleton className="h-4 w-8 mx-auto" />
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Skeleton className="h-4 w-8 mx-auto" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-8 w-8 rounded ml-auto" />
+                      </TableCell>
+                    </TableRow>
+                  ))
                 ) : categorias.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">

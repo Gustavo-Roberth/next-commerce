@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -47,7 +48,29 @@ export default function PerfilPage() {
   }
 
   if (loading) {
-    return <div className="container mx-auto px-4 py-8">Carregando...</div>;
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-2xl">
+        <Skeleton className="h-9 w-40 mb-6" />
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-32" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+              <Skeleton className="h-10 w-24" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (

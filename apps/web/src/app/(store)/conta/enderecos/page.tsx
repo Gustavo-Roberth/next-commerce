@@ -4,9 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api/client';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+
+const SKELETON_KEYS = ['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5', 'sk-6', 'sk-7', 'sk-8'];
 
 interface Endereco {
   id: string;
@@ -154,9 +157,23 @@ export default function EnderecosPage() {
       )}
 
       {loading ? (
-        <p className="text-muted-foreground">Carregando...</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {SKELETON_KEYS.slice(0, 3).map((key) => (
+            <Card key={key}>
+              <CardContent className="p-4 space-y-2">
+                <Skeleton className="h-5 w-40" />
+                <Skeleton className="h-4 w-48" />
+                <Skeleton className="h-4 w-32" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       ) : enderecos.length === 0 ? (
-        <p className="text-muted-foreground">Nenhum endereço cadastrado.</p>
+        <Card>
+          <CardContent className="py-12 text-center text-muted-foreground">
+            Nenhum endereço cadastrado.
+          </CardContent>
+        </Card>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {enderecos.map((endereco) => (

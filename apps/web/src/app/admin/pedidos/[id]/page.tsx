@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { api } from '@/lib/api/client';
 import type { Pedido } from '@/lib/api/types';
@@ -24,7 +25,6 @@ import {
   Clock,
   CreditCard,
   DollarSign,
-  Loader2,
   Mail,
   MapPin,
   Package,
@@ -35,6 +35,8 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+
+const SKELETON_KEYS = ['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5', 'sk-6', 'sk-7', 'sk-8'];
 
 const statusLabels: Record<string, string> = {
   CRIADO: 'Criado',
@@ -137,8 +139,116 @@ export default function AdminPedidoDetalhePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-10 w-10 rounded-lg" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-9 w-64" />
+            <Skeleton className="h-4 w-72" />
+          </div>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-48" />
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {SKELETON_KEYS.slice(0, 4).map((key) => (
+                    <div key={key} className="flex items-center gap-4 p-3 border rounded-lg">
+                      <Skeleton className="h-16 w-16 rounded-lg" />
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <Skeleton className="h-4 w-1/2" />
+                        <Skeleton className="h-3 w-1/3" />
+                        <Skeleton className="h-3 w-1/4" />
+                      </div>
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-48" />
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-2/3" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-48" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-16 w-full rounded-lg" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-48" />
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {SKELETON_KEYS.slice(0, 3).map((key) => (
+                    <div key={key} className="flex gap-3">
+                      <Skeleton className="h-2 w-2 rounded-full" />
+                      <div className="flex-1 space-y-2 pt-1">
+                        <Skeleton className="h-4 w-1/2" />
+                        <Skeleton className="h-3 w-1/4" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-40" />
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-10 w-full" />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-32" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-4 w-40" />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-48" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-24 w-full" />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-48" />
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     );
   }

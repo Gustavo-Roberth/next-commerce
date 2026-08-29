@@ -49,6 +49,16 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      transitionDuration: {
+        'motion-fast': 'var(--motion-duration-fast)',
+        'motion-base': 'var(--motion-duration-base)',
+        'motion-slow': 'var(--motion-duration-slow)',
+      },
+      transitionTimingFunction: {
+        'motion-standard': 'var(--motion-easing-standard)',
+        'motion-accelerate': 'var(--motion-easing-accelerate)',
+        'motion-decelerate': 'var(--motion-easing-decelerate)',
+      },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'monospace'],

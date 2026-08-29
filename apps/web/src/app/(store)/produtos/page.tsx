@@ -3,8 +3,10 @@
 import { ProductCard, ProductGrid } from '@/components/store/ProductCard';
 import { categoriasApi, produtosApi } from '@/lib/api/services';
 import { useQuery } from '@tanstack/react-query';
+import { SearchX } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 
 const SKELETON_IDS = Array.from({ length: 8 }, (_, i) => `skeleton-${i}`);
 
@@ -36,6 +38,7 @@ function ProdutosContent() {
   const categoria = searchParams.get('categoria') || '';
   const sort = searchParams.get('sort') || '';
   const cursor = searchParams.get('page') || '';
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const handleSortChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -83,8 +86,21 @@ function ProdutosContent() {
         </p>
       </div>
 
+      <button
+        type="button"
+        onClick={() => setFiltersOpen((open) => !open)}
+        aria-expanded={filtersOpen}
+        aria-controls="filtros-produtos"
+        className="lg:hidden mb-4 inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors"
+      >
+        Filtros
+      </button>
+
       <div className="grid lg:grid-cols-4 gap-8">
-        <aside className="lg:col-span-1 space-y-6">
+        <aside
+          id="filtros-produtos"
+          className={`lg:col-span-1 space-y-6 ${filtersOpen ? 'block' : 'hidden'} lg:block`}
+        >
           <div className="sticky top-24 space-y-6">
             <div>
               <h3 className="font-semibold mb-3">Categorias</h3>
@@ -105,7 +121,11 @@ function ProdutosContent() {
 
             <div className="border-t pt-6">
               <h3 className="font-semibold mb-3">Ordenar</h3>
+              <label htmlFor="sort" className="sr-only">
+                Ordenar produtos
+              </label>
               <select
+                id="sort"
                 value={sort}
                 onChange={(e) => handleSortChange(e.target.value)}
                 className="w-full border rounded-md px-3 py-2 text-sm bg-background"
@@ -134,14 +154,27 @@ function ProdutosContent() {
               <h2 className="text-xl font-semibold">Todos os Produtos</h2>
             </div>
             {produtosLoading ? (
-              <Suspense fallback={<ProductListSkeleton />}>
-                <ProductGrid products={[]} />
-              </Suspense>
+              <ProductListSkeleton />
+            ) : (produtos?.data?.length ?? 0) === 0 ? (
+              <div className="flex flex-col items-center justify-center text-center py-16 border rounded-lg bg-muted/30">
+                <SearchX className="h-16 w-16 text-muted-foreground mb-4" aria-hidden="true" />
+                <h3 className="text-lg font-semibold">Nenhum produto encontrado</h3>
+                <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+                  Não encontramos produtos para os filtros ou busca atuais. Tente ajustar os termos
+                  ou limpar os filtros.
+                </p>
+                <Link
+                  href="/produtos"
+                  className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                >
+                  Limpar filtros
+                </Link>
+              </div>
             ) : (
               <ProductGrid products={produtos?.data ?? []} />
             )}
 
-            {produtos?.nextCursor && (
+            {produtos?.nextCursor && !produtosLoading && (produtos?.data?.length ?? 0) > 0 && (
               <div className="mt-8 text-center">
                 <a
                   href={`/produtos?page=${produtos.nextCursor}`}

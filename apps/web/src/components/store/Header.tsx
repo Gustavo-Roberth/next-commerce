@@ -35,13 +35,13 @@ export function Header() {
               Produtos
             </Link>
             <Link
-              href="/categorias"
+              href="/produtos"
               className="text-sm font-medium hover:text-primary transition-colors"
             >
               Categorias
             </Link>
             <Link
-              href="/ofertas"
+              href="/produtos"
               className="text-sm font-medium hover:text-primary transition-colors"
             >
               Ofertas
@@ -152,14 +152,14 @@ export function Header() {
               Produtos
             </Link>
             <Link
-              href="/categorias"
+              href="/produtos"
               className="text-sm font-medium hover:text-primary"
               onClick={() => setMobileMenuOpen(false)}
             >
               Categorias
             </Link>
             <Link
-              href="/ofertas"
+              href="/produtos"
               className="text-sm font-medium hover:text-primary"
               onClick={() => setMobileMenuOpen(false)}
             >

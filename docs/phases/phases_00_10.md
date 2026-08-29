@@ -1,6 +1,6 @@
 # Phases - NextCommerce
-## Fase ativa: FASE 1.1 — Deploy Staging + Polish
-**Início:** 2026-08-28 | **Fim estimado:** 2026-09-03 | **Status:** EM DESENVOLVIMENTO
+## Fase ativa: FASE 2 — Design e Polimento Visual
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Status:** EM DESENVOLVIMENTO
 
 ---
 
@@ -212,8 +212,8 @@ Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedi
 
 ---
 
-# 🟢 FASE 1.1 — Deploy Staging + Polish
-**Status: EM DESENVOLVIMENTO**
+# ⚪ FASE 1.1 — Deploy Staging + Polish
+**Status: CONCLUÍDA**
 **Início:** 2026-08-28 | **Fim estimado:** 2026-09-03
 
 ## Objetivo
@@ -265,9 +265,9 @@ Realizar deploy em ambiente de staging (Vercel + Render + Supabase), configurar 
 
 ---
 
-# 🔒 FASE 2 — Design e Polimento Visual
-**Status: BLOQUEADA**
-**Início:** 2026-11-07 | **Fim estimado:** 2026-11-28
+# 🟢 FASE 2 — Design e Polimento Visual
+**Status: EM DESENVOLVIMENTO**
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
 
 ## Objetivo
 Aplicar uma camada de polimento visual, motion e microinterações sobre o MVP da loja já funcional (Fase 1), tornando a experiência atraente e moderna antes de avançar para as funcionalidades de gestão (Fase 3). Esta fase **não** altera contratos de API, regras de negócio ou cria funcionalidades novas — apenas refina o que já existe.
@@ -294,6 +294,23 @@ Aplicar uma camada de polimento visual, motion e microinterações sobre o MVP d
 3. Nenhuma regra de negócio ou contrato de API foi alterado nesta fase — apenas camada visual
 4. Tokens de motion (duração/easing) documentados e reutilizados de forma consistente entre componentes
 5. Auditoria de acessibilidade não encontra bloqueadores críticos (contraste insuficiente, foco não visível)
+
+## Subfases percebidas durante a execução
+
+# 🔒 FASE 2.1 — Tema Escuro (Dark Mode) Toggle
+**Status: PENDENTE**
+
+## Objetivo
+Os tokens de cor do modo escuro (`--*` sob `.dark` em `apps/web/src/app/globals.css`) estão definidos, mas não há `ThemeProvider` nem toggle de tema — o dark mode está inativo. Adicionar um `ThemeProvider` (ex: next-themes) e um toggle de tema na Header para ativar o modo escuro de forma consistente, respeitando os tokens já existentes. Não altera contratos de API.
+
+## Entregáveis
+- [ ] `ThemeProvider` configurado no root layout (sem alterar contratos de API)
+- [ ] Toggle de tema na Header (ícone sol/lua) com persistência de preferência
+- [ ] Revisão visual de todas as telas da Fase 1 sob dark mode (contraste/tokens)
+
+## Critérios de aceitação
+1. Usuário consegue: alternar tema → UI aplica tokens `.dark` sem quebra de layout
+2. Preferência de tema persiste entre sessões
 
 ---
 

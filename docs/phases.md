@@ -71,9 +71,9 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 1.1 — Deploy Staging + Polish**
+🟢 **FASE 2 — Design e Polimento Visual**
 **Status: EM DESENVOLVIMENTO**
-**Início:** 2026-08-28 | **Fim estimado:** 2026-09-03
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
 
 Arquivo:
 - `/docs/phases/phases_00_10.md`

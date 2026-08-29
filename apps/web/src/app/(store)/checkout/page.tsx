@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CreditCard, Lock, Smartphone } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -113,6 +114,7 @@ export default function CheckoutPage() {
               id="mesmoEndereco"
               checked={mesmoEndereco}
               onChange={(e) => setMesmoEndereco(e.target.checked)}
+              className="h-4 w-4 rounded accent-primary text-primary focus-visible:ring-2 focus-visible:ring-ring"
             />
             <Label htmlFor="mesmoEndereco">Endereço de cobrança é o mesmo</Label>
           </div>
@@ -150,7 +152,7 @@ export default function CheckoutPage() {
                     value={opcao.nome}
                     checked={freteSelecionado?.nome === opcao.nome}
                     onChange={() => setFreteSelecionado(opcao)}
-                    className="h-4 w-4 text-primary"
+                    className="h-4 w-4 rounded accent-primary text-primary focus-visible:ring-2 focus-visible:ring-ring"
                   />
                   <div className="flex-1">
                     <div className="font-medium">{opcao.nome}</div>
@@ -232,7 +234,7 @@ export default function CheckoutPage() {
                     value={metodo}
                     checked={pagamentoMetodo === metodo}
                     onChange={(e) => setPagamentoMetodo(e.target.value)}
-                    className="h-4 w-4 text-primary"
+                    className="h-4 w-4 rounded accent-primary text-primary focus-visible:ring-2 focus-visible:ring-ring"
                   />
                   <div className="flex items-center gap-2">
                     {metodo === 'PIX' && <Smartphone className="h-5 w-5" />}
@@ -395,13 +397,13 @@ export default function CheckoutPage() {
           </Button>
           <p className="text-center text-xs text-muted-foreground">
             Ao confirmar, você concorda com nossos{' '}
-            <button type="button" className="underline">
+            <Link href="#" className="underline">
               Termos de Uso
-            </button>{' '}
+            </Link>{' '}
             e{' '}
-            <button type="button" className="underline">
+            <Link href="#" className="underline">
               Política de Privacidade
-            </button>
+            </Link>
             .
           </p>
         </CardContent>

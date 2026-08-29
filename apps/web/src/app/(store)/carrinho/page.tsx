@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { carrinhoApi } from '@/lib/api/services';
 import type { CarrinhoItem, CarrinhoResponse } from '@/lib/api/types';
 import { formatCurrency } from '@/lib/utils';
-import { ArrowRight, Minus, Plus, Trash2, Truck } from 'lucide-react';
+import { ArrowRight, Minus, Plus, ShoppingCart, Trash2, Truck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -174,13 +174,18 @@ export default async function CarrinhoPage() {
           </div>
         </div>
       ) : (
-        <div className="text-center py-16">
-          <h2 className="text-2xl font-semibold mb-4">Seu carrinho está vazio</h2>
-          <p className="text-muted-foreground mb-8">Adicione produtos para começar sua compra</p>
-          <Button asChild size="lg">
-            <Link href="/produtos">Continuar Comprando</Link>
-          </Button>
-        </div>
+        <Card>
+          <CardContent className="py-16 flex flex-col items-center text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+              <ShoppingCart className="h-10 w-10 text-muted-foreground" />
+            </div>
+            <h2 className="mt-6 text-2xl font-semibold">Seu carrinho está vazio</h2>
+            <p className="mt-2 text-muted-foreground">Adicione produtos para começar sua compra</p>
+            <Button asChild size="lg" className="mt-8">
+              <Link href="/produtos">Continuar Comprando</Link>
+            </Button>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

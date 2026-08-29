@@ -90,7 +90,7 @@ export default function LoginPage() {
                 required
                 disabled={loading}
                 autoComplete="email"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
@@ -106,13 +106,16 @@ export default function LoginPage() {
                 required
                 disabled={loading}
                 autoComplete="current-password"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" className="rounded border-gray-300" />
+                <input
+                  type="checkbox"
+                  className="rounded border-gray-300 accent-primary focus-visible:ring-2 focus-visible:ring-ring"
+                />
                 Lembrar-me
               </label>
               <Link href="/recuperar-senha" className="text-sm text-primary hover:underline">

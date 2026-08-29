@@ -2,46 +2,59 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { produtosApi } from '@/lib/api/services';
+import { ApiError } from '@/lib/api/client';
+import { carrinhoApi, produtosApi } from '@/lib/api/services';
 import type { Produto, ProdutoImagem, ProdutoVariacao } from '@/lib/api/types';
+import { notify } from '@/lib/notify';
 import { formatCurrency } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
+import { Loader2, ShoppingCart } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { useState } from 'react';
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-function ImageGallery({
-  images,
-  selectedImage,
-  onSelectImage,
-}: {
-  images: ProdutoImagem[];
-  selectedImage: ProdutoImagem | null;
-  onSelectImage: (img: ProdutoImagem) => void;
-}) {
-  const mainImage = selectedImage || images.find((img) => img.principal) || images[0];
+function ImageGallery({ images }: { images: ProdutoImagem[] }) {
+  const reduce = useReducedMotion();
+  const [selected, setSelected] = useState<ProdutoImagem | null>(
+    images.find((img) => img.principal) ?? images[0] ?? null
+  );
+  const mainImage = selected ?? images[0] ?? null;
 
   return (
     <div className="space-y-4">
       <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
-        {mainImage ? (
-          <Image
-            src={mainImage.url}
-            alt={mainImage.alt_text || 'Produto'}
-            fill
-            className="object-cover"
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-muted-foreground">
-            Sem imagem
-          </div>
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={mainImage?.id ?? 'empty'}
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            {...(reduce ? {} : { exit: { opacity: 0 } })}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            className="absolute inset-0"
+          >
+            {mainImage ? (
+              <Image
+                src={mainImage.url}
+                alt={mainImage.alt_text || 'Produto'}
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-muted-foreground">
+                Sem imagem
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
       {images.length > 1 && (
         <div className="flex gap-2 overflow-x-auto pb-2">
@@ -49,7 +62,8 @@ function ImageGallery({
             <button
               type="button"
               key={img.id}
-              onClick={() => onSelectImage(img)}
+              onClick={() => setSelected(img)}
+              aria-label={`Ver imagem: ${img.alt_text || `imagem ${img.id}`}`}
               className={`relative h-20 w-20 flex-shrink-0 rounded-md overflow-hidden border-2 transition-colors ${
                 mainImage?.id === img.id
                   ? 'border-primary'
@@ -71,8 +85,36 @@ function ImageGallery({
   );
 }
 
-function ProductInfo({ product }: { product: Produto }) {
-  const price = product.variacoes[0]?.preco_cents ? product.variacoes[0].preco_cents / 100 : 0;
+function ProductInfo({
+  product,
+  selected,
+}: {
+  product: Produto;
+  selected: ProdutoVariacao | undefined;
+}) {
+  const reduce = useReducedMotion();
+  const [adding, setAdding] = useState(false);
+  const price = selected?.preco_cents ? selected.preco_cents / 100 : 0;
+
+  async function handleAddToCart() {
+    if (!selected) {
+      notify.error('Selecione uma variação');
+      return;
+    }
+    setAdding(true);
+    try {
+      await carrinhoApi.addItem({ variacao_id: selected.id, quantidade: 1 });
+      notify.success('Adicionado ao carrinho');
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        window.location.href = '/login';
+        return;
+      }
+      notify.error('Não foi possível adicionar ao carrinho');
+    } finally {
+      setAdding(false);
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -85,14 +127,33 @@ function ProductInfo({ product }: { product: Produto }) {
 
       <h1 className="text-3xl font-bold">{product.nome}</h1>
 
-      <div className="text-3xl font-bold text-primary">{formatCurrency(price)}</div>
+      <motion.div
+        key={price}
+        initial={reduce ? false : { opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
+        className="text-3xl font-bold text-primary"
+      >
+        {formatCurrency(price)}
+      </motion.div>
 
       {product.descricao_curta && (
         <p className="text-muted-foreground">{product.descricao_curta}</p>
       )}
 
+      {selected && (
+        <p className="text-sm text-muted-foreground">
+          Variação selecionada: <span className="font-medium text-foreground">{selected.nome}</span>
+        </p>
+      )}
+
       <div className="flex flex-wrap gap-2">
-        <Button className="w-full sm:w-auto" size="lg">
+        <Button className="w-full sm:w-auto" size="lg" onClick={handleAddToCart} disabled={adding}>
+          {adding ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <ShoppingCart className="h-4 w-4" />
+          )}
           Adicionar ao Carrinho
         </Button>
         <Button variant="outline" className="w-full sm:w-auto">
@@ -120,7 +181,15 @@ function ProductInfo({ product }: { product: Produto }) {
   );
 }
 
-function ProductVariations({ variacoes }: { variacoes: ProdutoVariacao[] }) {
+function ProductVariations({
+  variacoes,
+  selectedId,
+  onSelect,
+}: {
+  variacoes: ProdutoVariacao[];
+  selectedId?: string;
+  onSelect: (id: string) => void;
+}) {
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">Variações disponíveis</h3>
@@ -130,7 +199,11 @@ function ProductVariations({ variacoes }: { variacoes: ProdutoVariacao[] }) {
           .map((variacao) => (
             <div
               key={variacao.id}
-              className="border rounded-lg p-4 hover:border-primary/50 transition-colors"
+              className={`border rounded-lg p-4 transition-colors ${
+                selectedId === variacao.id
+                  ? 'border-primary ring-1 ring-primary'
+                  : 'hover:border-primary/50'
+              }`}
             >
               <h4 className="font-medium">{variacao.nome}</h4>
               <p className="text-sm text-muted-foreground">{variacao.sku}</p>
@@ -151,8 +224,13 @@ function ProductVariations({ variacoes }: { variacoes: ProdutoVariacao[] }) {
                   ))}
                 </div>
               )}
-              <Button variant="outline" className="mt-4 w-full" size="sm">
-                Selecionar
+              <Button
+                variant={selectedId === variacao.id ? 'default' : 'outline'}
+                className="mt-4 w-full"
+                size="sm"
+                onClick={() => onSelect(variacao.id)}
+              >
+                {selectedId === variacao.id ? 'Selecionado' : 'Selecionar'}
               </Button>
             </div>
           ))}
@@ -176,6 +254,29 @@ function ProductDescription({ product }: { product: Produto }) {
   );
 }
 
+function ProductDetailSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <Skeleton className="mb-6 h-4 w-64" />
+      <div className="grid lg:grid-cols-2 gap-8">
+        <Skeleton className="aspect-square w-full rounded-lg" />
+        <div className="space-y-4">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-9 w-3/4" />
+          <Skeleton className="h-9 w-40" />
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-12 w-full" />
+          <div className="grid grid-cols-3 gap-4">
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-6 w-full" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default async function ProdutoDetalhePage({ params }: Props) {
   const { slug } = await params;
 
@@ -190,14 +291,11 @@ export default async function ProdutoDetalhePage({ params }: Props) {
     },
   });
 
+  const initialVariationId = data?.variacoes.find((v) => v.ativo)?.id;
+  const [selectedId, setSelectedId] = useState<string | undefined>(initialVariationId);
+
   if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-        </div>
-      </div>
-    );
+    return <ProductDetailSkeleton />;
   }
 
   if (error || !data) {
@@ -205,6 +303,7 @@ export default async function ProdutoDetalhePage({ params }: Props) {
   }
 
   const product = data;
+  const selected = product.variacoes.find((v) => v.id === selectedId) ?? product.variacoes[0];
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -227,13 +326,8 @@ export default async function ProdutoDetalhePage({ params }: Props) {
       </nav>
 
       <div className="grid lg:grid-cols-2 gap-8">
-        <div className="space-y-6">
-          <ImageGallery images={product.imagens} selectedImage={null} onSelectImage={() => {}} />
-        </div>
-
-        <div className="space-y-6">
-          <ProductInfo product={product} />
-        </div>
+        <ImageGallery images={product.imagens} />
+        <ProductInfo product={product} selected={selected} />
       </div>
 
       <div className="mt-12">
@@ -247,7 +341,11 @@ export default async function ProdutoDetalhePage({ params }: Props) {
             <ProductDescription product={product} />
           </TabsContent>
           <TabsContent value="variacoes" className="mt-4">
-            <ProductVariations variacoes={product.variacoes} />
+            <ProductVariations
+              variacoes={product.variacoes}
+              {...(selectedId !== undefined ? { selectedId } : {})}
+              onSelect={setSelectedId}
+            />
           </TabsContent>
           <TabsContent value="especificacoes" className="mt-4">
             <div className="grid sm:grid-cols-2 gap-4">

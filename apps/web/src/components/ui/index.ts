@@ -19,3 +19,4 @@ export * from './accordion';
 export * from './alert-dialog';
 export * from './checkbox';
 export * from './scroll-area';
+export * from './skeleton';

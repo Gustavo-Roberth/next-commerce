@@ -38,7 +38,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface ProdutoFormData extends Partial<CreateProdutoInput> {
   nome: string;
@@ -110,6 +110,9 @@ export default function AdminProdutoEditarPage() {
     atributos: {} as Record<string, string>,
   });
   const [variacaoFormError, setVariacaoFormError] = useState('');
+
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   const fetchCategorias = useCallback(async () => {
     try {
@@ -186,6 +189,31 @@ export default function AdminProdutoEditarPage() {
     }
   }, [isEditing, fetchProduto]);
 
+  const handleVariacaoDialogKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeVariacaoForm();
+      return;
+    }
+    if (e.key === 'Tab' && dialogRef.current) {
+      const focusables = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (!first || !last) return;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  };
+
   // Variation management functions
   const openVariacaoForm = (variacao?: ProdutoVariacao) => {
     if (variacao) {
@@ -214,11 +242,23 @@ export default function AdminProdutoEditarPage() {
     setVariacaoFormError('');
   };
 
-  const closeVariacaoForm = () => {
+  const closeVariacaoForm = useCallback(() => {
     setEditingVariacao(null);
     setVariacaoForm({ sku: '', nome: '', preco_cents: 0, ativo: true, atributos: {} });
     setVariacaoFormError('');
-  };
+  }, []);
+
+  useEffect(() => {
+    if (editingVariacao === null) return;
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    const raf = requestAnimationFrame(() => {
+      dialogRef.current?.querySelector<HTMLButtonElement>('[data-variacao-close]')?.focus();
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      previousFocusRef.current?.focus();
+    };
+  }, [editingVariacao]);
 
   const saveVariacao = async () => {
     setVariacaoFormError('');
@@ -676,14 +716,28 @@ export default function AdminProdutoEditarPage() {
 
         {/* Modal de Variação */}
         {editingVariacao !== null && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div
+            // biome-ignore lint/a11y/useSemanticElements: modal kept as a div overlay with manual focus and escape handling
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="variacao-dialog-title"
+            ref={dialogRef}
+            onKeyDown={handleVariacaoDialogKeyDown}
+          >
             <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">
+                  <h3 id="variacao-dialog-title" className="text-lg font-semibold">
                     {editingVariacao ? 'Editar Variação' : 'Nova Variação'}
                   </h3>
-                  <Button variant="ghost" size="icon" onClick={closeVariacaoForm}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={closeVariacaoForm}
+                    data-variacao-close
+                    aria-label="Fechar"
+                  >
                     <X className="h-5 w-5" />
                   </Button>
                 </div>

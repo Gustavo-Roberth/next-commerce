@@ -1,3 +1,48 @@
+# Notas de Atualização 0.0.16
+
+## Fase 2 - Design e Polimento Visual
+### ✅ Concluído nesta fase
+
+**1. Fundação Design System + Motion**
+- Instalados `motion` (framer-motion v13) e `tw-animate-css`; ativadas classes `animate-in`/`fade-in`/`zoom-in`/`slide-in-*` (antes no-ops em dialogs/toasts)
+- Tokens de motion formalizados (`--motion-duration-*`, `--motion-easing-*`) em `globals.css` + utilitários `duration-motion-*`/`ease-motion-*` no Tailwind ✅
+- Corrigidos tokens ausentes `card`/`popover` em `globals.css` ✅
+- `Skeleton` (shimmer) e `notify` (sonner) criados; `<Toaster>` montado no root layout ✅
+- Corrigido `<main>` aninhado (root + `(store)`) ✅
+
+**2. Microinterações**
+- `ProductCard`: hover (scale/shadow), stagger no grid (`StaggerContainer`/`StaggerItem`), favoritar com animação + toast ✅
+- `CartDrawer`: abertura/fechamento animados (`AnimatePresence`), Esc + trava de scroll ✅
+- Galeria de produto: cross-fade entre imagens + `aria-label` nas thumbs ✅
+- Detalhe do produto: "Adicionar ao Carrinho" com toast + loading + seleção de variação ✅
+
+**3. Transições de página**
+- `(store)/template.tsx` e `admin/template.tsx` com fade/slide-up na montagem (respeita `prefers-reduced-motion`) ✅
+
+**4. Estados de carregamento (skeletons)**
+- Listagem de produtos (skeleton real no `isLoading`), detalhe, checkout, pedidos (loja+admin), conta, dashboard, admin produtos/pedidos/categorias, `carrinho/loading.tsx` ✅
+
+**5. Estados vazios ilustrados**
+- Carrinho vazio, busca sem resultado (`SearchX`), sem pedidos (`PackageOpen`), sem favoritos (`Heart`) com CTA ✅
+
+**6. Acessibilidade & Responsividade**
+- Labels no select de ordenação; radios/checkboxes com `accent-primary` + foco ✅
+- Modal de variação admin: `role="dialog"`/`aria-modal` + focus trap + Esc ✅
+- Links quebrados repointados (`/categorias`,`/ofertas`→`/produtos`; `/admin/perfil`→`/admin/dashboard`) ✅
+- Filtros de produtos colapsáveis no mobile; ícones corretos no admin (Menu/X/Search) ✅
+
+**7. Home revisitada**
+- Hero com gradiente + entrada animada; categorias e destaques com stagger (reuso de `ProductGrid`) ✅
+
+### 🔧 Ajustes técnicos importantes
+- `build` (Next 16) das 21 rotas ✅; `typecheck` e `lint` (Biome) 0 erros; testes unitários 2/2 ✅
+- `data-testid` preservados (product-card, cart-button, user-menu, pix-qr-code, cart-drawer, cart-item, favorite-item, order-row, orders-table, order-items, order-timeline)
+
+### ⏳ Pendente (Fase 2)
+Fase 2.1 — Tema Escuro (Dark Mode) Toggle · ver `docs/phases/phases_00_10.md`
+
+---
+
 # Notas de Atualização 0.0.15
 
 ## Fase 1.1 - Deploy Staging + Polish (execução parcial — pending deploy real)
