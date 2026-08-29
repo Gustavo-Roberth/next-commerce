@@ -18,6 +18,7 @@
     "db:migrate": "pnpm --filter @nextcommerce/api db:migrate",
     "db:seed": "pnpm --filter @nextcommerce/api db:seed",
     "db:studio": "pnpm --filter @nextcommerce/api db:studio",
+    "smoke:staging": "node scripts/smoke-staging.mjs",
     "prepare": "husky install"
   },
   "devDependencies": {

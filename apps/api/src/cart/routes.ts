@@ -83,20 +83,22 @@ async function getCartWithItems(cartId: string) {
   });
 }
 
-function serializeCart(cart: any) {
-  const subtotal_cents = (cart.itens as Array<any>).reduce((acc, item) => {
-    const preco = (item.variacao?.preco_cents as number) || 0;
-    const qtd = item.quantidade as number;
+type CartWithItems = NonNullable<Awaited<ReturnType<typeof getCartWithItems>>>;
+
+function serializeCart(cart: CartWithItems) {
+  const subtotal_cents = cart.itens.reduce((acc, item) => {
+    const preco = item.variacao?.preco_cents || 0;
+    const qtd = item.quantidade;
     return acc + preco * qtd;
   }, 0);
 
   return {
     ...cart,
     subtotal_cents,
-    itens: (cart.itens as Array<any>).map((item) => ({
+    itens: cart.itens.map((item) => ({
       ...item,
-      preco_unitario_cents: (item.variacao?.preco_cents as number) || 0,
-      total_cents: ((item.variacao?.preco_cents as number) || 0) * (item.quantidade as number),
+      preco_unitario_cents: item.variacao?.preco_cents || 0,
+      total_cents: (item.variacao?.preco_cents || 0) * item.quantidade,
       produto: item.produto,
       variacao: item.variacao,
     })),

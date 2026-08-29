@@ -14,20 +14,40 @@ const paramsSchema = pedidoParamsSchema;
 const listQuerySchema = adminPedidoListQuerySchema;
 const updateStatusBodySchema = updatePedidoStatusSchema;
 
-function serializePedido(pedido: any) {
+type PedidoItemDTO = {
+  preco_unitario_cents?: number | null;
+  total_cents?: number | null;
+  [key: string]: unknown;
+};
+type PedidoPagamentoDTO = {
+  valor_cents?: number | null;
+  juros_cents?: number | null;
+  [key: string]: unknown;
+};
+type PedidoWithRelations = {
+  subtotal_cents?: number | null;
+  desconto_cents?: number | null;
+  frete_cents?: number | null;
+  total_cents?: number | null;
+  itens?: PedidoItemDTO[];
+  pagamentos?: PedidoPagamentoDTO[];
+  [key: string]: unknown;
+};
+
+function serializePedido(pedido: PedidoWithRelations) {
   return {
     ...pedido,
     subtotal_cents: pedido.subtotal_cents ? Number(pedido.subtotal_cents) : 0,
     desconto_cents: pedido.desconto_cents ? Number(pedido.desconto_cents) : 0,
     frete_cents: pedido.frete_cents ? Number(pedido.frete_cents) : 0,
     total_cents: pedido.total_cents ? Number(pedido.total_cents) : 0,
-    itens: (pedido.itens || []).map((item: any) => ({
+    itens: (pedido.itens || []).map((item) => ({
       ...item,
       preco_unitario_cents: item.preco_unitario_cents ? Number(item.preco_unitario_cents) : 0,
       total_cents: item.total_cents ? Number(item.total_cents) : 0,
     })),
     pagamentos: pedido.pagamentos
-      ? pedido.pagamentos.map((p: any) => ({
+      ? pedido.pagamentos.map((p) => ({
           ...p,
           valor_cents: p.valor_cents ? Number(p.valor_cents) : 0,
           juros_cents: p.juros_cents ? Number(p.juros_cents) : 0,

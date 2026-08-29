@@ -71,9 +71,9 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 0.4 — E2E Smoke: Auth Flow + Test Data Setup**
+🟢 **FASE 1.1 — Deploy Staging + Polish**
 **Status: EM DESENVOLVIMENTO**
-**Início:** 2026-08-26 | **Fim estimado:** 2026-08-30
+**Início:** 2026-08-28 | **Fim estimado:** 2026-09-03
 
 Arquivo:
 - `/docs/phases/phases_00_10.md`

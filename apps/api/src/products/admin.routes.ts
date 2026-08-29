@@ -1,3 +1,4 @@
+import type { Prisma } from '@/generated/prisma/client';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { authMiddleware, requireRole } from '../auth/middleware.js';
 import { prisma } from '../lib/prisma.js';
@@ -406,7 +407,7 @@ export async function adminProductRoutes(app: FastifyInstance): Promise<void> {
         return reply.code(400).send({ error: 'Categoria inválida' });
       }
 
-      const createData: Record<string, unknown> = {
+      const createData: Prisma.ProdutoUncheckedCreateInput = {
         loja_id: lojaId,
         categoria_id: body.categoria_id,
         nome: body.nome,
@@ -436,7 +437,7 @@ export async function adminProductRoutes(app: FastifyInstance): Promise<void> {
       if (body.status !== undefined) createData.status = body.status;
 
       const produto = await prisma.produto.create({
-        data: createData as any,
+        data: createData,
       });
 
       return reply.code(201).send(serializeProduto(produto));

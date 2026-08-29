@@ -1,3 +1,4 @@
+import type { Prisma } from '@/generated/prisma/client';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { authMiddleware } from '../auth/middleware.js';
 import { prisma } from '../lib/prisma.js';
@@ -361,7 +362,7 @@ export async function checkoutRoutes(app: FastifyInstance): Promise<void> {
       const pagamento = await prisma.pagamento.create({
         data: {
           pedido_id: pedido.id,
-          gateway: body.pagamento.gateway as any,
+          gateway: body.pagamento.gateway,
           metodo: body.pagamento.metodo,
           status: 'INICIADO',
           valor_cents: totalCents,
@@ -401,7 +402,7 @@ export async function checkoutRoutes(app: FastifyInstance): Promise<void> {
             where: { id: pagamento.id },
             data: {
               gateway_transaction_id: mpResponse.preference_id,
-              gateway_response: mpResponse as any,
+              gateway_response: mpResponse as Prisma.InputJsonValue,
             },
           });
         } catch (error) {
@@ -422,6 +423,38 @@ export async function checkoutRoutes(app: FastifyInstance): Promise<void> {
   );
 }
 
+interface MercadoPagoPreferenceItem {
+  id: string;
+  title: string;
+  quantity: number;
+  unit_price: number;
+  currency_id: string;
+}
+
+interface MercadoPagoPreferenceInput {
+  items: MercadoPagoPreferenceItem[];
+  payer: { email: string; name: string };
+  payment_methods: {
+    excluded_payment_types: Array<{ id: string }>;
+    excluded_payment_methods: unknown[];
+    installments: number;
+  };
+  external_reference: string;
+  notification_url: string;
+  auto_return: string;
+  back_urls: { success: string; failure: string; pending: string };
+  expires: boolean;
+  expiration_date_from: string;
+  expiration_date_to: string;
+}
+
+interface MercadoPagoPreferenceResult {
+  id: string;
+  init_point: string;
+  pix?: { qr_code?: string; qr_code_base64?: string };
+  expiration_date_to?: string;
+}
+
 async function createMercadoPagoPreference(data: {
   pedido_id: string;
   pagamento_id: string;
@@ -434,9 +467,9 @@ async function createMercadoPagoPreference(data: {
 }): Promise<{
   preference_id: string;
   init_point: string;
-  pix_qr_code?: string;
-  pix_qr_code_base64?: string;
-  expires_at?: string;
+  pix_qr_code?: string | undefined;
+  pix_qr_code_base64?: string | undefined;
+  expires_at?: string | undefined;
 }> {
   const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
   if (!accessToken) {
@@ -455,7 +488,7 @@ async function createMercadoPagoPreference(data: {
     },
   ];
 
-  const body: Record<string, any> = {
+  const body: MercadoPagoPreferenceInput = {
     items,
     payer: {
       email: data.cliente_email,
@@ -502,7 +535,7 @@ async function createMercadoPagoPreference(data: {
     throw new Error(`Mercado Pago error: ${JSON.stringify(error)}`);
   }
 
-  const result = (await response.json()) as Record<string, any>;
+  const result = (await response.json()) as MercadoPagoPreferenceResult;
 
   return {
     preference_id: result.id,

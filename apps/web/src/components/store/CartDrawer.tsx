@@ -98,7 +98,12 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             <ShoppingCart className="h-5 w-5 text-primary" />
             <CardTitle className="text-lg">Carrinho</CardTitle>
           </div>
-          <button type="button" onClick={onClose} className="p-1 hover:bg-muted rounded-md">
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1 hover:bg-muted rounded-md"
+            aria-label="Fechar carrinho"
+          >
             <X className="h-5 w-5" />
           </button>
         </CardHeader>
@@ -143,6 +148,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                         onClick={() => updateQuantity(item.id, item.quantidade - 1)}
                         disabled={item.quantidade <= 1}
                         className="p-1 rounded border hover:bg-muted disabled:opacity-50"
+                        aria-label={`Diminuir quantidade de ${item.produto.nome}`}
                       >
                         <Minus className="h-4 w-4" />
                       </button>
@@ -151,6 +157,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                         type="button"
                         onClick={() => updateQuantity(item.id, item.quantidade + 1)}
                         className="p-1 rounded border hover:bg-muted"
+                        aria-label={`Aumentar quantidade de ${item.produto.nome}`}
                       >
                         <Plus className="h-4 w-4" />
                       </button>
@@ -158,6 +165,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                         type="button"
                         onClick={() => removeItem(item.id)}
                         className="ml-auto p-1 text-muted-foreground hover:text-destructive"
+                        aria-label={`Remover ${item.produto.nome} do carrinho`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>

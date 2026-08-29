@@ -8,7 +8,8 @@ import multipart from '@fastify/multipart';
 import rateLimit from '@fastify/rate-limit';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
-import Fastify from 'fastify';
+import * as Sentry from '@sentry/node';
+import Fastify, { type FastifyError } from 'fastify';
 import {
   type ZodTypeProvider,
   serializerCompiler,
@@ -30,8 +31,19 @@ import { productRoutes } from './products/routes.js';
 import { storageRoutes } from './providers/storage.routes.js';
 import { webhookRoutes } from './webhooks/routes.js';
 
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  tracesSampleRate: 0.1,
+  enabled: Boolean(process.env.SENTRY_DSN),
+});
+
 const app = Fastify({
   logger: true,
+});
+
+app.setErrorHandler((error: FastifyError, _request, reply) => {
+  Sentry.captureException(error);
+  reply.status(error.statusCode || 500).send({ error: error.message });
 });
 
 app.setValidatorCompiler(validatorCompiler);

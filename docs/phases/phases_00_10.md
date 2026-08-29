@@ -1,6 +1,6 @@
 # Phases - NextCommerce
-## Fase ativa: FASE 0.4 — E2E Smoke: Auth Flow + Test Data Setup
-**Início:** 2026-08-27 | **Fim estimado:** 2026-08-29 | **Status:** EM DESENVOLVIMENTO
+## Fase ativa: FASE 1.1 — Deploy Staging + Polish
+**Início:** 2026-08-28 | **Fim estimado:** 2026-09-03 | **Status:** EM DESENVOLVIMENTO
 
 ---
 
@@ -131,8 +131,8 @@ Adicionar atributos `data-testid` nos componentes da UI para que os testes E2E e
 
 ---
 
-# 🟢 FASE 0.4 — E2E Smoke: Auth Flow + Test Data Setup
-**Status: EM DESENVOLVIMENTO**
+# ⚪ FASE 0.4 — E2E Smoke: Auth Flow + Test Data Setup
+**Status: CONCLUÍDA**
 
 ## Objetivo
 Completar a infraestrutura para E2E smoke 100% verde: implementar fluxo de autenticação real nos testes, configurar dados de teste persistentes (usuários, produtos, pedidos) e garantir que a API esteja acessível no ambiente de teste Playwright.
@@ -151,8 +151,8 @@ Completar a infraestrutura para E2E smoke 100% verde: implementar fluxo de auten
 
 ---
 
-# 🔒 FASE 1 — Fundação e MVP Loja
-**Status: BLOQUEADA**
+# ⚪ FASE 1 — Fundação e MVP Loja
+**Status: CONCLUÍDA**
 
 ## Objetivo
 Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedidos básicos.
@@ -209,6 +209,59 @@ Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedi
 4. Zero warnings de lint
 5. Testes E2E fluxo compra passam em CI
 6. Deploy staging funcional (web + api)
+
+---
+
+# 🟢 FASE 1.1 — Deploy Staging + Polish
+**Status: EM DESENVOLVIMENTO**
+**Início:** 2026-08-28 | **Fim estimado:** 2026-09-03
+
+## Objetivo
+Realizar deploy em ambiente de staging (Vercel + Render + Supabase), configurar monitoramento, validar smoke tests pós-deploy e aplicar polimento final (lint, tipos, acessibilidade, performance) antes de encerrar a Fase 1.
+
+## Entregáveis (Definition of Done)
+
+### Deploy & Ops
+- [ ] Vercel (web): preview deployments, production
+- [ ] Render (api): auto-deploy main, health check, logs
+- [ ] Supabase Staging: PostgreSQL, Auth, Storage, RLS policies configuradas
+- [ ] Variáveis de ambiente configuradas (staging + prod)
+
+### Monitoramento
+- [ ] Uptime alerts (Vercel/Render + Sentry)
+- [ ] Error rate alerts
+- [ ] Latency alerts
+
+### Testes Pós-Deploy
+- [ ] Smoke tests: health checks, auth flow, CRUD básico
+- [ ] Validação E2E purchase flow em staging
+
+### Polimento
+- [ ] Fix lint warnings restantes
+- [ ] Fix type issues
+- [ ] Auditoria acessibilidade (contraste, foco, labels, teclado)
+- [ ] Auditoria performance (Core Web Vitals, bundle size)
+
+## Critérios de aceitação
+1. Deploy staging funcional (web + api) acessível via URLs de staging
+2. Supabase Staging provisionado com RLS policies ativas
+3. Monitoramento (uptime, error rate, latency) operacional com alertas
+4. Smoke tests pós-deploy passando (health, auth, CRUD)
+5. Zero lint warnings, zero type errors
+6. E2E purchase flow validado em ambiente de staging
+
+## Subfases percebidas durante a execução
+
+> A execução local (Polish + artefatos) foi concluída. As subfases abaixo exigem
+> credenciais/plataforma e são **PENDENTE** (ação humana — fora do sandbox).
+
+- [ ] **PENDENTE** Provisionar Vercel project (web) e conectar ao repo; habilitar preview + production deploy (usar `apps/web/vercel.json`)
+- [ ] **PENDENTE** Provisionar Render Blueprint (`render.yaml`): criar conta, apontar `DATABASE_URL` para Supabase pooler (ou usar o Postgres do próprio Render)
+- [ ] **PENDENTE** Provisionar Supabase Staging: PostgreSQL, Auth (JWKS/`SUPABASE_JWT_SECRET`), Storage bucket `produtos`, RLS policies
+- [ ] **PENDENTE** Definir secrets reais em Vercel/Render: `JWT_SECRET`, `SUPABASE_JWT_SECRET`, `MERCADO_PAGO_ACCESS_TOKEN`/`PUBLIC_KEY`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SUPABASE_URL`/`ANON_KEY`
+- [ ] **PENDENTE** Criar projetos Sentry (web + api), obter DSNs (`NEXT_PUBLIC_SENTRY_DSN`/`SENTRY_DSN`) e configurar alertas de uptime/error-rate/latency
+- [ ] **PENDENTE** Rodar `pnpm db:migrate` + `pnpm db:seed` (e `db:seed:e2e`) no banco de staging
+- [ ] **PENDENTE** Executar `pnpm smoke:staging`/`STAGING_WEB_URL` e validar E2E purchase flow em staging
 
 ---
 

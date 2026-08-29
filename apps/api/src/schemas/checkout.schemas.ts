@@ -1,4 +1,4 @@
-import { PaymentMethod } from '@/generated/prisma/client';
+import { PaymentGateway, PaymentMethod } from '@/generated/prisma/client';
 import { z } from 'zod';
 
 export const checkoutSchema = z.object({
@@ -13,7 +13,7 @@ export const checkoutSchema = z.object({
     transportadora: z.string().optional(),
   }),
   pagamento: z.object({
-    gateway: z.string(),
+    gateway: z.nativeEnum(PaymentGateway),
     metodo: z.nativeEnum(PaymentMethod),
     parcelas: z.number().int().min(1).max(12).optional(),
   }),

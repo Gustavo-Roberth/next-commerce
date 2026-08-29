@@ -1,3 +1,4 @@
+import type { PaymentStatus, Prisma } from '@/generated/prisma/client';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { prisma } from '../lib/prisma.js';
 interface MercadoPagoWebhookPayload {
@@ -77,7 +78,7 @@ export async function webhookRoutes(app: FastifyInstance): Promise<void> {
       await prisma.webhookEvent.create({
         data: {
           event_type: 'PAYMENT_APPROVED',
-          payload: body as any,
+          payload: body as unknown as Prisma.InputJsonValue,
           idempotency_key: external_reference,
           scope: 'PAYMENT',
           processed: true,
@@ -85,7 +86,7 @@ export async function webhookRoutes(app: FastifyInstance): Promise<void> {
         },
       });
 
-      let novoStatus: string;
+      let novoStatus: PaymentStatus;
       let aprovadoEm: Date | null = null;
 
       switch (status) {
@@ -118,9 +119,9 @@ export async function webhookRoutes(app: FastifyInstance): Promise<void> {
         await tx.pagamento.update({
           where: { id: pagamento.id },
           data: {
-            status: novoStatus as any,
+            status: novoStatus,
             gateway_transaction_id: id,
-            gateway_response: body as any,
+            gateway_response: body as unknown as Prisma.InputJsonValue,
             webhook_received_at: new Date(),
             aprovado_em: aprovadoEm,
             estornado_em: ['RECUSADO', 'ESTORNADO'].includes(novoStatus) ? new Date() : null,
@@ -192,7 +193,7 @@ export async function webhookRoutes(app: FastifyInstance): Promise<void> {
             pagamento_id: pagamento.id,
             tipo: `WEBHOOK_${status.toUpperCase()}`,
             descricao: `Webhook recebido: ${status}`,
-            gateway_response: body as any,
+            gateway_response: body as unknown as Prisma.InputJsonValue,
           },
         });
       });

@@ -55,6 +55,7 @@ export function Header() {
             <Input
               type="search"
               placeholder="Buscar produtos..."
+              aria-label="Buscar produtos"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -72,13 +73,19 @@ export function Header() {
               size="icon"
               onClick={() => setCartOpen(true)}
               data-testid="cart-button"
+              aria-label="Abrir carrinho de compras"
             >
               <ShoppingCart className="h-5 w-5" />
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" data-testid="user-menu">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  data-testid="user-menu"
+                  aria-label="Abrir menu do usuário"
+                >
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>

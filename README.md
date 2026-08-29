@@ -1,3 +1,42 @@
+# Notas de Atualização 0.0.15
+
+## Fase 1.1 - Deploy Staging + Polish (execução parcial — pending deploy real)
+### ✅ Concluído nesta fase (local + artefatos)
+
+**1. Polimento — tipagem (lint 0 warnings)**
+- Eliminados todos os warnings `noExplicitAny` da API tipando corretamente (cart, checkout, orders, webhooks, products) com tipos Prisma/Zod reais; removidos casts `as any`/`as number` e `Prisma.PedidoGetPayload<{}>` (banido pelo Biome)
+- Lint: 0 erros (web + api + shared); Typecheck ✓; Build ✓
+
+**2. Polimento — acessibilidade (web)**
+- `aria-label` em botões de ícone: Header (carrinho, menu usuário, busca), CartDrawer (fechar, +/− quantidade, remover)
+- Landmark `<main id="conteudo">` em `layout.tsx` para navegação por teclado/leitores de tela
+- QR Code PIX (`checkout/page.tsx`) já possui `aria-label`/`role="img"` (Fase 0.3)
+
+**3. Polimento — performance**
+- `poweredByHeader: false` + headers de segurança (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`) via `vercel.json`/`next.config.ts`
+
+**4. Deploy — artefatos**
+- `apps/web/vercel.json`: framework nextjs, `cleanUrls`, headers de segurança
+- `render.yaml`: Blueprint (Postgres + API Fastify, `healthCheckPath: /ready`)
+- `docs/deploy/env.md`: variáveis Vercel/Render/Supabase + ordem de deploy
+
+**5. Observabilidade — Sentry (código + placeholder DSN)**
+- Web: `@sentry/nextjs` via `instrumentation.ts` + `sentry.client/server/edge.config.ts` + `withSentryConfig`
+- API: `@sentry/node` init + `setErrorHandler` em `main.ts`
+
+**6. Smoke tests (artefatos)**
+- `scripts/smoke-staging.mjs` (HTTP: /health, /ready, registro, login, produtos, home) — `pnpm smoke:staging`
+- `apps/web/src/test/e2e/smoke.staging.spec.ts` (Playwright, gated por `STAGING_WEB_URL`)
+
+**7. Quality Gates — Todos Verdes**
+- Lint 0 · Typecheck ✓ · Build ✓ (Next 16 + API) · Testes unitários: 69 passam (web 2 + api 56 + shared 11)
+
+### ⏳ Pendente (ações humanas — credenciais/plataforma)
+Ver `docs/phases/phases_00_10.md` → Fase 1.1 → subfases `PENDENTE`:
+deploy real Vercel/Render/Supabase Staging + secrets, alertas Sentry, migrate/seed de staging, execução de smoke/E2E contra staging.
+
+---
+
 # Notas de Atualização 0.0.12
 
 ## Fase 0.2 - Verificação E2E + Conexão DB
