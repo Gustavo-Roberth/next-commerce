@@ -1,5 +1,5 @@
 # Phases - NextCommerce
-## Fase ativa: FASE 2.1 — Tema Escuro (Dark Mode) Toggle
+## Fase ativa: FASE 3 — Gestão Completa + Admin
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Status:** EM DESENVOLVIMENTO
 
 ---
@@ -59,7 +59,7 @@ Auditar todas as dependências já instaladas no monorepo e atualizá-las para a
 
 # ⚪ FASE 0.1 — Qualidade de Lint + Garantia de Execução
 **Status: CONCLUÍDA**
-**Início:** 2026-08-26 | **Fim estimado:** 2026-08-29
+**Início:** 2026-08-26 | **Fim estimado:** 2026-08-29 | **Concluído:** 2026-08-26
 
 ## Origem
 A Fase 0 atualizou as dependências do monorepo (Prisma 5→7, Next 15→16, React 19.2, Radix/Fastify `latest`). Essa atualização introduziu erros de lint na API e expôs erros/warnings pré-existentes no web que bloqueiam o CI. Além disso, o boot de `pnpm dev` e o fluxo E2E ainda não foram verificados após as mudanças da Fase 0.
@@ -98,6 +98,7 @@ Zerar os erros de lint em todo o monorepo (web, api, shared), confirmar que a ap
 
 # ⚪ FASE 0.2 — Verificação E2E + Conexão DB
 **Status: CONCLUÍDA**
+**Início:** 2026-08-26 | **Fim estimado:** 2026-08-26 | **Concluído:** 2026-08-27
 
 ## Objetivo
 Executar o fluxo E2E smoke (`pnpm test:e2e`) e confirmar a conexão da API ao banco via `@prisma/adapter-pg` em um ambiente com PostgreSQL/Supabase acessível.
@@ -114,6 +115,7 @@ Executar o fluxo E2E smoke (`pnpm test:e2e`) e confirmar a conexão da API ao ba
 
 # ⚪ FASE 0.3 — Alinhamento de data-testids para E2E Smoke
 **Status: CONCLUÍDA**
+**Início:** 2026-08-27 | **Fim estimado:** 2026-08-27 | **Concluído:** 2026-08-27
 
 ## Objetivo
 Adicionar atributos `data-testid` nos componentes da UI para que os testes E2E existentes localizem os elementos corretamente (product-card, cart-button, cart-item, orders-table, order-row, user-menu, pix-qr-code, favorite-item, etc.).
@@ -153,6 +155,7 @@ Completar a infraestrutura para E2E smoke 100% verde: implementar fluxo de auten
 
 # ⚪ FASE 1 — Fundação e MVP Loja
 **Status: CONCLUÍDA**
+**Início:** 2026-08-26 | **Fim estimado:** 2026-08-29 | **Concluído:** 2026-08-27
 
 ## Objetivo
 Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedidos básicos.
@@ -214,7 +217,7 @@ Entregar loja funcional end-to-end: cliente navega, compra, paga; admin vê pedi
 
 # ⚪ FASE 1.1 — Deploy Staging + Polish
 **Status: CONCLUÍDA**
-**Início:** 2026-08-28 | **Fim estimado:** 2026-09-03
+**Início:** 2026-08-28 | **Fim estimado:** 2026-09-03 | **Concluído:** 2026-08-28
 
 ## Objetivo
 Realizar deploy em ambiente de staging (Vercel + Render + Supabase), configurar monitoramento, validar smoke tests pós-deploy e aplicar polimento final (lint, tipos, acessibilidade, performance) antes de encerrar a Fase 1.
@@ -267,7 +270,7 @@ Realizar deploy em ambiente de staging (Vercel + Render + Supabase), configurar 
 
 # ⚪ FASE 2 — Design e Polimento Visual
 **Status: CONCLUÍDA**
-**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Concluído:** 2026-08-29
 
 ## Objetivo
 Aplicar uma camada de polimento visual, motion e microinterações sobre o MVP da loja já funcional (Fase 1), tornando a experiência atraente e moderna antes de avançar para as funcionalidades de gestão (Fase 3). Esta fase **não** altera contratos de API, regras de negócio ou cria funcionalidades novas — apenas refina o que já existe.
@@ -295,9 +298,9 @@ Aplicar uma camada de polimento visual, motion e microinterações sobre o MVP d
 4. Tokens de motion (duração/easing) documentados e reutilizados de forma consistente entre componentes
 5. Auditoria de acessibilidade não encontra bloqueadores críticos (contraste insuficiente, foco não visível)
 
-# 🟢 FASE 2.1 — Tema Escuro (Dark Mode) Toggle
-**Status: EM DESENVOLVIMENTO**
-**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
+# ⚪ FASE 2.1 — Tema Escuro (Dark Mode) Toggle
+**Status: CONCLUÍDA**
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Concluído:** 2026-08-29
 
 ## Objetivo
 Os tokens de cor do modo escuro (`--*` sob `.dark` em `apps/web/src/app/globals.css`) estão definidos, mas não há `ThemeProvider` nem toggle de tema — o dark mode está inativo. Adicionar um `ThemeProvider` (ex: next-themes) e um toggle de tema na Header para ativar o modo escuro de forma consistente, respeitando os tokens já existentes. Não altera contratos de API.
@@ -313,9 +316,9 @@ Os tokens de cor do modo escuro (`--*` sob `.dark` em `apps/web/src/app/globals.
 
 ---
 
-# 🔒 FASE 3 — Gestão Completa + Admin
-**Status: BLOQUEADA**
-**Início:** 2026-11-28 | **Fim estimado:** 2027-02-06
+# 🟢 FASE 3 — Gestão Completa + Admin
+**Status: EM DESENVOLVIMENTO**
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Concluído:** 2026-08-29
 
 ## Objetivo
 Operação completa: estoque real, relatórios, NF-e, configurações ricas, multi-depósito.
@@ -345,6 +348,205 @@ Operação completa: estoque real, relatórios, NF-e, configurações ricas, mul
 2. Financeiro consegue: conciliação diária automática + divergências em fila
 3. Gestor consegue: dashboard tempo real + relatórios agendados por e-mail
 4. NF-e emitida automaticamente ao marcar "Enviado"
+
+# 🔒 FASE 3.1 — Estoque: Telas Admin
+**Status: PENDENTE**
+**Início:** _ | **Fim estimado:** _
+
+## Origem
+O módulo de estoque (multi-depósito) foi implementado no backend na FASE 3 (`/api/v1/admin/estoque*`, `depositos`, movimentações, reserva/liberação, transferência e inventário), mas ainda não há frontend administrativo consumindo essas rotas.
+
+## Objetivo
+Construir as telas do admin de estoque em `apps/web` consumindo as rotas `/admin/estoque*` já implementadas, permitindo que estoquistas e gestores operem o inventário sem acesso manual à API.
+
+## Entregáveis (Definition of Done)
+
+### Frontend (Admin — `apps/web`)
+- [ ] Dashboard de estoque: lista depósitos, saldo por variação e alertas (baixo/zerado) consumindo `GET /admin/estoque/dashboard`
+- [ ] Tela de depósitos: CRUD via `/admin/depositos` (inclui marcação de depósito padrão por loja)
+- [ ] Tela de entrada de mercadoria (NF de compra) via `POST /admin/estoque/movimentos`
+- [ ] Tela de saída (venda/perda/doação/ajuste) via `POST /admin/estoque/movimentos`
+- [ ] Tela de transferência entre depósitos via `POST /admin/estoque/transferencia`
+- [ ] Tela de inventário (contagem física) via `POST /admin/estoque/inventario`
+- [ ] RBAC visual: botões/fluxos conforme perfil (ESTOQUISTA/OPERADOR/GESTOR/ADMIN)
+- [ ] Estados de carregamento e vazio nas telas (padrão da FASE 2)
+
+## Critérios de aceitação
+1. Estoquista consegue: ver alertas → registrar entrada (NF) → operar saída → transferir → executar inventário, tudo pela UI, sem acesso manual à API
+2. Gestor/Admin consegue: criar/editar/desativar depósitos e definir o depósito padrão da loja
+3. Nenhuma tela fica em branco: estados de carregamento e vazio tratados
+4. `typecheck`, `lint` e testes do web passando
+
+---
+
+# 🔒 FASE 3.2 — NF-e: Emissão Automática
+**Status: PENDENTE**
+**Início:** _ | **Fim estimado:** _
+
+## Origem
+O critério 4 da FASE 3 exige que a NF-e seja emitida automaticamente ao marcar um pedido como "Enviado". Hoje nenhuma emissão de documento fiscal é realizada.
+
+## Objetivo
+Implementar a emissão de Nota Fiscal eletrônica: integração com provedor de emissão (`providers/nfe.provider.ts`), armazenamento de XML/PDF no Storage (buckets `nfe-xml`/`nfe-pdf`), evento `ENVIADO` automático e integração com o status do pedido.
+
+## Entregáveis (Definition of Done)
+
+### Backend (`apps/api`)
+- [ ] `providers/nfe.provider.ts` abstraindo a integração com o provedor de emissão (dados da loja + itens + destinatário)
+- [ ] Fluxo de emissão: ao marcar pedido "Enviado" → emitir NF-e e registrar evento `ENVIADO`
+- [ ] Persistência do XML e do PDF da NF-e no Storage (buckets `nfe-xml` e `nfe-pdf` do Supabase)
+- [ ] Atualização do status/documento no pedido (id da NF-e, chave de acesso, link XML/PDF, situação)
+- [ ] Schemas Zod e tipos compartilhados de NF-e (em `packages/shared` e espelhados em `apps/api/src/schemas`)
+
+### Frontend (Admin — `apps/web`)
+- [ ] Ação "marcar Enviado" no detalhe do pedido disparando a emissão
+- [ ] Exibição do XML/PDF da NF-e e da chave de acesso no pedido
+
+## Critérios de aceitação
+1. NF-e é emitida automaticamente ao marcar "Enviado" em um pedido
+2. XML e PDF da NF-e ficam disponíveis no Storage e acessíveis pelo admin
+3. O pedido reflete a situação fiscal da NF-e (emitida/erro com mensagem)
+
+---
+
+# 🔒 FASE 3.3 — Relatórios: Views, Export e Agendamento
+**Status: PENDENTE**
+**Início:** _ | **Fim estimado:** _
+
+## Origem
+Os critérios 2 e 3 da FASE 3 exigem conciliação diária e relatórios agendados por e-mail. Não há camada de relatórios/dashboard gerencial além do estoque.
+
+## Objetivo
+Implementar relatórios gerenciais a partir de materialized views (vendas diário, produtos top, estoque baixo, conciliação), com exportação CSV/PDF e agendamento por e-mail.
+
+## Entregáveis (Definition of Done)
+
+### Backend (`apps/api`)
+- [ ] Materialized views: vendas diário, produtos mais vendidos, estoque baixo e conciliação
+- [ ] Controle de refresh das views (flag de invalidação via Redis/Upstash ou cron)
+- [ ] Endpoints de consulta e exportação CSV/PDF dos relatórios
+- [ ] Agendamento de envio por e-mail de relatórios
+
+### Frontend (Admin — `apps/web`)
+- [ ] Tela de relatórios com visualização das métricas
+- [ ] Botões de exportação CSV/PDF
+- [ ] Configuração de agendamento por e-mail dos relatórios
+
+## Critérios de aceitação
+1. Gestor consulta relatórios de vendas, produtos top, estoque baixo e conciliação na UI
+2. Gestor exporta relatórios em CSV/PDF
+3. Gestor agenda envio de relatório por e-mail e o recebe no dia/horário configurado
+
+---
+
+# 🔒 FASE 3.4 — Configurações: Abas Admin
+**Status: PENDENTE**
+**Início:** _ | **Fim estimado:** _
+
+## Origem
+A FASE 3 exige configurações ricas da loja (frete, pagamentos, cupons, e-mails, integrações). Atualmente essas configurações são ausentes no admin.
+
+## Objetivo
+Construir o módulo de configurações do admin em abas (Loja, Frete, Pagamentos, Cupons, E-mails, Integrações), com frete por regras priorizadas, credenciais de pagamento criptografadas, gestão de cupons e templates de e-mail em MJML.
+
+## Entregáveis (Definition of Done)
+
+### Backend (`apps/api`)
+- [ ] Schemas e endpoints de configurações da loja (dados gerais, frete, pagamentos, cupons, e-mails, integrações)
+- [ ] Frete por regras priorizadas (Correios, transportadoras, tabela própria)
+- [ ] Credenciais de pagamento criptografadas em repouso
+- [ ] CRUD de cupons (validação e aplicação no checkout)
+- [ ] Templates de e-mail em MJML via `providers/email.provider.ts`
+
+### Frontend (Admin — `apps/web`)
+- [ ] Abas de configuração: Loja, Frete, Pagamentos, Cupons, E-mails, Integrações
+- [ ] Formulários com validação, estados de carregamento e feedback (toast)
+
+## Critérios de aceitação
+1. Administrador configura dados da loja, regras de frete e credenciais de pagamento sem editar código
+2. Credenciais de pagamento são armazenadas criptografadas (nunca em texto puro)
+3. Cupons são criados/desativados e aplicados no checkout
+4. E-mails transacionais usam templates MJML editáveis no admin
+
+---
+
+# 🔒 FASE 3.5 — Rastreamento de Pedidos
+**Status: PENDENTE**
+**Início:** _ | **Fim estimado:** _
+
+## Origem
+A FASE 3 prevê timeline completa de pedidos e rastreamento. Hoje o pedido não possui eventos de rastreamento nem integração com transportadoras.
+
+## Objetivo
+Implementar o rastreamento de pedidos: webhook de transportadoras, eventos append-only e notificação ao cliente sobre a evolução da entrega.
+
+## Entregáveis (Definition of Done)
+
+### Backend (`apps/api`)
+- [ ] Webhook de transportadoras para receber eventos de rastreamento
+- [ ] Registro de eventos de rastreamento de forma append-only (imutáveis e ordenados)
+- [ ] Notificação ao cliente em eventos relevantes (ex.: despachado, entregue)
+- [ ] Schemas/tipos compartilhados de rastreamento
+
+### Frontend (Admin + Loja)
+- [ ] Timeline de rastreamento no detalhe do pedido do admin (e no histórico do cliente)
+
+## Critérios de aceitação
+1. Eventos recebidos do webhook são registrados de forma append-only, sem sobrescrita
+2. Cliente visualiza a timeline de rastreamento do pedido
+3. Cliente é notificado em eventos relevantes da entrega
+
+---
+
+# 🔒 FASE 3.6 — Jobs Agendados
+**Status: PENDENTE**
+**Início:** _ | **Fim estimado:** _
+
+## Origem
+Os critérios 2 e 3 da FASE 3 exigem automação (conciliação diária, alertas de estoque horário, relatórios agendados). Não há camada de jobs agendados além das operações síncronas.
+
+## Objetivo
+Implementar jobs agendados (node-cron) para conciliação diária, alertas de estoque horário e relatórios agendados por e-mail.
+
+## Entregáveis (Definition of Done)
+
+### Backend (`apps/api`)
+- [ ] Estrutura `src/jobs/` com registro e ciclo de vida dos agendamentos
+- [ ] Job de conciliação diária (fila de divergências)
+- [ ] Job de alerta de estoque horário (baixo/zerado → notificação)
+- [ ] Job de relatórios agendados por e-mail
+
+## Critérios de aceitação
+1. Conciliação diária roda automaticamente e expõe divergências em fila
+2. Alertas de estoque são disparados na frequência configurada (horária)
+3. Relatórios agendados são gerados e enviados por e-mail no horário definido
+
+---
+
+# 🔒 FASE 3.7 — Auditoria de Ações Críticas
+**Status: PENDENTE**
+**Início:** _ | **Fim estimado:** _
+
+## Origem
+`docs/tech.md` define uma tabela `audit_log` para registrar eventos críticos (preço, estoque, status de pedido, alteração de perfis). O registro de auditoria ainda não existe na base.
+
+## Objetivo
+Criar a infraestrutura de auditoria: tabela `audit_log` e triggers PostgreSQL que registram automaticamente ações críticas de forma imutável.
+
+## Entregáveis (Definition of Done)
+
+### Backend / Banco de dados
+- [ ] Tabela `audit_log` (evento, entidade, id, antes/depois, usuário, timestamp)
+- [ ] Trigger de auditoria para alteração de preço de produto
+- [ ] Trigger de auditoria para movimentações de estoque
+- [ ] Trigger de auditoria para mudança de status de pedido
+- [ ] Trigger de auditoria para alteração de perfis/usuários
+- [ ] Registros imutáveis (sem UPDATE/DELETE nos dados de auditoria) e consulta via endpoint admin
+
+## Critérios de aceitação
+1. Ações críticas (preço, estoque, status de pedido, perfis) são registradas automaticamente e de forma imutável
+2. Administrador consulta o histórico de auditoria de uma entidade na UI
+3. Registro de auditoria não pode ser alterado ou apagado acidentalmente
 
 ---
 

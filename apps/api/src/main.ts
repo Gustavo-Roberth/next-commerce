@@ -26,6 +26,7 @@ import { clientRoutes } from './client/routes.js';
 import { prisma } from './lib/prisma.js';
 import { adminOrderRoutes } from './orders/admin.routes.js';
 import { orderRoutes } from './orders/routes.js';
+import { stockRoutes } from './stock/routes.js';
 import { adminProductRoutes } from './products/admin.routes.js';
 import { productRoutes } from './products/routes.js';
 import { storageRoutes } from './providers/storage.routes.js';
@@ -130,12 +131,13 @@ async function initialize() {
   await app.register(checkoutRoutes, { prefix: '/api/v1' });
   await app.register(orderRoutes, { prefix: '/api/v1' });
   await app.register(adminOrderRoutes, { prefix: '/api/v1' });
+  await app.register(stockRoutes, { prefix: '/api/v1' });
   await app.register(storageRoutes, { prefix: '/api/v1' });
   await app.register(webhookRoutes, { prefix: '/api/v1' });
   await app.register(clientRoutes, { prefix: '/api/v1' });
 
   const port = Number(process.env.PORT) || 3001;
-  await app.listen({ port, host: '0.0.0.0' });
+  await app.listen({ port, host: '::' });
   console.log(`🚀 Server running on port ${port}`);
   console.log(`📚 Swagger UI available at http://localhost:${port}/docs`);
 }

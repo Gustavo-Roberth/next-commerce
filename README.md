@@ -1,3 +1,26 @@
+# Notas de Atualização 0.0.18
+
+## Fase 3 - Gestão Completa + Admin
+### ✅ Concluído nesta fase
+
+**1. Módulo de Estoque (multi-depósito) — Backend**
+- `POST/GET/PUT/DELETE /api/v1/admin/depositos` (CRUD de depósitos; depósito padrão exclusivo por loja) ✅
+- `POST/GET/PUT /api/v1/admin/estoque` + `GET /admin/estoque/dashboard` (saldo por variação/depósito, disponível = físico − reservado, alerta baixo/zerado) ✅
+- `POST /admin/estoque/movimentos` (entrada compra/devolução/ajuste, saída venda/perda/doação/ajuste com recálculo de custo médio) ✅
+- `POST /admin/estoque/reserva` e `/liberar` (reserva atômica com verificação de disponível) ✅
+- `POST /admin/estoque/transferencia` (saída + entrada na mesma transação) ✅
+- `POST /admin/estoque/inventario` (ajuste de divergência por contagem física) ✅
+- Schemas Zod em `apps/api/src/schemas/stock.schemas.ts`, service `apps/api/src/stock/service.ts`, rotas `apps/api/src/stock/routes.ts`, registradas em `main.ts` ✅
+- Testes unitários do service (5/5) ✅ · `typecheck` e `lint` limpos ✅
+
+### 🔧 Ajustes técnicos importantes
+- Enums `EstoqueMovimentoTipo`/`EstoqueReferenciaTipo` reutilizados dos gerados do Prisma; schemas de estoque já existiam em `packages/shared` e foram espelhados localmente no api (padrão do repositório)
+
+### ⏳ Pendente (Fase 3)
+FASE 3.1 Estoque: telas admin · FASE 3.2 NF-e · FASE 3.3 Relatórios · FASE 3.4 Configurações · FASE 3.5 Rastreamento · FASE 3.6 Jobs agendados · FASE 3.7 Auditoria
+
+---
+
 # Notas de Atualização 0.0.17
 
 ## Fase 2.1 - Tema Escuro (Dark Mode) Toggle
