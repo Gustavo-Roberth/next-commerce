@@ -1,6 +1,7 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { authMiddleware, requireRole } from '../auth/middleware.js';
 import { prisma } from '../lib/prisma.js';
+import { emitirNotaFiscalPedido, mapearNotaFiscalResposta } from '../nfe/service.js';
 import {
   type AdminPedidoListQuery,
   type PedidoParams,
@@ -53,6 +54,7 @@ function serializePedido(pedido: PedidoWithRelations) {
           juros_cents: p.juros_cents ? Number(p.juros_cents) : 0,
         }))
       : null,
+    notas_fiscais: pedido.notas_fiscais ? (pedido.notas_fiscais as unknown[]) : undefined,
   };
 }
 
@@ -273,6 +275,28 @@ export async function adminOrderRoutes(app: FastifyInstance): Promise<void> {
                   },
                 },
               },
+              notas_fiscais: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'string', format: 'uuid' },
+                    pedido_id: { type: 'string', format: 'uuid' },
+                    numero: { type: 'string', nullable: true },
+                    serie: { type: 'string', nullable: true },
+                    chave_acesso: { type: 'string', nullable: true },
+                    xml_url: { type: 'string', nullable: true },
+                    pdf_url: { type: 'string', nullable: true },
+                    status: { type: 'string' },
+                    erro_mensagem: { type: 'string', nullable: true },
+                    emitida_em: { type: 'string', format: 'date-time', nullable: true },
+                    autorizada_em: { type: 'string', format: 'date-time', nullable: true },
+                    cancelada_em: { type: 'string', format: 'date-time', nullable: true },
+                    created_at: { type: 'string', format: 'date-time' },
+                    updated_at: { type: 'string', format: 'date-time' },
+                  },
+                },
+              },
             },
           },
           404: { type: 'object', properties: { error: { type: 'string' } } },
@@ -296,11 +320,18 @@ export async function adminOrderRoutes(app: FastifyInstance): Promise<void> {
           cupom: true,
           pagamentos: true,
           eventos: { orderBy: { created_at: 'asc' } },
+          notas_fiscais: true,
         },
       });
 
       if (!pedido) {
         return reply.code(404).send({ error: 'Pedido não encontrado' });
+      }
+
+      if (pedido.notas_fiscais && pedido.notas_fiscais.length > 0) {
+        (pedido as Record<string, unknown>).notas_fiscais = await Promise.all(
+          pedido.notas_fiscais.map((nota) => mapearNotaFiscalResposta(nota))
+        );
       }
 
       return reply.send(serializePedido(pedido));
@@ -391,6 +422,14 @@ export async function adminOrderRoutes(app: FastifyInstance): Promise<void> {
           metadata: { status_anterior: pedido.status, status_novo: status },
         },
       });
+
+      if (status === 'ENVIADO') {
+        try {
+          await emitirNotaFiscalPedido(id, lojaId, request.user?.sub);
+        } catch {
+          // Erro registrado na NotaFiscal (status ERRO); a transição do pedido é mantida
+        }
+      }
 
       if (status === 'CANCELADO') {
         for (const item of await prisma.itemPedido.findMany({ where: { pedido_id: id } })) {

@@ -221,6 +221,7 @@ export interface Pedido {
   cupom: Cupom | null;
   pagamentos: Pagamento[];
   eventos: PedidoEvento[];
+  notas_fiscais?: NotaFiscal[];
 }
 
 export interface PedidoItem {
@@ -281,6 +282,23 @@ export interface PedidoEvento {
   descricao: string;
   created_at: string;
   metadata?: Record<string, unknown>;
+}
+
+export interface NotaFiscal {
+  id: string;
+  pedido_id: string;
+  numero: string | null;
+  serie: string | null;
+  chave_acesso: string | null;
+  xml_url: string | null;
+  pdf_url: string | null;
+  status: string;
+  erro_mensagem: string | null;
+  emitida_em: string | null;
+  autorizada_em: string | null;
+  cancelada_em: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PedidosListResponse {

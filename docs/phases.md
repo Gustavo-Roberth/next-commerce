@@ -71,7 +71,7 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 3.1 — Estoque: Telas Admin**
+🟢 **FASE 3.2 — NF-e: Emissão Automática**
 **Status: EM DESENVOLVIMENTO**
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
 

@@ -26,10 +26,10 @@ import { clientRoutes } from './client/routes.js';
 import { prisma } from './lib/prisma.js';
 import { adminOrderRoutes } from './orders/admin.routes.js';
 import { orderRoutes } from './orders/routes.js';
-import { stockRoutes } from './stock/routes.js';
 import { adminProductRoutes } from './products/admin.routes.js';
 import { productRoutes } from './products/routes.js';
 import { storageRoutes } from './providers/storage.routes.js';
+import { stockRoutes } from './stock/routes.js';
 import { webhookRoutes } from './webhooks/routes.js';
 
 Sentry.init({

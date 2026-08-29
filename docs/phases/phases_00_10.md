@@ -349,9 +349,9 @@ Operação completa: estoque real, relatórios, NF-e, configurações ricas, mul
 3. Gestor consegue: dashboard tempo real + relatórios agendados por e-mail
 4. NF-e emitida automaticamente ao marcar "Enviado"
 
-# 🟢 FASE 3.1 — Estoque: Telas Admin
-**Status: EM DESENVOLVIMENTO**
-**Início:** _ | **Fim estimado:** _
+# ⚪ FASE 3.1 — Estoque: Telas Admin
+**Status: CONCLUÍDA**
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Concluído:** 2026-08-29
 
 ## Origem
 O módulo de estoque (multi-depósito) foi implementado no backend na FASE 3 (`/api/v1/admin/estoque*`, `depositos`, movimentações, reserva/liberação, transferência e inventário), mas ainda não há frontend administrativo consumindo essas rotas.
@@ -379,9 +379,9 @@ Construir as telas do admin de estoque em `apps/web` consumindo as rotas `/admin
 
 ---
 
-# 🔒 FASE 3.2 — NF-e: Emissão Automática
-**Status: PENDENTE**
-**Início:** _ | **Fim estimado:** _
+# 🟢 FASE 3.2 — NF-e: Emissão Automática
+**Status: EM DESENVOLVIMENTO**
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Concluído:** 2026-08-29
 
 ## Origem
 O critério 4 da FASE 3 exige que a NF-e seja emitida automaticamente ao marcar um pedido como "Enviado". Hoje nenhuma emissão de documento fiscal é realizada.

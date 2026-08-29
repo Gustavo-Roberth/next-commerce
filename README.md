@@ -1,3 +1,30 @@
+# Notas de Atualização 0.0.20
+
+## Fase 3.2 - NF-e: Emissão Automática
+### ✅ Concluído nesta fase
+
+**1. Backend — emissão automática (Fase 3.2)**
+- Modelo `NotaFiscal` (Prisma): adicionado `erro_mensagem String?` para registrar falhas; campos `xml_url`, `pdf_url`, `chave_acesso`, `status` ✅
+- `apps/api/src/providers/nfe.provider.ts`: abstração `NfeProvider` (emitente/destinatário/itens/CFOP 5910) + `httpNfeProvider` (POST `${NFE_PROVIDER_URL}/nfe` com Bearer `NFE_PROVIDER_TOKEN`) ✅
+- `apps/api/src/nfe/service.ts`: `emitirNotaFiscalPedido` (monta payload do pedido, emite, faz upload XML/PDF para buckets `nfe-xml`/`nfe-pdf` via Storage, upsert da `NotaFiscal` com status EMITIDA/ERRO e cria `PedidoEvento` NFE_EMITIDA/NFE_ERRO); `mapearNotaFiscalResposta` gera URLs assinadas ✅
+- Integração no fluxo: ao marcar pedido como `ENVIADO` (rotas `orders/routes.ts` e `orders/admin.routes.ts`), dispara `emitirNotaFiscalPedido` em `try/catch` (erro não bloqueia a transição) ✅
+- `GET /admin/pedidos/:id` retorna `notas_fiscais` serializadas (URLs assinadas de XML/PDF) ✅
+- Schemas compartilhados: `packages/shared/src/types/entities.ts` + `schemas/nfe.schemas.ts` e espelhados em `apps/api/src/schemas/nfe.schemas.ts` ✅
+- Testes unitários do service (3) + mapeamento (2) com prisma/storage mockados ✅
+
+**2. Frontend admin — visualização NF-e (`apps/web`)**
+- `NotaFiscal` tipada em `src/lib/api/types.ts` e `Pedido.notas_fiscais` ✅
+- Card "Nota Fiscal (NF-e)" em `/admin/pedidos/[id]`: badge de status, chave de acesso, nº/série, links XML e PDF (DANFE) e mensagem de erro quando status ERRO ✅
+
+### 🔧 Ajustes técnicos importantes
+- Loja ainda NÃO possui dados fisais (CNPJ/IE/endereço) — emitente é montado via env (`NFE_EMITENTE_*`) com fallback para `loja.nome`; pendência documentada para Fase 3.4 (Configurações)
+- Buckets `nfe-xml`/`nfe-pdf` são privados; acesso via URL assinada (`createSignedUrl`)
+
+### ⏳ Pendente (Fase 3)
+FASE 3.3 Relatórios · FASE 3.4 Configurações · FASE 3.5 Rastreamento · FASE 3.6 Jobs agendados · FASE 3.7 Auditoria
+
+---
+
 # Notas de Atualização 0.0.19
 
 ## Fase 3.1 - Estoque: Telas Admin

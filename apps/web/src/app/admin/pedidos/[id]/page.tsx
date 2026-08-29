@@ -25,6 +25,7 @@ import {
   Clock,
   CreditCard,
   DollarSign,
+  FileText,
   Mail,
   MapPin,
   Package,
@@ -547,6 +548,101 @@ export default function AdminPedidoDetalhePage() {
                 <Save className="h-4 w-4 mr-2" />
                 {updating ? 'Atualizando...' : 'Atualizar Status'}
               </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Nota Fiscal (NF-e)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {(() => {
+                const nota = pedido.notas_fiscais?.[0];
+                if (!nota) {
+                  return (
+                    <p className="text-muted-foreground">
+                      Nenhuma NF-e emitida. Ao marcar o pedido como &quot;Enviado&quot;, a emissão
+                      ocorre automaticamente.
+                    </p>
+                  );
+                }
+                const nfStatus = nota.status;
+                const nfColor =
+                  nfStatus === 'EMITIDA'
+                    ? 'bg-green-100 text-green-800'
+                    : nfStatus === 'ERRO'
+                      ? 'bg-red-100 text-red-800'
+                      : nfStatus === 'CANCELADA'
+                        ? 'bg-gray-100 text-gray-800'
+                        : 'bg-yellow-100 text-yellow-800';
+                return (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Badge className={nfColor}>{nfStatus}</Badge>
+                      {nota.emitida_em && (
+                        <span className="text-muted-foreground">
+                          Emitida em {formatDate(nota.emitida_em)}
+                        </span>
+                      )}
+                    </div>
+
+                    {nota.chave_acesso && (
+                      <div>
+                        <p className="text-muted-foreground">Chave de acesso</p>
+                        <p className="font-mono text-xs break-all">{nota.chave_acesso}</p>
+                      </div>
+                    )}
+
+                    {(nota.numero || nota.serie) && (
+                      <div>
+                        <p className="text-muted-foreground">Número / Série</p>
+                        <p className="font-medium">
+                          {nota.numero ?? '—'}
+                          {nota.serie ? ` / Série ${nota.serie}` : ''}
+                        </p>
+                      </div>
+                    )}
+
+                    {nfStatus === 'ERRO' && nota.erro_mensagem && (
+                      <div className="rounded-lg bg-red-50 p-3 text-red-600">
+                        {nota.erro_mensagem}
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-2">
+                      {nota.xml_url && (
+                        <a
+                          href={nota.xml_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-accent"
+                        >
+                          <FileText className="h-4 w-4" />
+                          XML
+                        </a>
+                      )}
+                      {nota.pdf_url && (
+                        <a
+                          href={nota.pdf_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-accent"
+                        >
+                          <FileText className="h-4 w-4" />
+                          PDF (DANFE)
+                        </a>
+                      )}
+                    </div>
+
+                    {!nota.xml_url && !nota.pdf_url && nfStatus !== 'ERRO' && (
+                      <p className="text-muted-foreground">Arquivos ainda não disponíveis.</p>
+                    )}
+                  </div>
+                );
+              })()}
             </CardContent>
           </Card>
 

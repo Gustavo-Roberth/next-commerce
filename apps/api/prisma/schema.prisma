@@ -848,6 +848,7 @@ model NotaFiscal {
   xml_url         String?
   pdf_url         String?
   status          String   @default("PENDENTE")
+  erro_mensagem   String?
   emitida_em      DateTime?
   autorizada_em   DateTime?
   cancelada_em    DateTime?

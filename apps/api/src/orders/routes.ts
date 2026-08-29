@@ -1,6 +1,7 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { authMiddleware, requireRole } from '../auth/middleware.js';
 import { prisma } from '../lib/prisma.js';
+import { emitirNotaFiscalPedido } from '../nfe/service.js';
 import {
   type PedidoListQuery,
   type PedidoParams,
@@ -390,6 +391,14 @@ export async function orderRoutes(app: FastifyInstance): Promise<void> {
           metadata: { status_anterior: pedido.status, status_novo: status },
         },
       });
+
+      if (status === 'ENVIADO') {
+        try {
+          await emitirNotaFiscalPedido(id, pedido.loja_id, request.user?.sub);
+        } catch {
+          // Erro registrado na NotaFiscal (status ERRO); a transição do pedido é mantida
+        }
+      }
 
       if (status === 'CANCELADO') {
         for (const item of await prisma.itemPedido.findMany({ where: { pedido_id: id } })) {

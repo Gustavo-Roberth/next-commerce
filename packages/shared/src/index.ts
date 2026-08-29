@@ -101,3 +101,5 @@ export type {
   AuditLogInput,
   AuditLogListQuery,
 } from './schemas/config.schemas';
+
+export type { NotaFiscal, NotaFiscalStatus } from './schemas/nfe.schemas';

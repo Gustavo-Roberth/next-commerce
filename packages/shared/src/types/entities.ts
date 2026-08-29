@@ -373,3 +373,19 @@ export interface AuditLog extends BaseEntity {
   ip: string | null;
   user_agent: string | null;
 }
+
+export type NotaFiscalStatus = 'PENDENTE' | 'EMITIDA' | 'ERRO' | 'CANCELADA';
+
+export interface NotaFiscal extends BaseEntity {
+  pedido_id: string;
+  numero: string | null;
+  serie: string | null;
+  chave_acesso: string | null;
+  xml_url: string | null;
+  pdf_url: string | null;
+  status: NotaFiscalStatus;
+  erro_mensagem: string | null;
+  emitida_em: Date | null;
+  autorizada_em: Date | null;
+  cancelada_em: Date | null;
+}
