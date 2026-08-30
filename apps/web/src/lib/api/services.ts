@@ -7,6 +7,13 @@ import type {
   AdminStats,
   ApplyCupomInput,
   ApplyCupomResponse,
+  AtualizarCupomInput,
+  AtualizarEmailTemplateInput,
+  AtualizarFreteInput,
+  AtualizarIntegracaoInput,
+  AtualizarLojaInput,
+  AtualizarPagamentoInput,
+  CalcularFreteInput,
   CalcularFreteResponse,
   CarrinhoItem,
   CarrinhoResponse,
@@ -14,16 +21,28 @@ import type {
   CategoriasListResponse,
   CheckoutInput,
   CheckoutResponse,
+  ConfiguracaoFrete,
+  ConfiguracaoPagamento,
   CreateCategoriaInput,
   CreateDepositoInput,
   CreateMovimentoInput,
   CreateProdutoInput,
   CreateReportScheduleInput,
+  CriarCupomInput,
+  CriarEmailTemplateInput,
+  CriarFreteInput,
+  CriarIntegracaoInput,
+  CriarPagamentoInput,
+  CupomConfig,
   Deposito,
+  EmailTemplate,
   EstoqueDashboard,
   EstoqueItem,
   EstoqueListResponse,
+  Integracao,
   InventarioEstoqueInput,
+  LojaConfig,
+  OpcaoFrete,
   Pedido,
   PedidosListResponse,
   Produto,
@@ -34,12 +53,14 @@ import type {
   RelatorioTipo,
   ReportSchedule,
   ReportScheduleListResponse,
+  ResultadoValidacaoCupom,
   TransferenciaEstoqueInput,
   UpdateCartItemInput,
   UpdateCategoriaInput,
   UpdateDepositoInput,
   UpdatePedidoStatusInput,
   UpdateProdutoInput,
+  ValidarCupomInput,
 } from './types';
 
 export const produtosApi = {
@@ -335,5 +356,81 @@ export const adminApi = {
 
     enviarAgora: (id: string) =>
       api.post<{ message: string }>(`/admin/relatorios/agendamentos/${id}/enviar`, {}),
+  },
+
+  configuracoes: {
+    loja: {
+      get: () => api.get<LojaConfig>('/admin/configuracoes/loja'),
+      update: (input: AtualizarLojaInput) =>
+        api.patch<LojaConfig>('/admin/configuracoes/loja', input),
+    },
+    frete: {
+      list: () => api.get<ConfiguracaoFrete[]>('/admin/configuracoes/frete'),
+      create: (input: CriarFreteInput) =>
+        api.post<ConfiguracaoFrete>('/admin/configuracoes/frete', input),
+      update: (id: string, input: AtualizarFreteInput) =>
+        api.patch<ConfiguracaoFrete>(`/admin/configuracoes/frete/${id}`, input),
+      remove: (id: string) => api.delete<{ message: string }>(`/admin/configuracoes/frete/${id}`),
+      alternar: (id: string, ativo: boolean) =>
+        api.post<ConfiguracaoFrete>(`/admin/configuracoes/frete/${id}/alternar`, { ativo }),
+      calcular: (input: CalcularFreteInput) =>
+        api.post<OpcaoFrete[]>('/admin/configuracoes/frete/calcular', input),
+    },
+    pagamentos: {
+      list: () => api.get<ConfiguracaoPagamento[]>('/admin/configuracoes/pagamentos'),
+      create: (input: CriarPagamentoInput) =>
+        api.post<ConfiguracaoPagamento>('/admin/configuracoes/pagamentos', input),
+      update: (id: string, input: AtualizarPagamentoInput) =>
+        api.patch<ConfiguracaoPagamento>(`/admin/configuracoes/pagamentos/${id}`, input),
+      remove: (id: string) =>
+        api.delete<{ message: string }>(`/admin/configuracoes/pagamentos/${id}`),
+      alternar: (id: string, ativo: boolean) =>
+        api.post<ConfiguracaoPagamento>(`/admin/configuracoes/pagamentos/${id}/alternar`, {
+          ativo,
+        }),
+      credenciais: (id: string) =>
+        api.get<{ id: string; credenciais: Record<string, unknown> }>(
+          `/admin/configuracoes/pagamentos/${id}/credenciais`
+        ),
+    },
+    cupons: {
+      list: () => api.get<CupomConfig[]>('/admin/configuracoes/cupons'),
+      create: (input: CriarCupomInput) =>
+        api.post<CupomConfig>('/admin/configuracoes/cupons', input),
+      update: (id: string, input: AtualizarCupomInput) =>
+        api.patch<CupomConfig>(`/admin/configuracoes/cupons/${id}`, input),
+      remove: (id: string) => api.delete<{ message: string }>(`/admin/configuracoes/cupons/${id}`),
+      alternar: (id: string, ativo: boolean) =>
+        api.post<CupomConfig>(`/admin/configuracoes/cupons/${id}/alternar`, { ativo }),
+      validar: (input: ValidarCupomInput) =>
+        api.post<ResultadoValidacaoCupom>('/admin/configuracoes/cupons/validar', input),
+    },
+    emails: {
+      list: () => api.get<EmailTemplate[]>('/admin/configuracoes/emails'),
+      create: (input: CriarEmailTemplateInput) =>
+        api.post<EmailTemplate>('/admin/configuracoes/emails', input),
+      update: (id: string, input: AtualizarEmailTemplateInput) =>
+        api.patch<EmailTemplate>(`/admin/configuracoes/emails/${id}`, input),
+      remove: (id: string) => api.delete<{ message: string }>(`/admin/configuracoes/emails/${id}`),
+      preview: (id: string, variaveis?: Record<string, string>) =>
+        api.post<{ html: string; erros: string[] }>(`/admin/configuracoes/emails/${id}/preview`, {
+          variaveis: variaveis ?? {},
+        }),
+    },
+    integracoes: {
+      list: () => api.get<Integracao[]>('/admin/configuracoes/integracoes'),
+      create: (input: CriarIntegracaoInput) =>
+        api.post<Integracao>('/admin/configuracoes/integracoes', input),
+      update: (id: string, input: AtualizarIntegracaoInput) =>
+        api.patch<Integracao>(`/admin/configuracoes/integracoes/${id}`, input),
+      remove: (id: string) =>
+        api.delete<{ message: string }>(`/admin/configuracoes/integracoes/${id}`),
+      alternar: (id: string, ativo: boolean) =>
+        api.post<Integracao>(`/admin/configuracoes/integracoes/${id}/alternar`, { ativo }),
+      credenciais: (id: string) =>
+        api.get<{ id: string; credenciais: Record<string, unknown> }>(
+          `/admin/configuracoes/integracoes/${id}/credenciais`
+        ),
+    },
   },
 };

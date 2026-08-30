@@ -1,3 +1,37 @@
+# Notas de Atualização 0.0.22
+
+## Fase 3.4 - Configurações: Abas Admin
+### ✅ Concluído nesta fase
+
+**1. Backend — schema e migrate**
+- Migration `20260829130000_configuracoes`: tabelas `EmailTemplate` e `Integracao` + enum `IntegracaoTipo` + inversas em `Loja` ✅
+- `lib/crypto.ts`: criptografia AES-256-GCM de credenciais por loja (chave derivada via HKDF do `ENCRYPTION_KEY`) ✅
+
+**2. Backend — configurações (loja, frete, pagamentos, cupons, e-mails, integrações)**
+- `schemas/config.schemas.ts`: Zod de todas as entidades de configuração ✅
+- `frete/{repository,service}.ts`: CRUD + `calcularFrete` por regras priorizadas (GRATIS_VALOR, GRATIS_REGIAO, TABELA_PRECO, CORREIOS, TRANSPORTADORA) ✅
+- `cupom/{repository,service}.ts`: CRUD + `validarCupom` (vigência, uso, valor mínimo, escopo, 1ª compra, por cliente) ✅
+- `configuracoes/{loja,pagamentos,emails,integracoes}.ts`: serviços (pagamentos/integrações criptografam credenciais; e-mails compilam MJML+Handlebars) ✅
+- `configuracoes/routes.ts`: `GET/PATCH /admin/configuracoes/loja`, `/frete*`, `/pagamentos*`, `/cupons*`, `/emails*`, `/integracoes*` (escritas ADMIN, leituras ADMIN/GESTOR) ✅
+- Registrado em `main.ts` ✅
+
+**3. Backend — checkout reaproveitado**
+- `checkout/routes.ts`: `calcular-frete` usa `freteService.calcularFrete`; `aplicar-cupom` e `/checkout` usam `cupomService.validarCupom` ✅
+
+**4. Frontend admin — tela Configurações (`apps/web`)**
+- `adminApi.configuracoes.*` + tipos em `lib/api` (inclui `patch` no client) ✅
+- Nav "Configurações" em `app/admin/layout.tsx` ✅
+- `app/admin/configuracoes/page.tsx` + `components/admin/configuracoes/*`: abas Loja/Frete/Pagamentos/Cupons/E-mails/Integrações (CRUD, teste de cupom, pré-visualização MJML, reveal de credenciais) ✅
+
+**5. Testes (`apps/api`)**
+- `lib/crypto.test.ts`, `frete/service.test.ts`, `cupom/service.test.ts`, `configuracoes/pagamentos.test.ts` — 93 testes no total passando ✅
+
+### 🔧 Ajustes técnicos importantes
+- Credenciais de pagamentos/integrações NEVER retornam em listagens; endpoint `/:id/credenciais` (ADMIN) descriptografa
+- `ENCRYPTION_KEY` (32 bytes, base64) obrigatório para subir a API
+- Códigos de cupom são armazenados em minúsculas
+- Frete/ativação/remoção escopados por `loja_id` (isolamento)
+
 # Notas de Atualização 0.0.21
 
 ## Fase 3.3 - Relatórios: Views, Export e Agendamento

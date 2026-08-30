@@ -1,5 +1,5 @@
 # Phases - NextCommerce
-## FASE 3.3 — Relatórios: Views, Export e Agendamento
+## FASE 3.4 — Configurações: Abas Admin
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Status:** EM DESENVOLVIMENTO
 
 ---
@@ -409,8 +409,8 @@ Implementar a emissão de Nota Fiscal eletrônica: integração com provedor de 
 
 ---
 
-# 🟢 FASE 3.3 — Relatórios: Views, Export e Agendamento
-**Status: EM DESENVOLVIMENTO**
+# ⚪ FASE 3.3 — Relatórios: Views, Export e Agendamento
+**Status: CONCLUÍDA**
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Concluído:** 2026-08-29
 
 ## Origem
@@ -439,9 +439,9 @@ Implementar relatórios gerenciais a partir de materialized views (vendas diári
 
 ---
 
-# 🔒 FASE 3.4 — Configurações: Abas Admin
-**Status: PENDENTE**
-**Início:** _ | **Fim estimado:** _
+# 🟢 FASE 3.4 — Configurações: Abas Admin
+**Status: EM DESENVOLVIMENTO**
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
 
 ## Origem
 A FASE 3 exige configurações ricas da loja (frete, pagamentos, cupons, e-mails, integrações). Atualmente essas configurações são ausentes no admin.

@@ -338,8 +338,8 @@ export default function RelatoriosPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {DIAS_SEMANA.map((d, i) => (
-                      <SelectItem key={i} value={String(i)}>
+                    {DIAS_SEMANA.map((d) => (
+                      <SelectItem key={d} value={d}>
                         {d}
                       </SelectItem>
                     ))}

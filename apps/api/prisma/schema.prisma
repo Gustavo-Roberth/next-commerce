@@ -159,6 +159,13 @@ enum IdempotencyKeyScope {
   WEBHOOK
 }
 
+enum IntegracaoTipo {
+  CORREIOS
+  MERCADO_LIVRE
+  MELHOR_ENVIO
+  CUSTOM
+}
+
 model Usuario {
   id                String    @id @default(uuid())
   email             String    @unique
@@ -262,6 +269,8 @@ model Loja {
   produto_atributos    ProdutoAtributo[]
   estoque_movimentos   EstoqueMovimento[]
   report_schedules     ReportSchedule[]
+  email_templates      EmailTemplate[]
+  integracoes          Integracao[]
 
   @@index([slug])
   @@index([ativa])
@@ -927,6 +936,45 @@ model ReportSchedule {
 
   @@index([loja_id])
   @@index([ativo, proximo_envio_em])
+}
+
+model EmailTemplate {
+  id            String   @id @default(uuid())
+  loja_id       String
+  codigo        String
+  nome          String
+  assunto       String
+  corpo_mjml    String
+  variaveis     Json     @default("[]")
+  ativo         Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  deleted_at    DateTime?
+
+  loja          Loja     @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+
+  @@unique([loja_id, codigo])
+  @@index([loja_id])
+  @@index([codigo])
+  @@index([ativo])
+}
+
+model Integracao {
+  id                      String            @id @default(uuid())
+  loja_id                 String
+  tipo                    IntegracaoTipo
+  nome                    String
+  credenciais_criptografadas String
+  ativo                   Boolean           @default(true)
+  created_at              DateTime          @default(now())
+  updated_at              DateTime          @updatedAt
+  deleted_at              DateTime?
+
+  loja                    Loja              @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+
+  @@index([loja_id])
+  @@index([tipo])
+  @@index([ativo])
 }
 
 model AuditLog {

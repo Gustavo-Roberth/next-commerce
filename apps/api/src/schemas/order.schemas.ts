@@ -2,11 +2,15 @@ import { z } from 'zod';
 
 export const applyCupomSchema = z.object({
   codigo: z.string().min(1).max(50).toUpperCase(),
+  subtotal_cents: z.number().int().nonnegative(),
+  categorias: z.array(z.string()).optional(),
+  produtos: z.array(z.string()).optional(),
 });
 
 export const applyCupomResponseSchema = z.object({
   valido: z.boolean(),
   desconto_cents: z.number().int().min(0),
+  frete_gratis: z.boolean().optional(),
   mensagem: z.string().optional(),
   cupom: z
     .object({
@@ -14,7 +18,7 @@ export const applyCupomResponseSchema = z.object({
       codigo: z.string(),
       nome: z.string(),
       tipo: z.string(),
-      valor: z.number().int(),
+      valor: z.number().int().optional(),
     })
     .optional(),
 });

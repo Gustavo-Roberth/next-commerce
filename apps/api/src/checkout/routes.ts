@@ -1,6 +1,8 @@
 import type { Prisma } from '@/generated/prisma/client';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { authMiddleware } from '../auth/middleware.js';
+import * as cupomService from '../cupom/service.js';
+import * as freteService from '../frete/service.js';
 import { prisma } from '../lib/prisma.js';
 import {
   type CheckoutInput,
@@ -55,40 +57,42 @@ export async function checkoutRoutes(app: FastifyInstance): Promise<void> {
       const config = loja.configuracoes_seo as LojaConfig | null;
       const cepOrigem = (config?.cep_origem as string) || '01000-000';
 
-      const opcoes = await Promise.all(
+      const detalhes = await Promise.all(
         itens.map(async (item) => {
           const variacao = await prisma.produtoVariacao.findUnique({
             where: { id: item.variacao_id },
-            select: { peso_liquido_kg: true, dimensoes_cm: true },
+            select: { peso_liquido_kg: true, preco_cents: true },
           });
-
+          const preco = Number(variacao?.preco_cents || 0);
           const peso = Number(variacao?.peso_liquido_kg || 0.1) * item.quantidade;
-          const dimensoes = variacao?.dimensoes_cm as Record<string, number> | null;
-          const volume = dimensoes
-            ? ((dimensoes.altura || 10) *
-                (dimensoes.largura || 10) *
-                (dimensoes.comprimento || 10)) /
-              6000
-            : 0.001;
-
-          const valorPeso = peso * 200;
-          const valorVolume = volume * 5000;
-          const valorTotal = Math.max(valorPeso, valorVolume);
-
-          return {
-            nome: 'Entrega Padrão',
-            tipo: 'CORREIOS',
-            prazo_dias: 5,
-            valor_cents: Math.round(valorTotal * 100),
-            transportadora: 'Correios',
-          };
+          return { subtotal: preco * item.quantidade, peso };
         })
       );
 
-      const opcoesUnicas = Array.from(new Map(opcoes.map((o) => [o.nome, o])).values());
+      const subtotal_cents = detalhes.reduce((acc, d) => acc + d.subtotal, 0);
+      const peso_kg = detalhes.reduce((acc, d) => acc + d.peso, 0);
+
+      const regras = await freteService.calcularFrete(loja.id, {
+        cep_destino,
+        subtotal_cents,
+        peso_kg,
+      });
+
+      const opcoes = regras.map((r) => ({
+        nome: r.nome,
+        tipo: r.tipo,
+        prazo_dias: r.prazo_dias ?? 0,
+        valor_cents: r.valor_cents,
+        transportadora:
+          r.tipo === 'CORREIOS'
+            ? 'Correios'
+            : r.tipo === 'TRANSPORTADORA'
+              ? 'Transportadora'
+              : r.tipo,
+      }));
 
       return reply.send({
-        opcoes: opcoesUnicas,
+        opcoes,
         cep_origem: cepOrigem,
         cep_destino: cep_destino.replace(/^(\d{5})(\d{3})$/, '$1-$2'),
       });
@@ -109,62 +113,37 @@ export async function checkoutRoutes(app: FastifyInstance): Promise<void> {
       },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const body = request.body as { codigo: string };
-      const { codigo } = body;
+      const body = request.body as {
+        codigo: string;
+        subtotal_cents: number;
+        categorias?: string[];
+        produtos?: string[];
+      };
       const lojaId = request.user?.loja_id || '';
+      const clienteId = request.user?.sub;
 
-      const cupom = await prisma.cupom.findFirst({
-        where: {
-          loja_id: lojaId,
-          codigo: codigo.toUpperCase(),
-          ativo: true,
-          status: 'ATIVO',
-          valido_de: { lte: new Date() },
-          valido_ate: { gte: new Date() },
-        },
+      const resultado = await cupomService.validarCupom(lojaId, {
+        codigo: body.codigo,
+        subtotal_cents: body.subtotal_cents,
+        cliente_id: clienteId,
+        categorias: body.categorias,
+        produtos: body.produtos,
       });
 
-      if (!cupom) {
-        return reply.code(404).send({
-          valido: false,
-          desconto_cents: 0,
-          mensagem: 'Cupom não encontrado ou inválido',
-        });
-      }
-
-      const userId = request.user?.sub;
-      if (userId && cupom.uso_maximo_por_cliente) {
-        const usoCliente = await prisma.pedido.count({
-          where: { cliente_id: userId, cupom_id: cupom.id },
-        });
-        if (usoCliente >= cupom.uso_maximo_por_cliente) {
-          return reply.code(400).send({
-            valido: false,
-            desconto_cents: 0,
-            mensagem: 'Limite de uso do cupom por cliente atingido',
-          });
-        }
-      }
-
-      if (cupom.uso_maximo_total && cupom.uso_atual >= cupom.uso_maximo_total) {
-        return reply.code(400).send({
-          valido: false,
-          desconto_cents: 0,
-          mensagem: 'Cupom esgotado',
-        });
-      }
-
       return reply.send({
-        valido: true,
-        desconto_cents: cupom.tipo === 'PERCENTUAL' ? 0 : cupom.valor,
-        mensagem: 'Cupom aplicado com sucesso',
-        cupom: {
-          id: cupom.id,
-          codigo: cupom.codigo,
-          nome: cupom.nome,
-          tipo: cupom.tipo,
-          valor: cupom.valor,
-        },
+        valido: resultado.valido,
+        desconto_cents: resultado.desconto_cents,
+        frete_gratis: resultado.frete_gratis,
+        mensagem: resultado.mensagem,
+        cupom: resultado.cupom_id
+          ? {
+              id: resultado.cupom_id,
+              codigo: resultado.codigo ?? body.codigo,
+              nome: '',
+              tipo: resultado.tipo ?? '',
+              valor: resultado.valor,
+            }
+          : undefined,
       });
     }
   );
@@ -251,48 +230,24 @@ export async function checkoutRoutes(app: FastifyInstance): Promise<void> {
 
       let descontoCents = 0;
       let cupomId: string | null = null;
+      let freteGratis = false;
 
       if (body.cupom_codigo) {
-        const cupom = await prisma.cupom.findFirst({
-          where: {
-            loja_id: lojaId,
-            codigo: body.cupom_codigo.toUpperCase(),
-            ativo: true,
-            status: 'ATIVO',
-            valido_de: { lte: new Date() },
-            valido_ate: { gte: new Date() },
-          },
+        const subtotalCarrinho = cart.itens.reduce((acc, item) => {
+          const preco = Number(item.variacao?.preco_cents || 0);
+          return acc + preco * item.quantidade;
+        }, 0);
+        const resultado = await cupomService.validarCupom(lojaId, {
+          codigo: body.cupom_codigo,
+          subtotal_cents: subtotalCarrinho,
+          cliente_id: userId,
         });
-
-        if (cupom) {
-          const usoCliente = await prisma.pedido.count({
-            where: { cliente_id: userId, cupom_id: cupom.id },
-          });
-          if (cupom.uso_maximo_por_cliente && usoCliente >= cupom.uso_maximo_por_cliente) {
-            return reply.code(400).send({ error: 'Limite de uso do cupom atingido' });
-          }
-          if (cupom.uso_maximo_total && cupom.uso_atual >= cupom.uso_maximo_total) {
-            return reply.code(400).send({ error: 'Cupom esgotado' });
-          }
-          cupomId = cupom.id;
-
-          const subtotal = cart.itens.reduce((acc, item) => {
-            const preco = Number(item.variacao?.preco_cents || 0);
-            return acc + preco * item.quantidade;
-          }, 0);
-
-          if (cupom.valor_minimo_pedido_cents && subtotal < cupom.valor_minimo_pedido_cents) {
-            return reply
-              .code(400)
-              .send({ error: 'Valor mínimo do pedido não atingido para este cupom' });
-          }
-
-          if (cupom.tipo === 'PERCENTUAL') {
-            descontoCents = Math.round((subtotal * cupom.valor) / 100);
-          } else if (cupom.tipo === 'VALOR_FIXO') {
-            descontoCents = cupom.valor;
-          }
+        if (!resultado.valido) {
+          return reply.code(400).send({ error: resultado.mensagem || 'Cupom inválido' });
         }
+        descontoCents = resultado.desconto_cents;
+        cupomId = resultado.cupom_id ?? null;
+        freteGratis = resultado.frete_gratis;
       }
 
       const enderecoEntrega = await prisma.endereco.findUnique({
@@ -308,7 +263,7 @@ export async function checkoutRoutes(app: FastifyInstance): Promise<void> {
         if (ec && ec.usuario_id === userId) enderecoCobranca = ec;
       }
 
-      const freteValor = body.frete_selecionado.valor_cents;
+      const freteValor = freteGratis ? 0 : body.frete_selecionado.valor_cents;
       const subtotalCents = cart.itens.reduce((acc, item) => {
         const preco = Number(item.variacao?.preco_cents || 0);
         return acc + preco * item.quantidade;

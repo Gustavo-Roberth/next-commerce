@@ -587,3 +587,276 @@ export interface InventarioEstoqueInput {
   itens: InventarioItemInput[];
   observacao?: string;
 }
+
+// ===================== Configurações (FASE 3.4) =====================
+
+export interface LojaTema {
+  cor_primaria?: string;
+  cor_secundaria?: string;
+  fonte?: string;
+}
+
+export interface LojaSeo {
+  title?: string;
+  description?: string;
+  og_image?: string;
+}
+
+export interface LojaConfig {
+  id: string;
+  nome: string;
+  slug: string;
+  documento?: string;
+  email_contato?: string;
+  telefone?: string;
+  dominio?: string;
+  endereco?: Record<string, unknown>;
+  moeda: string;
+  fuso_horario?: string;
+  idioma?: string;
+  tema: LojaTema;
+  seo: LojaSeo;
+  ativo: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export type FreteTipo =
+  | 'GRATIS_VALOR'
+  | 'GRATIS_REGIAO'
+  | 'TABELA_PRECO'
+  | 'CORREIOS'
+  | 'TRANSPORTADORA';
+
+export interface FreteRegiao {
+  cep_inicio: string;
+  cep_fim: string;
+}
+
+export interface FreteFaixa {
+  ate_kg: number;
+  valor_cents: number;
+  prazo_dias?: number;
+}
+
+export interface FreteConfiguracao {
+  valor_minimo_cents?: number;
+  regioes?: FreteRegiao[];
+  faixas?: FreteFaixa[];
+  valor_cents?: number;
+  prazo_dias?: number;
+}
+
+export interface ConfiguracaoFrete {
+  id: string;
+  loja_id: string;
+  nome: string;
+  tipo: FreteTipo;
+  configuracao: FreteConfiguracao;
+  prioridade: number;
+  ativo: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CriarFreteInput {
+  nome: string;
+  tipo: FreteTipo;
+  configuracao: FreteConfiguracao;
+  prioridade?: number;
+  ativo?: boolean;
+}
+
+export type AtualizarFreteInput = Partial<CriarFreteInput>;
+
+export interface CalcularFreteInput {
+  cep_destino: string;
+  subtotal_cents: number;
+  peso_kg?: number;
+  itens?: { variacao_id: string; quantidade: number }[];
+}
+
+export interface OpcaoFrete {
+  id: string;
+  nome: string;
+  tipo: FreteTipo;
+  valor_cents: number;
+  prazo_dias?: number;
+  frete_gratis: boolean;
+  observacao?: string;
+}
+
+export type PagamentoMetodo =
+  | 'PIX'
+  | 'CARTAO_CREDITO'
+  | 'CARTAO_DEBITO'
+  | 'BOLETO'
+  | 'TRANSFERENCIA'
+  | 'DINHEIRO'
+  | 'CARTAO'
+  | 'OUTRO';
+
+export interface ConfiguracaoPagamento {
+  id: string;
+  loja_id: string;
+  metodo: PagamentoMetodo;
+  nome: string;
+  ativo: boolean;
+  instrucoes?: string;
+  parcelas_max?: number;
+  juros_parcela?: Record<string, number>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CriarPagamentoInput {
+  metodo: PagamentoMetodo;
+  nome: string;
+  credenciais?: Record<string, unknown>;
+  ativo?: boolean;
+  instrucoes?: string;
+  parcelas_max?: number;
+  juros_parcela?: Record<string, number>;
+}
+
+export type AtualizarPagamentoInput = Partial<CriarPagamentoInput>;
+
+export interface AtualizarLojaInput {
+  nome?: string | undefined;
+  documento?: string | undefined;
+  email_contato?: string | undefined;
+  telefone?: string | undefined;
+  dominio?: string | undefined;
+  moeda?: string | undefined;
+  fuso_horario?: string | undefined;
+  idioma?: string | undefined;
+  tema?: LojaTema | undefined;
+  seo?: LojaSeo | undefined;
+  ativo?: boolean | undefined;
+}
+
+export type CupomTipo = 'PERCENTUAL' | 'VALOR_FIXO' | 'FRETE_GRATIS';
+export type CupomStatus = 'ATIVO' | 'DESATIVADO' | 'EXPIRADO';
+
+export interface CupomConfig {
+  id: string;
+  loja_id: string;
+  codigo: string;
+  nome: string;
+  tipo: CupomTipo;
+  valor: number;
+  valor_minimo_pedido_cents: number;
+  uso_maximo_total: number | null;
+  uso_maximo_por_cliente: number | null;
+  valido_de: string;
+  valido_ate: string;
+  categorias_aplicaveis: string[];
+  produtos_aplicaveis: string[];
+  primeira_compra_only: boolean;
+  ativo: boolean;
+  status: CupomStatus;
+  uso_atual: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CriarCupomInput {
+  codigo: string;
+  nome: string;
+  tipo: CupomTipo;
+  valor: number;
+  valor_minimo_pedido_cents?: number;
+  uso_maximo_total?: number;
+  uso_maximo_por_cliente?: number;
+  valido_de: string;
+  valido_ate: string;
+  categorias_aplicaveis?: string[];
+  produtos_aplicaveis?: string[];
+  primeira_compra_only?: boolean;
+  ativo?: boolean;
+}
+
+export type AtualizarCupomInput = Partial<CriarCupomInput>;
+
+export interface ValidarCupomInput {
+  codigo: string;
+  cliente_id?: string;
+  subtotal_cents: number;
+  categorias?: string[];
+  produtos?: string[];
+}
+
+export interface ResultadoValidacaoCupom {
+  valido: boolean;
+  cupom_id?: string;
+  codigo?: string;
+  tipo?: CupomTipo;
+  valor?: number;
+  desconto_cents: number;
+  frete_gratis: boolean;
+  mensagem?: string;
+}
+
+export type EmailTemplateTipo =
+  | 'BOAS_VINDAS'
+  | 'CONFIRMACAO_PEDIDO'
+  | 'ENVIADO'
+  | 'ENTREGUE'
+  | 'TROCA_SENHA'
+  | 'CUPOM'
+  | 'OUTRO';
+
+export interface EmailTemplate {
+  id: string;
+  loja_id: string;
+  codigo: string;
+  nome: string;
+  assunto: string;
+  tipo: EmailTemplateTipo;
+  corpo_mjml: string;
+  variaveis: string[];
+  ativo: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CriarEmailTemplateInput {
+  codigo: string;
+  nome: string;
+  assunto: string;
+  tipo: EmailTemplateTipo;
+  corpo_mjml: string;
+  variaveis?: string[];
+  ativo?: boolean;
+}
+
+export type AtualizarEmailTemplateInput = Partial<CriarEmailTemplateInput>;
+
+export type IntegracaoTipo =
+  | 'MARKETPLACE'
+  | 'ERP'
+  | 'GATEWAY'
+  | 'LOGISTICA'
+  | 'MARKETING'
+  | 'OUTRO';
+
+export interface Integracao {
+  id: string;
+  loja_id: string;
+  nome: string;
+  tipo: IntegracaoTipo;
+  ativo: boolean;
+  configuracao?: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CriarIntegracaoInput {
+  nome: string;
+  tipo: IntegracaoTipo;
+  credenciais?: Record<string, unknown>;
+  configuracao?: Record<string, unknown>;
+  ativo?: boolean;
+}
+
+export type AtualizarIntegracaoInput = Partial<CriarIntegracaoInput>;

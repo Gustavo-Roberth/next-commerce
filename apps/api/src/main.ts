@@ -23,6 +23,7 @@ import { adminCategoryRoutes } from './categories/admin.routes.js';
 import { categoryRoutes } from './categories/routes.js';
 import { checkoutRoutes } from './checkout/routes.js';
 import { clientRoutes } from './client/routes.js';
+import { configuracoesRoutes } from './configuracoes/routes.js';
 import { configurarRelatoriosJob } from './jobs/reports.job.js';
 import { prisma } from './lib/prisma.js';
 import { adminOrderRoutes } from './orders/admin.routes.js';
@@ -138,6 +139,7 @@ async function initialize() {
   await app.register(storageRoutes, { prefix: '/api/v1' });
   await app.register(webhookRoutes, { prefix: '/api/v1' });
   await app.register(clientRoutes, { prefix: '/api/v1' });
+  await app.register(configuracoesRoutes, { prefix: '/api/v1' });
 
   configurarRelatoriosJob();
 

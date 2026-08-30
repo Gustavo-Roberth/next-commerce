@@ -18,6 +18,7 @@ import {
   Menu,
   Package,
   Search,
+  Settings,
   ShoppingCart,
   Store,
   User,
@@ -77,6 +78,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Pedidos', href: '/admin/pedidos', icon: ShoppingCart },
     { name: 'Estoque', href: '/admin/estoque', icon: Boxes },
     { name: 'Relatórios', href: '/admin/relatorios', icon: BarChart3 },
+    { name: 'Configurações', href: '/admin/configuracoes', icon: Settings },
   ];
 
   if (loading) {
