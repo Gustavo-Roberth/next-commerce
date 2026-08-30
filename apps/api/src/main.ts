@@ -23,12 +23,14 @@ import { adminCategoryRoutes } from './categories/admin.routes.js';
 import { categoryRoutes } from './categories/routes.js';
 import { checkoutRoutes } from './checkout/routes.js';
 import { clientRoutes } from './client/routes.js';
+import { configurarRelatoriosJob } from './jobs/reports.job.js';
 import { prisma } from './lib/prisma.js';
 import { adminOrderRoutes } from './orders/admin.routes.js';
 import { orderRoutes } from './orders/routes.js';
 import { adminProductRoutes } from './products/admin.routes.js';
 import { productRoutes } from './products/routes.js';
 import { storageRoutes } from './providers/storage.routes.js';
+import { reportsRoutes } from './reports/routes.js';
 import { stockRoutes } from './stock/routes.js';
 import { webhookRoutes } from './webhooks/routes.js';
 
@@ -132,9 +134,12 @@ async function initialize() {
   await app.register(orderRoutes, { prefix: '/api/v1' });
   await app.register(adminOrderRoutes, { prefix: '/api/v1' });
   await app.register(stockRoutes, { prefix: '/api/v1' });
+  await app.register(reportsRoutes, { prefix: '/api/v1' });
   await app.register(storageRoutes, { prefix: '/api/v1' });
   await app.register(webhookRoutes, { prefix: '/api/v1' });
   await app.register(clientRoutes, { prefix: '/api/v1' });
+
+  configurarRelatoriosJob();
 
   const port = Number(process.env.PORT) || 3001;
   await app.listen({ port, host: '::' });

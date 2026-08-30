@@ -261,6 +261,7 @@ model Loja {
   audit_logs           AuditLog[]
   produto_atributos    ProdutoAtributo[]
   estoque_movimentos   EstoqueMovimento[]
+  report_schedules     ReportSchedule[]
 
   @@index([slug])
   @@index([ativa])
@@ -903,6 +904,29 @@ model WebhookDlq {
   @@index([event_type])
   @@index([scope])
   @@index([created_at])
+}
+
+model ReportSchedule {
+  id               String   @id @default(uuid())
+  loja_id          String
+  tipo             String
+  formato          String
+  email_destino    String
+  frequencia       String
+  hora             Int      @default(6)
+  dia_semana       Int?
+  dia_mes          Int?
+  ativo            Boolean  @default(true)
+  ultimo_envio_em  DateTime?
+  proximo_envio_em DateTime?
+  criado_por       String?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  loja Loja @relation(fields: [loja_id], references: [id], onDelete: Cascade)
+
+  @@index([loja_id])
+  @@index([ativo, proximo_envio_em])
 }
 
 model AuditLog {

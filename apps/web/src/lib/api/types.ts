@@ -301,6 +301,56 @@ export interface NotaFiscal {
   updated_at: string;
 }
 
+export type RelatorioTipo = 'vendas-diario' | 'produtos-top' | 'estoque-baixo' | 'conciliacao';
+
+export interface RelatorioColuna {
+  chave: string;
+  rotulo: string;
+  formato?: 'cents' | 'date' | 'numero';
+}
+
+export interface RelatorioConsulta {
+  tipo: RelatorioTipo;
+  titulo: string;
+  colunas: RelatorioColuna[];
+  linhas: Record<string, unknown>[];
+}
+
+export type RelatorioFormato = 'CSV' | 'PDF';
+export type RelatorioFrequencia = 'DIARIO' | 'SEMANAL' | 'MENSAL';
+
+export interface ReportSchedule {
+  id: string;
+  loja_id: string;
+  tipo: RelatorioTipo;
+  formato: RelatorioFormato;
+  email_destino: string;
+  frequencia: RelatorioFrequencia;
+  hora: number;
+  dia_semana?: number | null;
+  dia_mes?: number | null;
+  ativo: boolean;
+  ultimo_envio_em?: string | null;
+  proximo_envio_em?: string | null;
+  criado_por?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateReportScheduleInput {
+  tipo: RelatorioTipo;
+  formato: RelatorioFormato;
+  email_destino: string;
+  frequencia: RelatorioFrequencia;
+  hora?: number;
+  dia_semana?: number;
+  dia_mes?: number;
+}
+
+export interface ReportScheduleListResponse {
+  data: ReportSchedule[];
+}
+
 export interface PedidosListResponse {
   data: Pedido[];
   nextCursor: string | null;

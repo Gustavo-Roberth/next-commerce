@@ -1,5 +1,5 @@
 # Phases - NextCommerce
-## Fase ativa: FASE 3.1 — Estoque: Telas Admin
+## FASE 3.3 — Relatórios: Views, Export e Agendamento
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Status:** EM DESENVOLVIMENTO
 
 ---
@@ -379,8 +379,8 @@ Construir as telas do admin de estoque em `apps/web` consumindo as rotas `/admin
 
 ---
 
-# 🟢 FASE 3.2 — NF-e: Emissão Automática
-**Status: EM DESENVOLVIMENTO**
+# ⚪ FASE 3.2 — NF-e: Emissão Automática
+**Status: CONCLUÍDA**
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Concluído:** 2026-08-29
 
 ## Origem
@@ -409,9 +409,9 @@ Implementar a emissão de Nota Fiscal eletrônica: integração com provedor de 
 
 ---
 
-# 🔒 FASE 3.3 — Relatórios: Views, Export e Agendamento
-**Status: PENDENTE**
-**Início:** _ | **Fim estimado:** _
+# 🟢 FASE 3.3 — Relatórios: Views, Export e Agendamento
+**Status: EM DESENVOLVIMENTO**
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Concluído:** 2026-08-29
 
 ## Origem
 Os critérios 2 e 3 da FASE 3 exigem conciliação diária e relatórios agendados por e-mail. Não há camada de relatórios/dashboard gerencial além do estoque.

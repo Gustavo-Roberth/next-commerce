@@ -1,3 +1,40 @@
+# Notas de Atualização 0.0.21
+
+## Fase 3.3 - Relatórios: Views, Export e Agendamento
+### ✅ Concluído nesta fase
+
+**1. Backend — materialized views + refresh (Fase 3.3)**
+- Migration `20260829120000_relatorios`: 4 materialized views (`mv_vendas_diario`, `mv_produtos_top`, `mv_relatorio_estoque_baixo`, `mv_conciliacao_financeira`) + função `refresh_relatorios()` ✅
+- Modelo `ReportSchedule` (Prisma) para agendamento de envios por e-mail ✅
+- `apps/api/src/reports/repository.ts`: consulta das views por `loja_id`/período, refresh e CRUD de agendamentos ✅
+
+**2. Backend — serviço e exportação**
+- `apps/api/src/reports/service.ts`: `obterRelatorio`, `gerarCsv` (BRL/pt-BR), `gerarPdf` (pdfkit), `calcularProximoEnvio` (DIARIO/SEMANAL/MENSAL), `enviarAgendamento` ✅
+- `apps/api/src/providers/email.provider.ts`: abstração `EmailProvider` (HTTP via `EMAIL_PROVIDER_URL` + fallback log dev) ✅
+
+**3. Backend — rotas e job**
+- `apps/api/src/reports/routes.ts`: `GET /admin/relatorios/:tipo`, `GET /admin/relatorios/:tipo/export` (CSV/PDF), `POST /admin/relatorios/refresh`, CRUD de agendamentos + `POST .../enviar` ✅
+- `apps/api/src/jobs/reports.job.ts`: cron `node-cron` que processa agendamentos vencidos e dispara e-mails ✅
+- Registrado em `main.ts` (rotas + job) ✅
+
+**4. Frontend admin — tela de relatórios (`apps/web`)**
+- `Relatorio*`/`ReportSchedule` tipados em `src/lib/api/types.ts` e `adminApi.relatorios` em `services.ts` (consulta, exportação via blob, agendamentos) ✅
+- Nav "Relatórios" em `app/admin/layout.tsx` ✅
+- `app/admin/relatorios/page.tsx`: seletor de relatório, filtro de datas, tabela de métricas, botões Exportar CSV/PDF e formulário de agendamento de e-mail ✅
+
+**5. Testes**
+- `apps/api/src/reports/service.test.ts`: 10 testes (consulta, CSV, PDF, próximo envio, envio por e-mail, job) — cobertura de services ✅
+
+### 🔧 Ajustes técnicos importantes
+- Relatórios são restritos a GESTOR/ADMIN (RBAC)
+- Materialized views não possuem RLS por loja; o isolamento é garantido no `WHERE loja_id` das queries do repository
+- E-mail de relatório usa provider HTTP (`EMAIL_PROVIDER_URL`/`EMAIL_PROVIDER_TOKEN`); sem provider configurado, o envio é registrado em log (dev)
+
+### ⏳ Pendente (Fase 3)
+FASE 3.4 Configurações · FASE 3.5 Rastreamento · FASE 3.6 Jobs agendados · FASE 3.7 Auditoria
+
+---
+
 # Notas de Atualização 0.0.20
 
 ## Fase 3.2 - NF-e: Emissão Automática

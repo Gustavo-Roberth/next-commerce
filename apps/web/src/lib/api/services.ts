@@ -1,4 +1,4 @@
-import { api } from './client';
+import { api, dispararDownload, downloadBlob } from './client';
 import type {
   AddItemToCartInput,
   AdminCategoriaListResponse,
@@ -18,6 +18,7 @@ import type {
   CreateDepositoInput,
   CreateMovimentoInput,
   CreateProdutoInput,
+  CreateReportScheduleInput,
   Deposito,
   EstoqueDashboard,
   EstoqueItem,
@@ -28,6 +29,11 @@ import type {
   Produto,
   ProdutoDestaqueResponse,
   ProdutosListResponse,
+  RelatorioConsulta,
+  RelatorioFormato,
+  RelatorioTipo,
+  ReportSchedule,
+  ReportScheduleListResponse,
   TransferenciaEstoqueInput,
   UpdateCartItemInput,
   UpdateCategoriaInput,
@@ -289,5 +295,45 @@ export const adminApi = {
 
     inventario: (input: InventarioEstoqueInput) =>
       api.post<{ message: string }>('/admin/estoque/inventario', input),
+  },
+
+  relatorios: {
+    consultar: (tipo: RelatorioTipo, params?: { data_inicio?: string; data_fim?: string }) => {
+      const searchParams = new URLSearchParams();
+      if (params?.data_inicio) searchParams.set('data_inicio', params.data_inicio);
+      if (params?.data_fim) searchParams.set('data_fim', params.data_fim);
+      const query = searchParams.toString();
+      return api.get<RelatorioConsulta>(`/admin/relatorios/${tipo}${query ? `?${query}` : ''}`);
+    },
+
+    exportar: async (
+      tipo: RelatorioTipo,
+      formato: RelatorioFormato,
+      params?: {
+        data_inicio?: string;
+        data_fim?: string;
+      }
+    ) => {
+      const searchParams = new URLSearchParams();
+      searchParams.set('formato', formato);
+      if (params?.data_inicio) searchParams.set('data_inicio', params.data_inicio);
+      if (params?.data_fim) searchParams.set('data_fim', params.data_fim);
+      const blob = await downloadBlob(
+        `/admin/relatorios/${tipo}/export?${searchParams.toString()}`
+      );
+      const dataStr = new Date().toISOString().slice(0, 10);
+      dispararDownload(blob, `${tipo}-${dataStr}.${formato.toLowerCase()}`);
+    },
+
+    agendamentos: () => api.get<ReportScheduleListResponse>('/admin/relatorios/agendamentos'),
+
+    criarAgendamento: (input: CreateReportScheduleInput) =>
+      api.post<ReportSchedule>('/admin/relatorios/agendamentos', input),
+
+    removerAgendamento: (id: string) =>
+      api.delete<{ message: string }>(`/admin/relatorios/agendamentos/${id}`),
+
+    enviarAgora: (id: string) =>
+      api.post<{ message: string }>(`/admin/relatorios/agendamentos/${id}/enviar`, {}),
   },
 };

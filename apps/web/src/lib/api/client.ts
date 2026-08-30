@@ -48,5 +48,29 @@ export const api = {
   delete: <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' }),
 };
 
+export async function downloadBlob(endpoint: string): Promise<Blob> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+  const headers: HeadersInit = {
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+  const response = await fetch(`${API_BASE}${endpoint}`, { headers });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => ({}))) as ApiErrorData;
+    throw new ApiError(response.status, data);
+  }
+  return response.blob();
+}
+
+export function dispararDownload(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export { ApiError };
 export type { ApiErrorData };
