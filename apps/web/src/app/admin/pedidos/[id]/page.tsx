@@ -1,5 +1,6 @@
 'use client';
 
+import { TrackingTimeline } from '@/components/admin';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -486,6 +487,20 @@ export default function AdminPedidoDetalhePage() {
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-6 lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Truck className="h-5 w-5" />
+                Rastreamento da Entrega
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TrackingTimeline rastreamento={pedido.rastreamento} />
             </CardContent>
           </Card>
         </div>

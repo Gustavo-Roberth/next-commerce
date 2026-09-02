@@ -66,13 +66,13 @@ describe('cupomService.validarCupom', () => {
     pedidoCount.mockResolvedValue(0);
     await validarCupom('loja-1', { codigo: 'Promo10', subtotal_cents: 1000 });
     expect(cupomFindFirst).toHaveBeenCalledWith(
-      expect.objectContaining({ where: expect.objectContaining({ codigo: 'promo10' }) }),
+      expect.objectContaining({ where: expect.objectContaining({ codigo: 'promo10' }) })
     );
   });
 
   it('rejeita cupom fora da vigência', async () => {
     cupomFindFirst.mockResolvedValue(
-      cupomBase({ valido_ate: new Date('2020-01-01').toISOString() }),
+      cupomBase({ valido_ate: new Date('2020-01-01').toISOString() })
     );
     const r = await validarCupom('loja-1', { codigo: 'PROMO10', subtotal_cents: 1000 });
     expect(r.valido).toBe(false);

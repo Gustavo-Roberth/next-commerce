@@ -14,8 +14,8 @@ vi.mock('../lib/prisma.js', () => ({
   },
 }));
 
-import { buscarCredenciaisPagamento, criarPagamento, listarPagamentos } from './pagamentos.js';
 import { criptografar, descriptografar } from '../lib/crypto.js';
+import { buscarCredenciaisPagamento, criarPagamento, listarPagamentos } from './pagamentos.js';
 
 beforeAll(() => {
   process.env.ENCRYPTION_KEY = Buffer.from('0123456789abcdef0123456789abcdef').toString('base64');
@@ -26,10 +26,12 @@ describe('pagamentos (credenciais criptografadas)', () => {
 
   it('criptografa credenciais ao criar e permite descriptografar', async () => {
     let capturado: { credenciais_criptografadas: string; credenciais?: unknown } | null = null;
-    upsert.mockImplementation(async (args: { create: Record<string, unknown>; update: Record<string, unknown> }) => {
-      capturado = args.create as typeof capturado;
-      return args.create;
-    });
+    upsert.mockImplementation(
+      async (args: { create: Record<string, unknown>; update: Record<string, unknown> }) => {
+        capturado = args.create as typeof capturado;
+        return args.create;
+      }
+    );
 
     await criarPagamento('loja-1', {
       metodo: 'PIX',
@@ -40,15 +42,17 @@ describe('pagamentos (credenciais criptografadas)', () => {
     });
 
     expect(capturado).not.toBeNull();
-    expect((capturado as { credenciais_criptografadas: string }).credenciais_criptografadas).toBeDefined();
-    expect((capturado as { credenciais_criptografadas: string }).credenciais_criptografadas).not.toContain(
-      'minha-chave-pix',
-    );
+    expect(
+      (capturado as { credenciais_criptografadas: string }).credenciais_criptografadas
+    ).toBeDefined();
+    expect(
+      (capturado as { credenciais_criptografadas: string }).credenciais_criptografadas
+    ).not.toContain('minha-chave-pix');
     expect(capturado?.credenciais).toBeUndefined();
 
     const dec = descriptografar<{ chave: string }>(
       'loja-1',
-      (capturado as { credenciais_criptografadas: string }).credenciais_criptografadas,
+      (capturado as { credenciais_criptografadas: string }).credenciais_criptografadas
     );
     expect(dec.chave).toBe('minha-chave-pix');
   });

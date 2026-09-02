@@ -1,3 +1,34 @@
+# Notas de Atualização 0.0.23
+
+## Fase 3.5 - Rastreamento de Pedidos
+### ✅ Concluído nesta fase
+
+**1. Backend — rastreamento (Fase 3.5)**
+- Modelo `TransportadoraRastreamento` (Prisma): já existente com campos `pedido_id`, `transportadora`, `codigo_rastreamento`, `url_rastreamento`, `status_transportadora`, `eventos` (JSON append-only), `ultima_atualizacao`, `webhook_recebido_em` ✅
+- `apps/api/src/tracking/repository.ts`: busca/criação/atualização de rastreamento com append-only de eventos ✅
+- `apps/api/src/tracking/service.ts`: `processTrackingWebhook` (HMAC + idempotency via `webhook_event`), `getTrackingTimeline`, `registerTrackingEvent` (manual admin) + notificação automática em status relevantes (COLETADO, SAIU_ENTREGA, ENTREGUE, DEVOLVIDO) ✅
+- `apps/api/src/tracking/routes.ts`: `POST /webhooks/transportadora` (assinatura HMAC), `GET /pedidos/:id/rastreamento` (admin/cliente), `POST /pedidos/:id/rastreamento` (admin) ✅
+- `apps/api/src/lib/notification.ts`: emissão de notificações de rastreamento via `PedidoEvento` ✅
+- Registrado em `main.ts` ✅
+
+**2. Frontend — timeline de rastreamento (`apps/web`)**
+- Tipos `RastreamentoEvento`, `TransportadoraRastreamento` e `Pedido.rastreamento` em `src/lib/api/types.ts` ✅
+- Componente `TrackingTimeline` (`components/admin/TrackingTimeline.tsx`): timeline visual com ícones por status, código de rastreamento, link externo, indicador de status atual ✅
+- Integrado em `/admin/pedidos/[id]` com card dedicado "Rastreamento da Entrega" ✅
+- Exportado em `components/admin/index.ts` ✅
+
+**3. Shared — schemas e tipos**
+- `packages/shared/src/schemas/tracking.schemas.ts`: schemas Zod para webhook, evento manual, resposta ✅
+- Exportado em `schemas/index.ts` e `packages/shared/src/index.ts` ✅
+- Bucket `TRACKING` adicionado em `storage.provider.ts` ✅
+
+### 🔧 Ajustes técnicos importantes
+- Eventos de rastreamento são **append-only** (imutáveis, ordenados cronologicamente)
+- Webhook exige assinatura HMAC-SHA256 (`x-webhook-signature`) + idempotency key (`webhook_event` table)
+- Status normalizados: COLETADO, EM_TRANSITO, SAIU_ENTREGA, ENTREGUE, DEVOLVIDO
+- Notificação automática ao cliente registra `PedidoEvento` tipo `NOTIFICACAO_RASTREAMENTO`
+- Acesso ao rastreamento: admin (tudo), cliente (apenas próprio pedido)
+
 # Notas de Atualização 0.0.22
 
 ## Fase 3.4 - Configurações: Abas Admin

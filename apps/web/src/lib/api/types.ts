@@ -222,6 +222,7 @@ export interface Pedido {
   pagamentos: Pagamento[];
   eventos: PedidoEvento[];
   notas_fiscais?: NotaFiscal[];
+  rastreamento?: TransportadoraRastreamento;
 }
 
 export interface PedidoItem {
@@ -299,6 +300,25 @@ export interface NotaFiscal {
   cancelada_em: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface RastreamentoEvento {
+  data: string;
+  status: string;
+  local: string | null;
+  descricao: string;
+}
+
+export interface TransportadoraRastreamento {
+  id: string;
+  pedido_id: string;
+  transportadora: string;
+  codigo_rastreamento: string;
+  url_rastreamento: string | null;
+  status_transportadora: string;
+  eventos: RastreamentoEvento[];
+  ultima_atualizacao: string | null;
+  webhook_recebido_em: string | null;
 }
 
 export type RelatorioTipo = 'vendas-diario' | 'produtos-top' | 'estoque-baixo' | 'conciliacao';

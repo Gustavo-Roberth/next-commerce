@@ -22,6 +22,7 @@ export const STORAGE_BUCKETS = {
   NFE_XML: 'nfe-xml',
   NFE_PDF: 'nfe-pdf',
   USER_AVATARS: 'user-avatars',
+  TRACKING: 'tracking',
 } as const;
 
 export type StorageBucket = (typeof STORAGE_BUCKETS)[keyof typeof STORAGE_BUCKETS];
@@ -136,7 +137,9 @@ export async function initializeBuckets(): Promise<void> {
         allowedMimeTypes:
           bucket === STORAGE_BUCKETS.PRODUCT_IMAGES || bucket === STORAGE_BUCKETS.USER_AVATARS
             ? ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
-            : ['application/pdf', 'application/xml', 'text/xml'],
+            : bucket === STORAGE_BUCKETS.TRACKING
+              ? ['application/pdf', 'application/xml', 'text/xml', 'text/plain']
+              : ['application/pdf', 'application/xml', 'text/xml'],
       });
       if (createError) {
         console.error(`Failed to create bucket ${bucket}:`, createError);

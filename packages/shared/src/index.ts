@@ -103,3 +103,11 @@ export type {
 } from './schemas/config.schemas';
 
 export type { NotaFiscal, NotaFiscalStatus } from './schemas/nfe.schemas';
+
+export type {
+  RastreamentoEvento,
+  TrackingWebhookPayload,
+  TrackingResponse,
+  AddTrackingEventInput,
+  TrackingTimelineQuery,
+} from './schemas/tracking.schemas';

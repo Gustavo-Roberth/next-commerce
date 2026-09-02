@@ -4,3 +4,4 @@ export * from './order.schemas';
 export * from './payment.schemas';
 export * from './stock.schemas';
 export * from './config.schemas';
+export * from './tracking.schemas';

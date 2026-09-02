@@ -71,7 +71,7 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 3.4 — Configurações: Abas Admin**
+🟢 **FASE 3.5 — Rastreamento de Pedidos**
 **Status: EM DESENVOLVIMENTO**
 **Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
 

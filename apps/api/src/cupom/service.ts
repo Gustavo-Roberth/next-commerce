@@ -56,7 +56,8 @@ export async function validarCupom(
 
   const agora = new Date();
   const validoDe = cupom.valido_de instanceof Date ? cupom.valido_de : new Date(cupom.valido_de);
-  const validoAte = cupom.valido_ate instanceof Date ? cupom.valido_ate : new Date(cupom.valido_ate);
+  const validoAte =
+    cupom.valido_ate instanceof Date ? cupom.valido_ate : new Date(cupom.valido_ate);
   if (agora < validoDe || agora > validoAte) {
     return {
       valido: false,

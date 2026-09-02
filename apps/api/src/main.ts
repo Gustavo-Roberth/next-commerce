@@ -33,6 +33,7 @@ import { productRoutes } from './products/routes.js';
 import { storageRoutes } from './providers/storage.routes.js';
 import { reportsRoutes } from './reports/routes.js';
 import { stockRoutes } from './stock/routes.js';
+import { trackingRoutes, trackingWebhookRoutes } from './tracking/routes.js';
 import { webhookRoutes } from './webhooks/routes.js';
 
 Sentry.init({
@@ -138,6 +139,8 @@ async function initialize() {
   await app.register(reportsRoutes, { prefix: '/api/v1' });
   await app.register(storageRoutes, { prefix: '/api/v1' });
   await app.register(webhookRoutes, { prefix: '/api/v1' });
+  await app.register(trackingWebhookRoutes, { prefix: '/api/v1' });
+  await app.register(trackingRoutes, { prefix: '/api/v1' });
   await app.register(clientRoutes, { prefix: '/api/v1' });
   await app.register(configuracoesRoutes, { prefix: '/api/v1' });
 

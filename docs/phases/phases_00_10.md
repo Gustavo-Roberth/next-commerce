@@ -439,9 +439,9 @@ Implementar relatórios gerenciais a partir de materialized views (vendas diári
 
 ---
 
-# 🟢 FASE 3.4 — Configurações: Abas Admin
-**Status: EM DESENVOLVIMENTO**
-**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
+# ⚪ FASE 3.4 — Configurações: Abas Admin
+**Status: CONCLUÍDA**
+**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03 | **Concluído:** 2026-08-30
 
 ## Origem
 A FASE 3 exige configurações ricas da loja (frete, pagamentos, cupons, e-mails, integrações). Atualmente essas configurações são ausentes no admin.
@@ -470,9 +470,9 @@ Construir o módulo de configurações do admin em abas (Loja, Frete, Pagamentos
 
 ---
 
-# 🔒 FASE 3.5 — Rastreamento de Pedidos
-**Status: PENDENTE**
-**Início:** _ | **Fim estimado:** _
+# 🟢 FASE 3.5 — Rastreamento de Pedidos
+**Status: EM DESENVOLVIMENTO**
+**Início:** 2026-08-30 | **Fim estimado:** 2026-09-04
 
 ## Origem
 A FASE 3 prevê timeline completa de pedidos e rastreamento. Hoje o pedido não possui eventos de rastreamento nem integração com transportadoras.
