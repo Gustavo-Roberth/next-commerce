@@ -15,9 +15,9 @@ import type {
   RastreamentoStatus,
   Transportadora,
   WebhookEventType,
-} from './enums';
+} from './enums.js';
 
-import type { RastreamentoEvento } from './entities';
+import type { RastreamentoEvento } from './entities.js';
 
 export interface CreateUsuarioDTO {
   email: string;

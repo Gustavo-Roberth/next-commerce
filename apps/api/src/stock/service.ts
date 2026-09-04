@@ -3,6 +3,8 @@ import {
   type EstoqueReferenciaTipo,
   type Prisma,
 } from '@/generated/prisma/client';
+import { AuditAction, AuditEntity } from '@shared/types';
+import { logAudit } from '../audit/service.js';
 import { prisma } from '../lib/prisma.js';
 
 type Tx = Prisma.TransactionClient;
@@ -96,20 +98,41 @@ export async function registrarMovimento(
     });
   }
 
-  return tx.estoqueMovimento.create({
-    data: {
-      loja_id: lojaId,
-      variacao_id: input.variacao_id,
-      deposito_id: input.deposito_id,
-      tipo,
-      quantidade,
-      custo_unitario_cents: input.custo_unitario_cents ?? null,
-      referencia_tipo: input.referencia_tipo,
-      referencia_id: input.referencia_id ?? null,
-      observacao: input.observacao ?? null,
-      usuario_id: input.usuario_id ?? null,
-    },
-  });
+  return tx.estoqueMovimento
+    .create({
+      data: {
+        loja_id: lojaId,
+        variacao_id: input.variacao_id,
+        deposito_id: input.deposito_id,
+        tipo,
+        quantidade,
+        custo_unitario_cents: input.custo_unitario_cents ?? null,
+        referencia_tipo: input.referencia_tipo,
+        referencia_id: input.referencia_id ?? null,
+        observacao: input.observacao ?? null,
+        usuario_id: input.usuario_id ?? null,
+      },
+    })
+    .then(async (movimento) => {
+      await logAudit({
+        usuarioId: input.usuario_id ?? null,
+        lojaId,
+        acao: AuditAction.ESTOQUE_MOVIMENTADO,
+        entidade: AuditEntity.ESTOQUE_MOVIMENTO,
+        entidadeId: movimento.id,
+        depois: {
+          tipo,
+          quantidade,
+          variacao_id: input.variacao_id,
+          deposito_id: input.deposito_id,
+          custo_unitario_cents: input.custo_unitario_cents ?? null,
+          referencia_tipo: input.referencia_tipo,
+          referencia_id: input.referencia_id ?? null,
+          observacao: input.observacao ?? null,
+        },
+      });
+      return movimento;
+    });
 }
 
 export async function reservar(
@@ -196,30 +219,66 @@ export async function transferir(
     data: { quantidade_fisica: { increment: input.quantidade } },
   });
 
-  await tx.estoqueMovimento.create({
-    data: {
-      loja_id: lojaId,
-      variacao_id: input.variacao_id,
-      deposito_id: input.deposito_origem_id,
-      tipo: EstoqueMovimentoTipo.TRANSFERENCIA_SAIDA,
-      quantidade: input.quantidade,
-      referencia_tipo: 'TRANSFERENCIA',
-      observacao: input.observacao ?? null,
-      usuario_id: usuarioId ?? null,
-    },
-  });
-  await tx.estoqueMovimento.create({
-    data: {
-      loja_id: lojaId,
-      variacao_id: input.variacao_id,
-      deposito_id: input.deposito_destino_id,
-      tipo: EstoqueMovimentoTipo.TRANSFERENCIA_ENTRADA,
-      quantidade: input.quantidade,
-      referencia_tipo: 'TRANSFERENCIA',
-      observacao: input.observacao ?? null,
-      usuario_id: usuarioId ?? null,
-    },
-  });
+  await tx.estoqueMovimento
+    .create({
+      data: {
+        loja_id: lojaId,
+        variacao_id: input.variacao_id,
+        deposito_id: input.deposito_origem_id,
+        tipo: EstoqueMovimentoTipo.TRANSFERENCIA_SAIDA,
+        quantidade: input.quantidade,
+        referencia_tipo: 'TRANSFERENCIA',
+        observacao: input.observacao ?? null,
+        usuario_id: usuarioId ?? null,
+      },
+    })
+    .then(async (movimento) => {
+      await logAudit({
+        usuarioId: usuarioId ?? null,
+        lojaId,
+        acao: AuditAction.ESTOQUE_MOVIMENTADO,
+        entidade: AuditEntity.ESTOQUE_MOVIMENTO,
+        entidadeId: movimento.id,
+        depois: {
+          tipo: EstoqueMovimentoTipo.TRANSFERENCIA_SAIDA,
+          quantidade: input.quantidade,
+          variacao_id: input.variacao_id,
+          deposito_id: input.deposito_origem_id,
+          referencia_tipo: 'TRANSFERENCIA',
+          observacao: input.observacao ?? null,
+        },
+      });
+    });
+  await tx.estoqueMovimento
+    .create({
+      data: {
+        loja_id: lojaId,
+        variacao_id: input.variacao_id,
+        deposito_id: input.deposito_destino_id,
+        tipo: EstoqueMovimentoTipo.TRANSFERENCIA_ENTRADA,
+        quantidade: input.quantidade,
+        referencia_tipo: 'TRANSFERENCIA',
+        observacao: input.observacao ?? null,
+        usuario_id: usuarioId ?? null,
+      },
+    })
+    .then(async (movimento) => {
+      await logAudit({
+        usuarioId: usuarioId ?? null,
+        lojaId,
+        acao: AuditAction.ESTOQUE_MOVIMENTADO,
+        entidade: AuditEntity.ESTOQUE_MOVIMENTO,
+        entidadeId: movimento.id,
+        depois: {
+          tipo: EstoqueMovimentoTipo.TRANSFERENCIA_ENTRADA,
+          quantidade: input.quantidade,
+          variacao_id: input.variacao_id,
+          deposito_id: input.deposito_destino_id,
+          referencia_tipo: 'TRANSFERENCIA',
+          observacao: input.observacao ?? null,
+        },
+      });
+    });
 }
 
 export async function inventariar(
@@ -242,19 +301,40 @@ export async function inventariar(
       data: { quantidade_fisica: item.quantidade_contada },
     });
 
-    await tx.estoqueMovimento.create({
-      data: {
-        loja_id: lojaId,
-        variacao_id: item.variacao_id,
-        deposito_id: input.deposito_id,
-        tipo:
-          diferenca > 0 ? EstoqueMovimentoTipo.ENTRADA_AJUSTE : EstoqueMovimentoTipo.SAIDA_AJUSTE,
-        quantidade: Math.abs(diferenca),
-        referencia_tipo: 'INVENTARIO',
-        observacao: input.observacao ?? 'Ajuste por inventário',
-        usuario_id: usuarioId ?? null,
-      },
-    });
+    await tx.estoqueMovimento
+      .create({
+        data: {
+          loja_id: lojaId,
+          variacao_id: item.variacao_id,
+          deposito_id: input.deposito_id,
+          tipo:
+            diferenca > 0 ? EstoqueMovimentoTipo.ENTRADA_AJUSTE : EstoqueMovimentoTipo.SAIDA_AJUSTE,
+          quantidade: Math.abs(diferenca),
+          referencia_tipo: 'INVENTARIO',
+          observacao: input.observacao ?? 'Ajuste por inventário',
+          usuario_id: usuarioId ?? null,
+        },
+      })
+      .then(async (movimento) => {
+        await logAudit({
+          usuarioId: usuarioId ?? null,
+          lojaId,
+          acao: AuditAction.ESTOQUE_MOVIMENTADO,
+          entidade: AuditEntity.ESTOQUE_MOVIMENTO,
+          entidadeId: movimento.id,
+          depois: {
+            tipo:
+              diferenca > 0
+                ? EstoqueMovimentoTipo.ENTRADA_AJUSTE
+                : EstoqueMovimentoTipo.SAIDA_AJUSTE,
+            quantidade: Math.abs(diferenca),
+            variacao_id: item.variacao_id,
+            deposito_id: input.deposito_id,
+            referencia_tipo: 'INVENTARIO',
+            observacao: input.observacao ?? 'Ajuste por inventário',
+          },
+        });
+      });
   }
 }
 

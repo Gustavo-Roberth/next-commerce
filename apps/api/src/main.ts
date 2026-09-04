@@ -15,6 +15,7 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod';
+import { adminAuditRoutes } from './admin/audit.routes.js';
 import { adminRoutes } from './admin/routes.js';
 import { registerAuthMiddleware } from './auth/middleware.js';
 import { authRoutes } from './auth/routes.js';
@@ -138,6 +139,7 @@ async function initialize() {
   await app.register(checkoutRoutes, { prefix: '/api/v1' });
   await app.register(orderRoutes, { prefix: '/api/v1' });
   await app.register(adminOrderRoutes, { prefix: '/api/v1' });
+  await app.register(adminAuditRoutes, { prefix: '/api/v1' });
   await app.register(stockRoutes, { prefix: '/api/v1' });
   await app.register(reportsRoutes, { prefix: '/api/v1' });
   await app.register(storageRoutes, { prefix: '/api/v1' });

@@ -15,9 +15,9 @@ import type {
   ProdutoVariacaoAtributo,
   TransportadoraRastreamento,
   Usuario,
-} from './entities';
+} from './entities.js';
 
-import type { OrderStatus, PaymentMethod, PaymentStatus, ProductStatus } from './enums';
+import type { OrderStatus, PaymentMethod, PaymentStatus, ProductStatus } from './enums.js';
 
 export interface PaginationParams {
   cursor?: string;

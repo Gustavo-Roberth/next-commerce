@@ -17,7 +17,7 @@ import type {
   RastreamentoStatus,
   Transportadora,
   WebhookEventType,
-} from './enums';
+} from './enums.js';
 
 export interface BaseEntity {
   id: string;
@@ -360,18 +360,6 @@ export interface WebhookDlq extends BaseEntity {
   error: string;
   attempts: number;
   last_attempt_at: Date;
-}
-
-export interface AuditLog extends BaseEntity {
-  usuario_id: string | null;
-  loja_id: string | null;
-  acao: string;
-  entidade: string;
-  entidade_id: string | null;
-  antes: Record<string, unknown> | null;
-  depois: Record<string, unknown> | null;
-  ip: string | null;
-  user_agent: string | null;
 }
 
 export type NotaFiscalStatus = 'PENDENTE' | 'EMITIDA' | 'ERRO' | 'CANCELADA';

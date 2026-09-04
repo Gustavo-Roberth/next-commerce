@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PaymentGateway } from '../types/enums';
+import { AuditAction, AuditEntity, PaymentGateway } from '../types/enums';
 
 export const configuracaoPagamentoSchema = z.object({
   loja_id: z.string().uuid(),
@@ -54,8 +54,8 @@ export const webhookEventListQuerySchema = z.object({
 export const auditLogSchema = z.object({
   usuario_id: z.string().uuid().nullable().optional(),
   loja_id: z.string().uuid().nullable().optional(),
-  acao: z.string().min(1).max(100),
-  entidade: z.string().min(1).max(100),
+  acao: z.nativeEnum(AuditAction),
+  entidade: z.nativeEnum(AuditEntity),
   entidade_id: z.string().uuid().nullable().optional(),
   antes: z.record(z.unknown()).nullable().optional(),
   depois: z.record(z.unknown()).nullable().optional(),
@@ -68,8 +68,8 @@ export const auditLogListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50),
   usuario_id: z.string().uuid().optional(),
   loja_id: z.string().uuid().optional(),
-  acao: z.string().optional(),
-  entidade: z.string().optional(),
+  acao: z.nativeEnum(AuditAction).optional(),
+  entidade: z.nativeEnum(AuditEntity).optional(),
   data_inicio: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/)

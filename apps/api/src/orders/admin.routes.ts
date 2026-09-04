@@ -1,4 +1,6 @@
+import { AuditAction, AuditEntity } from '@shared/types';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { logAudit } from '../audit/service.js';
 import { authMiddleware, requireRole } from '../auth/middleware.js';
 import { prisma } from '../lib/prisma.js';
 import { emitirNotaFiscalPedido, mapearNotaFiscalResposta } from '../nfe/service.js';
@@ -421,6 +423,16 @@ export async function adminOrderRoutes(app: FastifyInstance): Promise<void> {
           usuario_id: request.user?.sub ?? null,
           metadata: { status_anterior: pedido.status, status_novo: status },
         },
+      });
+
+      await logAudit({
+        usuarioId: request.user?.sub ?? null,
+        lojaId,
+        acao: AuditAction.PEDIDO_STATUS_ALTERADO,
+        entidade: AuditEntity.PEDIDO,
+        entidadeId: id,
+        antes: { status: pedido.status },
+        depois: { status, observacoes_internas: updateData.observacoes_internas ?? null },
       });
 
       if (status === 'ENVIADO') {

@@ -1,6 +1,7 @@
 # Phases - NextCommerce
-## FASE 3.6 — Jobs Agendados                                                                                                                                  
-**Início:** 2026-09-01 | **Fim estimado:** 2026-09-05 | **Status:** EM DESENVOLVIMENTO
+## FASE 3.7 — Auditoria de Ações Críticas
+ 
+**Início:** 2026-09-02 | **Fim estimado:** 2026-09-06 | **Status:** EM DESENVOLVIMENTO
 
 ---
 
@@ -498,9 +499,9 @@ Implementar o rastreamento de pedidos: webhook de transportadoras, eventos appen
 
 ---
 
-# 🟢 FASE 3.6 — Jobs Agendados
-**Status: EM DESENVOLVIMENTO**
-**Início:** 2026-09-01 | **Fim estimado:** 2026-09-05
+# ⚪ FASE 3.6 — Jobs Agendados
+**Status: CONCLUÍDA**
+**Início:** 2026-09-01 | **Fim estimado:** 2026-09-05 | **Concluído:** 2026-09-04
 
 ## Origem
 Os critérios 2 e 3 da FASE 3 exigem automação (conciliação diária, alertas de estoque horário, relatórios agendados). Não há camada de jobs agendados além das operações síncronas.
@@ -523,9 +524,9 @@ Implementar jobs agendados (node-cron) para conciliação diária, alertas de es
 
 ---
 
-# 🔒 FASE 3.7 — Auditoria de Ações Críticas
-**Status: PENDENTE**
-**Início:** _ | **Fim estimado:** _
+# 🟢 FASE 3.7 — Auditoria de Ações Críticas
+**Status: EM DESENVOLVIMENTO**
+**Início:** 2026-09-02 | **Fim estimado:** 2026-09-06
 
 ## Origem
 `docs/tech.md` define uma tabela `audit_log` para registrar eventos críticos (preço, estoque, status de pedido, alteração de perfis). O registro de auditoria ainda não existe na base.

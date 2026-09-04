@@ -71,9 +71,9 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 3.6 — Jobs Agendados**
+🟢 **FASE 3.7 — Auditoria de Ações Críticas**
 **Status: EM DESENVOLVIMENTO**
-**Início:** 2026-09-01 | **Fim estimado:** 2026-09-05
+**Início:** 2026-09-02 | **Fim estimado:** 2026-09-06
 
 Arquivo:
 - `/docs/phases/phases_00_10.md`

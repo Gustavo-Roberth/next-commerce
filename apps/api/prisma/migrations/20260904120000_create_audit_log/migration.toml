@@ -1,0 +1,4 @@
+provider = "postgresql"
+name = "create_audit_log"
+version = "1"
+description = "Create AuditLog table with indexes and foreign keys for audit trail"

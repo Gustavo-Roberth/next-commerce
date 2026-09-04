@@ -147,3 +147,22 @@ export enum IdempotencyKeyScope {
   ORDER = 'order',
   WEBHOOK = 'webhook',
 }
+
+export enum AuditAction {
+  PRECO_ALTERADO = 'PRECO_ALTERADO',
+  ESTOQUE_MOVIMENTADO = 'ESTOQUE_MOVIMENTADO',
+  PEDIDO_STATUS_ALTERADO = 'PEDIDO_STATUS_ALTERADO',
+  USUARIO_ALTERADO = 'USUARIO_ALTERADO',
+  PERFIL_ATRIBUIDO = 'PERFIL_ATRIBUIDO',
+  PERFIL_REMOVIDO = 'PERFIL_REMOVIDO',
+  PERFIL_ATUALIZADO = 'PERFIL_ATUALIZADO',
+}
+
+export enum AuditEntity {
+  PRODUTO = 'Produto',
+  PRODUTO_VARIACAO = 'ProdutoVariacao',
+  ESTOQUE_MOVIMENTO = 'EstoqueMovimento',
+  PEDIDO = 'Pedido',
+  USUARIO = 'Usuario',
+  USUARIO_PERFIL = 'UsuarioPerfil',
+}
