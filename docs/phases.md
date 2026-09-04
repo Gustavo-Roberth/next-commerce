@@ -71,9 +71,9 @@ Fases futuras servem apenas como:
 # 🚨 FASE ATUAL DO PROJETO
 ## FASE ATIVA
 
-🟢 **FASE 3.5 — Rastreamento de Pedidos**
+🟢 **FASE 3.6 — Jobs Agendados**
 **Status: EM DESENVOLVIMENTO**
-**Início:** 2026-08-29 | **Fim estimado:** 2026-09-03
+**Início:** 2026-09-01 | **Fim estimado:** 2026-09-05
 
 Arquivo:
 - `/docs/phases/phases_00_10.md`

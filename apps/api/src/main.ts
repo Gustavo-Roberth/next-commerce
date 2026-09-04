@@ -24,7 +24,10 @@ import { categoryRoutes } from './categories/routes.js';
 import { checkoutRoutes } from './checkout/routes.js';
 import { clientRoutes } from './client/routes.js';
 import { configuracoesRoutes } from './configuracoes/routes.js';
-import { configurarRelatoriosJob } from './jobs/reports.job.js';
+import './jobs/conciliacao.job.js';
+import './jobs/estoque-alerta.job.js';
+import './jobs/reports.job.js';
+import { startAllJobs } from './jobs/index.js';
 import { prisma } from './lib/prisma.js';
 import { adminOrderRoutes } from './orders/admin.routes.js';
 import { orderRoutes } from './orders/routes.js';
@@ -144,7 +147,7 @@ async function initialize() {
   await app.register(clientRoutes, { prefix: '/api/v1' });
   await app.register(configuracoesRoutes, { prefix: '/api/v1' });
 
-  configurarRelatoriosJob();
+  startAllJobs();
 
   const port = Number(process.env.PORT) || 3001;
   await app.listen({ port, host: '::' });
